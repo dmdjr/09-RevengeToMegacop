@@ -9,9 +9,10 @@ public abstract class GunWeapon : Weapon
     [SerializeField] protected GameObject bulletPrefab;
 
     [SerializeField] protected Transform firePoint;
-
-    protected virtual void Awake()
+    
+    protected override void Awake()
     {
+        base.Awake();
         if (MaxAmmo < Ammo) Ammo = MaxAmmo;
     }
 

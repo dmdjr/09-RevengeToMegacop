@@ -3,20 +3,21 @@ using UnityEngine;
 public abstract class Weapon : MonoBehaviour
 {
     [SerializeField] private float useDelay;
-    private float leftTimeToUse;
+    private float previousTime;
 
-    void Awake()
+    protected virtual void Awake()
     {
-        leftTimeToUse = useDelay;
+        previousTime = -useDelay;
     }
 
     public void TryUse()
     {
-        // if (leftTimeToUse <= 0)
-        // {
-        // leftTimeToUse = useDelay;
-        Use();
-        // }
+        float currentTime = Time.time;
+        if (useDelay <= currentTime - previousTime)
+        {
+            previousTime = currentTime;
+            Use();
+        }
     }
 
     protected abstract void Use();
