@@ -32,12 +32,11 @@ public class PlayerHitController : MonoBehaviour, IDamageable
 
     private void Parry(Bullet bullet)
     {
-        parryController.Parry();
         bullet.Reflect();
+        parryController.Parry();
     }
 
     private void TakeDamage()
     {
-        Debug.Log("Take damage!");
     }
 }

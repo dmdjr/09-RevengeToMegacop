@@ -11,8 +11,6 @@ public class PlayerController : MonoBehaviour
     private float gravity = -9.81f;
     private Vector3 velocity;
 
-    private Plane groundPlane;
-
     void Awake()
     {
         realSpeed = speed;
@@ -49,18 +47,7 @@ public class PlayerController : MonoBehaviour
 
     void InputRotation()
     {
-        groundPlane = new Plane(Vector3.up, new Vector3(0, transform.position.y, 0));
-
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-        if (groundPlane.Raycast(ray, out float enter))
-        {
-            Vector3 hitPoint = ray.GetPoint(enter);
-
-            hitPoint.y = transform.position.y;
-
-            transform.LookAt(hitPoint);
-        }
+        transform.LookAt(MousePositionGetter.GetMousePositionInWorld(transform.position));
     }
 
     void Gravity()
