@@ -25,13 +25,13 @@ public class PlayerHitController : MonoBehaviour, IDamageable
 
     private void InputParryAndGuard()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E))
         {
             parryController.StackParry();
             isGuarding = true;
         }
 
-        if (Input.GetKeyUp(KeyCode.Q))
+        if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
         {
             isGuarding = false;
         }
