@@ -2,9 +2,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private Camera mainCamera;
     [SerializeField] private CharacterController controller;
-    [SerializeField] private float speed;
+    [SerializeField] private float speed = 5f;
 
     private float realSpeed = 0f;
 
