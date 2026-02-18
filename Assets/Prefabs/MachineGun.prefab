@@ -82,7 +82,8 @@ MonoBehaviour:
   useDelay: 0.1
   <MaxAmmo>k__BackingField: 30
   <Ammo>k__BackingField: 30
-  bulletPrefab: {fileID: 776963241871654587, guid: c0547dc64b7a9e14690ebe4a8184e1af, type: 3}
+  <bulletSpeed>k__BackingField: 40
+  bulletPrefab: {fileID: 776963241871654587, guid: 7d68e60e05f60c94b853445a108c4daa, type: 3}
   firePoint: {fileID: 5617243587726718611}
 --- !u!1 &3773798682564873002
 GameObject:

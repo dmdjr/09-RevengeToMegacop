@@ -2,7 +2,7 @@ using UnityEngine;
 
 public abstract class Bullet : MonoBehaviour
 {
-    [SerializeField] protected float speed = 5f;
+    public float Speed { get; set; }
     [SerializeField] protected float damage;
 
     private float destroyTime;
@@ -38,7 +38,7 @@ public abstract class Bullet : MonoBehaviour
 
     void Update()
     {
-        transform.Translate(Vector3.forward * (speed * Time.deltaTime));
+        transform.Translate(Vector3.forward * (Speed * Time.deltaTime));
         DestoryIfNeed();
     }
 

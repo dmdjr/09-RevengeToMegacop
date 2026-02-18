@@ -6,6 +6,8 @@ public abstract class GunWeapon : Weapon
 
     [field: SerializeField] public int Ammo { get; private set; }
 
+    [field: SerializeField] public float BulletSpeed { get; private set; }
+
     [SerializeField] protected GameObject bulletPrefab;
 
     [SerializeField] protected Transform firePoint;
@@ -20,7 +22,7 @@ public abstract class GunWeapon : Weapon
     {
         if (CanFire()) Fire();
     }
-    
+
     protected bool CanFire()
     {
         return 0 < Ammo;
@@ -28,6 +30,7 @@ public abstract class GunWeapon : Weapon
 
     private void Fire()
     {
-        Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        Bullet bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation).GetComponent<Bullet>();
+        if(bullet != null) bullet.Speed = BulletSpeed;
     }
 }
