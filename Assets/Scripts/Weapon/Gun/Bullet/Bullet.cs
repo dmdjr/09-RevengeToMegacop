@@ -53,6 +53,7 @@ public abstract class Bullet : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (other == null) return;
         IDamageable damageable = other.GetComponent<IDamageable>();
         damageable?.Hit(this);
     }

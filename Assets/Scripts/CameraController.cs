@@ -16,6 +16,10 @@ public class CameraController : MonoBehaviour
     private void Awake()
     {
         mainCamera = Camera.main;
+        if (mainCamera == null)
+        {
+            Debug.LogWarning("CameraController: MainCamera not found in scene.");
+        }
 
         if (target != null)
         {
@@ -25,7 +29,7 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (target is null) return;
+        if (target == null || mainCamera == null) return;
 
         Vector3 viewportPosition = mainCamera.ScreenToViewportPoint(Input.mousePosition);
 

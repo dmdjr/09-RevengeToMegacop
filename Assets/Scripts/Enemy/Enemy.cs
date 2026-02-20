@@ -11,6 +11,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Hit(Bullet bullet)
     {
+        if (bullet == null) return;
+
         hp -= bullet.Damage;
 
         if (hp <= 0)
@@ -27,11 +29,11 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void LookTarget()
     {
-        if (target is null) return;
+        if (target == null) return;
 
-        if (weapon is GunWeapon)
+        if (weapon is GunWeapon gun)
         {
-            AimToTarget(weapon as GunWeapon);
+            AimToTarget(gun);
         }
         else
         {
@@ -59,15 +61,13 @@ public class Enemy : MonoBehaviour, IDamageable
     private Vector3 CalculateLeadPosition(GunWeapon gun, Vector3 targetVelocity)
     {
         float distance = Vector3.Distance(gun.transform.position, target.position);
-
         float timeToTarget = distance / gun.BulletSpeed;
-
         return target.position + (targetVelocity * timeToTarget);
     }
 
     private void UseWeapon()
     {
-        if (weapon is null) return;
+        if (weapon == null) return;
 
         if (weapon is GunWeapon) UseGunWeapon(weapon as GunWeapon);
         else weapon.TryUse();

@@ -69,11 +69,13 @@ public class PlayerStateController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (damage <= 0) return;
         Hp -= damage;
     }
 
     public void IncreaseExecutionGauge()
     {
+        if (ExecutionGaugeIncreaseStep <= 0) return;
         ExecutionGauge += ExecutionGaugeIncreaseStep;
         if (MaxExecutionGauge < ExecutionGauge)
         {
@@ -96,7 +98,7 @@ public class PlayerStateController : MonoBehaviour
         currentStaminaRecoveryTime -= Time.deltaTime;
         if (currentStaminaRecoveryTime <= 0)
         {
-            Stamina += staminaRecoveryStep;
+            if (staminaRecoveryStep > 0) Stamina += staminaRecoveryStep;
             if (MaxStamina < Stamina)
             {
                 Stamina = MaxStamina;

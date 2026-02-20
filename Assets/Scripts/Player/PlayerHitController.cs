@@ -44,6 +44,7 @@ public class PlayerHitController : MonoBehaviour, IDamageable
 
     public void Hit(Bullet bullet)
     {
+        if (bullet == null) return;
         if (CanParry(bullet))
         {
             Parry(bullet);

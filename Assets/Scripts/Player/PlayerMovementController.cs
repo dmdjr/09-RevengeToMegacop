@@ -20,6 +20,12 @@ public class PlayerMovementController : MonoBehaviour
 
     public void Teleport(Vector3 targetPosition)
     {
+        if (controller == null) return;
+        if (float.IsNaN(targetPosition.x) || float.IsNaN(targetPosition.y) || float.IsNaN(targetPosition.z))
+        {
+            Debug.LogWarning("PlayerMovementController: Teleport targetPosition is invalid.");
+            return;
+        }
         controller.enabled = false;
         transform.position = targetPosition;
         controller.enabled = true;

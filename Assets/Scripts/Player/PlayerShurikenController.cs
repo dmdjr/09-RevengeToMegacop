@@ -54,6 +54,11 @@ public class PlayerShurikenController : MonoBehaviour
 
     private void ThrowShuriken()
     {
+        if (shurikenPrefab == null)
+        {
+            Debug.LogWarning("PlayerShurikenController: shurikenPrefab is not assigned.");
+            return;
+        }
         shuriken = Instantiate(shurikenPrefab);
         shuriken.transform.position = transform.position;
         shuriken.transform.forward = transform.forward;

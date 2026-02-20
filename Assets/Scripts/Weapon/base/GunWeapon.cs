@@ -20,7 +20,7 @@ public abstract class GunWeapon : Weapon
 
     public bool CanFire()
     {
-        return 0 < Ammo;
+        return Ammo > 0;
     }
 
     public void Reload()
@@ -41,6 +41,10 @@ public abstract class GunWeapon : Weapon
     {
         base.Awake();
         if (MaxAmmo < Ammo) Ammo = MaxAmmo;
+        if (bulletPrefab == null || firePoint == null)
+        {
+            Debug.LogWarning("GunWeapon: bulletPrefab or firePoint is not assigned.");
+        }
     }
 
     protected override void Use()
@@ -50,6 +54,11 @@ public abstract class GunWeapon : Weapon
 
     private void Fire()
     {
+        if (bulletPrefab == null || firePoint == null)
+        {
+            Debug.LogWarning("GunWeapon: Cannot fire due to missing bulletPrefab or firePoint.");
+            return;
+        }
         Ammo--;
         Bullet bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation).GetComponent<Bullet>();
         if (bullet != null) bullet.Speed = BulletSpeed;
