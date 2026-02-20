@@ -1068,7 +1068,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapon: {fileID: 1695625567}
   target: {fileID: 1700423670}
-  turnSpeed: 15
+  turnSpeed: 30
   hp: 100
 --- !u!136 &1189371841
 CapsuleCollider:
@@ -1498,7 +1498,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parryThreshold: 0.5
-  parryDuration: 0.5
+  parryDuration: 0.2
 --- !u!114 &1700423674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1658,8 +1658,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 776963241871654587, guid: 7d68e60e05f60c94b853445a108c4daa, type: 3}
     - target: {fileID: -5113841574573846974, guid: a53bdf555a696b84fa109601ee6b3501, type: 3}
+      propertyPath: <Range>k__BackingField
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: -5113841574573846974, guid: a53bdf555a696b84fa109601ee6b3501, type: 3}
       propertyPath: <BulletSpeed>k__BackingField
-      value: 40
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: -5113841574573846974, guid: a53bdf555a696b84fa109601ee6b3501, type: 3}
       propertyPath: <bulletSpeed>k__BackingField

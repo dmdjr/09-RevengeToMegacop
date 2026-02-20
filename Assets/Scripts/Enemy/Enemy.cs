@@ -21,6 +21,11 @@ public class Enemy : MonoBehaviour, IDamageable
         }
     }
 
+    void Start()
+    {
+        if (target != null) previousTargetPosition = target.position;
+    }
+
     void Update()
     {
         LookTarget();
@@ -75,6 +80,17 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void UseGunWeapon(GunWeapon gun)
     {
+        if (!IsTargetInRange(gun)) return;
+
         if (gun.CanFire()) gun.TryUse(); else gun.Reload();
+    }
+
+    
+    public bool IsTargetInRange(GunWeapon gun)
+    {
+        if (target == null) return false;
+
+        float distance = Vector3.Distance(transform.position, target.position);
+        return distance <= gun.Range;
     }
 }
