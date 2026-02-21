@@ -54,7 +54,8 @@ public abstract class Bullet : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         if (other == null) return;
-        IDamageable damageable = other.GetComponent<IDamageable>();
+        GameObject obj = other.attachedRigidbody ? other.attachedRigidbody.gameObject : other.gameObject;
+        IDamageable damageable = obj.GetComponent<IDamageable>();
         damageable?.Hit(this);
     }
 }
