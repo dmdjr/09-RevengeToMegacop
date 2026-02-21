@@ -1,10 +1,13 @@
+using System;
+
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
-    [SerializeField] private Weapon weapon;
-    [SerializeField] private Transform target;
+    [SerializeField] private Transform weaponPoint;
+    private Weapon weapon;
+    private Transform target;
     [SerializeField] private float turnSpeed = 10f;
     [SerializeField] private float hp = 100f;
 
@@ -17,6 +20,8 @@ public class Enemy : MonoBehaviour, IDamageable
     private enum State { Idle, MoveToTarget, Attack }
     private State currentState = State.Idle;
 
+    public event Action<GameObject> OnDeath;
+
     public void Hit(Bullet bullet)
     {
         if (bullet == null) return;
@@ -25,8 +30,22 @@ public class Enemy : MonoBehaviour, IDamageable
 
         if (hp <= 0)
         {
+            OnDeath?.Invoke(gameObject);
             Destroy(gameObject);
         }
+    }
+
+    public void EquipWeapon(Weapon w)
+    {
+        if (w == null) return;
+        weapon = w;
+        weapon.transform.SetParent(weaponPoint, false);
+        weapon.transform.localPosition = Vector3.zero;
+    }
+
+    public void SetTarget(Transform t)
+    {
+        target = t;
     }
 
     void Start()
@@ -135,7 +154,8 @@ public class Enemy : MonoBehaviour, IDamageable
         else
         {
             Vector3 dir = (target.position - transform.position).normalized;
-            transform.position += dir * moveSpeed * Time.deltaTime;
+            dir.y = 0f;
+            transform.position += moveSpeed * Time.deltaTime * dir;
         }
     }
 
