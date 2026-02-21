@@ -28,14 +28,15 @@ public class PlayerExecutionController : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, enemyLayerMask))
         {
-            Execute(hit.collider.attachedRigidbody ? hit.collider.attachedRigidbody.gameObject : hit.collider.gameObject);
+            Execute(hit.collider.attachedRigidbody != null ? hit.collider.attachedRigidbody.gameObject : hit.collider.gameObject);
         }
     }
 
     private void Execute(GameObject enemy)
     {
+        if (enemy == null) return;
         Vector3 enemyPosition = enemy.transform.position;
-        Destroy(enemy);
+        if(enemy.TryGetComponent<Enemy>(out var e)) e.Die();
         playerMovementController.Teleport(enemyPosition);
         playerStateController.Executed();
     }

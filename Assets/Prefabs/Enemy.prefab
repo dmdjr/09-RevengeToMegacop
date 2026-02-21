@@ -264,7 +264,7 @@ GameObject:
   - component: {fileID: 5731725672410418162}
   m_Layer: 7
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -300,7 +300,7 @@ MonoBehaviour:
   weaponPoint: {fileID: 7215858704681929732}
   turnSpeed: 30
   hp: 100
-  moveSpeed: 3
+  moveSpeed: 10
   useNavMesh: 0
 --- !u!54 &5731725672410418162
 Rigidbody:

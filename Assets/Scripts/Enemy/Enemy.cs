@@ -30,9 +30,14 @@ public class Enemy : MonoBehaviour, IDamageable
 
         if (hp <= 0)
         {
-            OnDeath?.Invoke(gameObject);
-            Destroy(gameObject);
+            Die();
         }
+    }
+
+    public void Die()
+    {
+        OnDeath?.Invoke(gameObject);
+        Destroy(gameObject);
     }
 
     public void EquipWeapon(Weapon w)

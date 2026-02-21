@@ -81,7 +81,7 @@ public class PlayerHitController : MonoBehaviour, IDamageable
     private void Parry(Bullet bullet)
     {
         parryController.Parry();
-        bullet.Reflect(true);
+        bullet.Reflect(gameObject, true);
         playerStateController.IncreaseExecutionGauge();
     }
 
@@ -92,7 +92,7 @@ public class PlayerHitController : MonoBehaviour, IDamageable
 
     private void Guard(Bullet bullet)
     {
-        bullet.Reflect(false);
+        bullet.Reflect(gameObject, false);
         playerStateController.DecreaseStamina();
     }
 

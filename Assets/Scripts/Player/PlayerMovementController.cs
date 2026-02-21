@@ -26,6 +26,7 @@ public class PlayerMovementController : MonoBehaviour
             Debug.LogWarning("PlayerMovementController: Teleport targetPosition is invalid.");
             return;
         }
+        targetPosition.y = 1f;
         controller.enabled = false;
         transform.position = targetPosition;
         controller.enabled = true;

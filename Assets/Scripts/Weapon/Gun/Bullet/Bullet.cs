@@ -7,8 +7,19 @@ public abstract class Bullet : MonoBehaviour
 
     private float destroyTime;
 
-    public void Reflect(bool isParry)
+    private bool isReflected = false;
+
+    private GameObject owner;
+
+    public void SetOwner(GameObject owner)
     {
+        this.owner = owner;
+    }
+
+    public void Reflect(GameObject owner, bool isParry)
+    {
+        this.owner = owner;
+        isReflected = true;
         Vector3 targetDirection = isParry ? GetParryDirection() : GetRandomDirection();
 
         transform.forward = new Vector3(targetDirection.x, 0, targetDirection.z);
@@ -55,6 +66,10 @@ public abstract class Bullet : MonoBehaviour
     {
         if (other == null) return;
         GameObject obj = other.attachedRigidbody ? other.attachedRigidbody.gameObject : other.gameObject;
+        if (obj == owner) return;
+
+        if (!isReflected && obj.CompareTag("Enemy")) return;
+
         IDamageable damageable = obj.GetComponent<IDamageable>();
         damageable?.Hit(this);
     }
