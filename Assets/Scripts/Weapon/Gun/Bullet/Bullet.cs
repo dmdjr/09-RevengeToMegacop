@@ -57,10 +57,9 @@ public abstract class Bullet : MonoBehaviour
     {
         if (destroyTime < Time.time)
         {
-            Destroy(gameObject);
+            Remove();
         }
     }
-
 
     void OnTriggerEnter(Collider other)
     {
@@ -72,5 +71,10 @@ public abstract class Bullet : MonoBehaviour
 
         IDamageable damageable = obj.GetComponent<IDamageable>();
         damageable?.Hit(this);
+    }
+
+    public void Remove()
+    {
+        Destroy(gameObject);
     }
 }

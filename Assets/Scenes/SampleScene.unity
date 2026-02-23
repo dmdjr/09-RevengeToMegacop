@@ -834,7 +834,7 @@ GameObject:
   - component: {fileID: 967674846}
   - component: {fileID: 967674849}
   - component: {fileID: 967674848}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -933,9 +933,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1700423670}
     m_Modifications:
+    - target: {fileID: 1430284174629098580, guid: e7857d2a2bda8dd45a44d6bb851e0491, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 2574361922486423382, guid: e7857d2a2bda8dd45a44d6bb851e0491, type: 3}
       propertyPath: m_Name
       value: HandGun
+      objectReference: {fileID: 0}
+    - target: {fileID: 2574361922486423382, guid: e7857d2a2bda8dd45a44d6bb851e0491, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 3773798682564873002, guid: e7857d2a2bda8dd45a44d6bb851e0491, type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7276479287613719015, guid: e7857d2a2bda8dd45a44d6bb851e0491, type: 3}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 7525421723824476987, guid: e7857d2a2bda8dd45a44d6bb851e0491, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1016,9 +1032,9 @@ MonoBehaviour:
   - {fileID: 2574361922486423382, guid: e7857d2a2bda8dd45a44d6bb851e0491, type: 3}
   - {fileID: 2574361922486423382, guid: a53bdf555a696b84fa109601ee6b3501, type: 3}
   target: {fileID: 1700423670}
-  spawnInterval: 10
+  spawnInterval: 3
   spawnArea: 70
-  maxEnemies: 10
+  maxEnemies: 3
 --- !u!4 &1473619429
 Transform:
   m_ObjectHideFlags: 0
@@ -1128,7 +1144,8 @@ GameObject:
   - component: {fileID: 1700423676}
   - component: {fileID: 1700423675}
   - component: {fileID: 1700423677}
-  m_Layer: 0
+  - component: {fileID: 1700423678}
+  m_Layer: 11
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1333,6 +1350,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c97bae1babf155540ad828685d10666e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1700423678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700423665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1101931447c2d424d837e81966adcaee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swordPrefab: {fileID: 1728016559937085458, guid: ada994c45ad38154faffd2823f06a3ab, type: 3}
+  throwCooldown: 3
 --- !u!1 &1956072997
 GameObject:
   m_ObjectHideFlags: 0

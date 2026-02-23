@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovementController))]
 [RequireComponent(typeof(PlayerShurikenController))]
 [RequireComponent(typeof(PlayerStateController))]
+[RequireComponent(typeof(PlayerSwordController))]
 public class PlayerController : MonoBehaviour
 {
     private PlayerExecutionController playerExecutionController;
@@ -12,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private PlayerMovementController playerMovementController;
     private PlayerShurikenController playerShurikenController;
     private PlayerStateController playerStateController;
+    private PlayerSwordController playerSwordController;
 
     void Awake()
     {
@@ -20,6 +22,7 @@ public class PlayerController : MonoBehaviour
         playerMovementController = GetComponent<PlayerMovementController>();
         playerShurikenController = GetComponent<PlayerShurikenController>();
         playerStateController = GetComponent<PlayerStateController>();
+        playerSwordController = GetComponent<PlayerSwordController>();
     }
 
     void Update()
@@ -33,5 +36,6 @@ public class PlayerController : MonoBehaviour
         playerHitController.HandleHit();
         playerMovementController.HandleMovement();
         playerShurikenController.HandleShuriken();
+        playerSwordController.HandleSword();
     }
 }
