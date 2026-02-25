@@ -112,6 +112,16 @@ public class PlayerStateController : MonoBehaviour
         Stamina -= staminaDecreaseStep;
     }
 
+    public void OnSuccessfulParry()
+    {
+        IncreaseExecutionGauge();
+    }
+
+    public void OnSuccessfulGuard()
+    {
+        DecreaseStamina();
+    }
+
     [SerializeField] private float parryStaminaCostRatio = 0.2f;
 
     public bool CanParry()
