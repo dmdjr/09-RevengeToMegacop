@@ -1,6 +1,7 @@
 using System;
 
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerStateController))]
 public class PlayerHitController : MonoBehaviour, IDamageable
@@ -18,9 +19,16 @@ public class PlayerHitController : MonoBehaviour, IDamageable
 
     private bool isGuarding = false;
 
+    private InputAction parryAction;
+
     void Awake()
     {
         playerStateController = GetComponent<PlayerStateController>();
+    }
+
+    public void Initialize(InputAction parryAction)
+    {
+        this.parryAction = parryAction;
     }
 
     public void UpdateParries()
@@ -30,13 +38,13 @@ public class PlayerHitController : MonoBehaviour, IDamageable
 
     public void HandleHit()
     {
-        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E))
+        if (parryAction.WasPressedThisFrame())
         {
             parryController.StackParry();
             isGuarding = true;
         }
 
-        if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
+        if (parryAction.WasReleasedThisFrame())
         {
             isGuarding = false;
         }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerExecutionController))]
 [RequireComponent(typeof(PlayerHitController))]
@@ -8,6 +9,8 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerSwordController))]
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private InputActionAsset inputActions;
+
     private PlayerExecutionController playerExecutionController;
     private PlayerHitController playerHitController;
     private PlayerMovementController playerMovementController;
@@ -23,6 +26,29 @@ public class PlayerController : MonoBehaviour
         playerShurikenController = GetComponent<PlayerShurikenController>();
         playerStateController = GetComponent<PlayerStateController>();
         playerSwordController = GetComponent<PlayerSwordController>();
+
+        var playerMap = inputActions.FindActionMap("Player", throwIfNotFound: true);
+        playerMovementController.Initialize(
+            playerMap.FindAction("Move", throwIfNotFound: true),
+            playerMap.FindAction("Sprint", throwIfNotFound: true));
+        playerHitController.Initialize(
+            playerMap.FindAction("Parry", throwIfNotFound: true));
+        playerShurikenController.Initialize(
+            playerMap.FindAction("Shuriken", throwIfNotFound: true));
+        playerSwordController.Initialize(
+            playerMap.FindAction("ThrowSword", throwIfNotFound: true));
+        playerExecutionController.Initialize(
+            playerMap.FindAction("Attack", throwIfNotFound: true));
+    }
+
+    void OnEnable()
+    {
+        inputActions.Enable();
+    }
+
+    void OnDisable()
+    {
+        inputActions.Disable();
     }
 
     void Update()

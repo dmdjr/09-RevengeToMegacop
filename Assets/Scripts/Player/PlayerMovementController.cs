@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMovementController : MonoBehaviour
@@ -9,6 +10,9 @@ public class PlayerMovementController : MonoBehaviour
 
     private float realSpeed = 0f;
 
+    private InputAction moveAction;
+    private InputAction sprintAction;
+
     private float gravity = -9.81f;
     private Vector3 velocity;
 
@@ -16,6 +20,12 @@ public class PlayerMovementController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         realSpeed = speed;
+    }
+
+    public void Initialize(InputAction moveAction, InputAction sprintAction)
+    {
+        this.moveAction = moveAction;
+        this.sprintAction = sprintAction;
     }
 
     public void Teleport(Vector3 targetPosition)
@@ -52,21 +62,13 @@ public class PlayerMovementController : MonoBehaviour
 
     private void HandleDash()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            realSpeed = speed * 2;
-        }
-        else
-        {
-            realSpeed = speed;
-        }
+        realSpeed = sprintAction.IsPressed() ? speed * 2 : speed;
     }
 
     private void HandleMove()
     {
-        var h = Input.GetAxisRaw("Horizontal");
-        var v = Input.GetAxisRaw("Vertical");
-        Vector3 dir = (Vector3.right * h + Vector3.forward * v).normalized;
+        Vector2 input = moveAction.ReadValue<Vector2>();
+        Vector3 dir = (Vector3.right * input.x + Vector3.forward * input.y).normalized;
         controller.Move(dir * (realSpeed * Time.deltaTime));
     }
 

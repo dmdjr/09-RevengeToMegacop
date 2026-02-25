@@ -1,5 +1,6 @@
 
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public static class MousePositionGetter
 {
@@ -11,7 +12,8 @@ public static class MousePositionGetter
 
         Plane groundPlane = new Plane(Vector3.up, new Vector3(0, target.y, 0));
 
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Vector2 mousePos = Mouse.current != null ? Mouse.current.position.ReadValue() : Vector2.zero;
+        Ray ray = mainCamera.ScreenPointToRay(mousePos);
 
         if (groundPlane.Raycast(ray, out float enter))
         {

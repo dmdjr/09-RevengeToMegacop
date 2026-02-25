@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerMovementController))]
 public class PlayerShurikenController : MonoBehaviour
@@ -12,10 +13,16 @@ public class PlayerShurikenController : MonoBehaviour
 
     private GameObject shuriken = null;
 
+    private InputAction shurikenAction;
 
     void Awake()
     {
         controller = GetComponent<PlayerMovementController>();
+    }
+
+    public void Initialize(InputAction shurikenAction)
+    {
+        this.shurikenAction = shurikenAction;
     }
 
     public void UpdateCooldown()
@@ -25,7 +32,7 @@ public class PlayerShurikenController : MonoBehaviour
 
     public void HandleShuriken()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (shurikenAction.WasPressedThisFrame())
         {
             if (InCoolTime()) return;
 

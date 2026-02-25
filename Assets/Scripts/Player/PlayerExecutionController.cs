@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerMovementController))]
 [RequireComponent(typeof(PlayerStateController))]
@@ -9,15 +10,24 @@ public class PlayerExecutionController : MonoBehaviour
 
     [SerializeField] private LayerMask enemyLayerMask;
 
+    private InputAction attackAction;
+    private Camera mainCamera;
+
     void Awake()
     {
         playerMovementController = GetComponent<PlayerMovementController>();
         playerStateController = GetComponent<PlayerStateController>();
+        mainCamera = Camera.main;
+    }
+
+    public void Initialize(InputAction attackAction)
+    {
+        this.attackAction = attackAction;
     }
 
     public void HandleExecution()
     {
-        if (Input.GetMouseButtonDown(0) && playerStateController.CanExecute())
+        if (attackAction.WasPressedThisFrame() && playerStateController.CanExecute())
         {
             TryExecute();
         }
@@ -25,7 +35,7 @@ public class PlayerExecutionController : MonoBehaviour
 
     private void TryExecute()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, enemyLayerMask))
         {
             Execute(hit.collider.attachedRigidbody != null ? hit.collider.attachedRigidbody.gameObject : hit.collider.gameObject);

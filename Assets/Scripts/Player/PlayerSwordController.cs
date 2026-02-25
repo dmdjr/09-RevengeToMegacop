@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerSwordController : MonoBehaviour
 {
@@ -7,9 +8,16 @@ public class PlayerSwordController : MonoBehaviour
 
     private float lastThrowTime;
 
+    private InputAction throwSwordAction;
+
+    public void Initialize(InputAction throwSwordAction)
+    {
+        this.throwSwordAction = throwSwordAction;
+    }
+
     public void HandleSword()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (throwSwordAction.WasPressedThisFrame())
         {
             if (InCooldown()) return;
 

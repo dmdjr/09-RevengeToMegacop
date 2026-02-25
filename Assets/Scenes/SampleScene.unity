@@ -1048,12 +1048,12 @@ GameObject:
   - component: {fileID: 1700423669}
   - component: {fileID: 1700423668}
   - component: {fileID: 1700423666}
+  - component: {fileID: 1700423677}
   - component: {fileID: 1700423671}
   - component: {fileID: 1700423673}
   - component: {fileID: 1700423674}
   - component: {fileID: 1700423676}
   - component: {fileID: 1700423675}
-  - component: {fileID: 1700423677}
   - component: {fileID: 1700423678}
   m_Layer: 11
   m_Name: Player
@@ -1234,6 +1234,7 @@ MonoBehaviour:
   staminaRecoveryStep: 20
   staminaDecreaseStep: 10
   staminaRecoveryTimeStep: 2
+  parryStaminaCostRatio: 0.2
 --- !u!114 &1700423677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1246,6 +1247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c97bae1babf155540ad828685d10666e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &1700423678
 MonoBehaviour:
   m_ObjectHideFlags: 0
