@@ -75,6 +75,11 @@ public abstract class Bullet : MonoBehaviour
 
     public void Remove()
     {
+        if (prefab == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
         BulletPool.Instance.Release(prefab, this);
     }
 }
