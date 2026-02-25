@@ -13,7 +13,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int maxEnemies = 10;
 
     private float timer = 0f;
-    private List<GameObject> spawnedEnemies = new List<GameObject>();
+    private HashSet<GameObject> spawnedEnemies = new HashSet<GameObject>();
 
     void Update()
     {
