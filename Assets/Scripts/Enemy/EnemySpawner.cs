@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -79,6 +80,12 @@ public class EnemySpawner : MonoBehaviour
             pos = target.position + dir * 10.1f;
             pos.y = 0f;
         }
+
+        if (NavMesh.SamplePosition(pos, out NavMeshHit hit, 10f, NavMesh.AllAreas))
+        {
+            pos = hit.position;
+        }
+
         return pos;
     }
 
