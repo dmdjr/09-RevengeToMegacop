@@ -22,6 +22,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public event Action<GameObject> OnDeath;
 
+    private bool isDead = false;
+
     public void Hit(Bullet bullet)
     {
         if (bullet == null) return;
@@ -36,6 +38,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Die()
     {
+        if (isDead) return;
+        isDead = true;
         OnDeath?.Invoke(gameObject);
         Destroy(gameObject);
     }
