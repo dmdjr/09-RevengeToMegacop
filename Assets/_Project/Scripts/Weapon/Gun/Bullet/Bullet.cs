@@ -72,8 +72,6 @@ public abstract class Bullet : MonoBehaviour
         IDamageable damageable = obj.GetComponent<IDamageable>();
         if (damageable != null)
             damageable.Hit(this);
-
-        Remove();
     }
 
     public void Remove()
