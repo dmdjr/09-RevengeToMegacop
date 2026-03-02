@@ -12,6 +12,7 @@ public class PlayerShurikenController : MonoBehaviour
     private float currentCooldown;
 
     private GameObject shuriken = null;
+    private bool isShurikenThrown = false;
 
     private InputAction shurikenAction;
 
@@ -28,6 +29,12 @@ public class PlayerShurikenController : MonoBehaviour
     public void UpdateCooldown()
     {
         if (0 < currentCooldown) currentCooldown -= Time.deltaTime;
+
+        if (shuriken == null && isShurikenThrown)
+        {
+            isShurikenThrown = false;
+            currentCooldown = coolTime;
+        }
     }
 
     public void HandleShuriken()
@@ -56,6 +63,7 @@ public class PlayerShurikenController : MonoBehaviour
         controller.Teleport(shuriken.transform.position);
         Destroy(shuriken);
         shuriken = null;
+        isShurikenThrown = false;
         currentCooldown = coolTime;
     }
 
@@ -69,5 +77,6 @@ public class PlayerShurikenController : MonoBehaviour
         shuriken = Instantiate(shurikenPrefab);
         shuriken.transform.position = transform.position;
         shuriken.transform.forward = transform.forward;
+        isShurikenThrown = true;
     }
 }
