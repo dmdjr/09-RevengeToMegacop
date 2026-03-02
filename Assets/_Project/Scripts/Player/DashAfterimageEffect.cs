@@ -178,6 +178,7 @@ public class DashAfterimageEffect : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (pool == null) return;
         foreach (PoolItem item in pool)
         {
             Destroy(item.material);
