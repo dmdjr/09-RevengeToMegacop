@@ -15,7 +15,7 @@ public class PlayerStateController : MonoBehaviour
             {
                 hp = 0;
             }
-            NotifyUI();
+            OnHpChanged?.Invoke(Hp / MaxHp);
         }
     }
     [SerializeField] private float maxHp = 100f;
@@ -31,7 +31,7 @@ public class PlayerStateController : MonoBehaviour
             {
                 executionGauge = 0;
             }
-            NotifyUI();
+            OnExecutionGaugeChanged?.Invoke(ExecutionGauge / MaxExecutionGauge);
         }
     }
     [SerializeField] private float maxExecutionGauge = 100f;
@@ -50,7 +50,7 @@ public class PlayerStateController : MonoBehaviour
             {
                 stamina = 0;
             }
-            NotifyUI();
+            OnStaminaChanged?.Invoke(Stamina / MaxStamina);
         }
     }
     [SerializeField] private float maxStamina = 100f;
@@ -66,6 +66,12 @@ public class PlayerStateController : MonoBehaviour
     public event Action<float> OnHpChanged;
     public event Action<float> OnExecutionGaugeChanged;
     public event Action<float> OnStaminaChanged;
+
+    void Awake()
+    {
+        if (hp <= 0) hp = maxHp;
+        if (stamina <= 0) stamina = maxStamina;
+    }
 
     public void TakeDamage(float damage)
     {

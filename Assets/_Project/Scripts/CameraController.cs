@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
@@ -31,7 +32,8 @@ public class CameraController : MonoBehaviour
     {
         if (target == null || mainCamera == null) return;
 
-        Vector3 viewportPosition = mainCamera.ScreenToViewportPoint(Input.mousePosition);
+        if (Mouse.current == null) return;
+        Vector3 viewportPosition = mainCamera.ScreenToViewportPoint(Mouse.current.position.ReadValue());
 
         float offsetX = (viewportPosition.x - 0.5f) * mouseInfluence;
         float offsetZ = (viewportPosition.y - 0.5f) * mouseInfluence;
