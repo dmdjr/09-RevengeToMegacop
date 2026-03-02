@@ -150,6 +150,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public bool IsTargetInRange()
     {
+        if (weapon == null) return false;
         float distance = Vector3.Distance(transform.position, target.position);
         return distance <= weapon.Range;
     }
