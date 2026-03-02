@@ -9,6 +9,7 @@ public class PlayerExecutionController : MonoBehaviour
     private PlayerStateController playerStateController;
 
     [SerializeField] private LayerMask enemyLayerMask;
+    [SerializeField] private float executionRange = 50f;
 
     private InputAction attackAction;
     private Camera mainCamera;
@@ -36,7 +37,7 @@ public class PlayerExecutionController : MonoBehaviour
     private void TryExecute()
     {
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, enemyLayerMask))
+        if (Physics.Raycast(ray, out RaycastHit hit, executionRange, enemyLayerMask))
         {
             Execute(hit.collider.attachedRigidbody != null ? hit.collider.attachedRigidbody.gameObject : hit.collider.gameObject);
         }

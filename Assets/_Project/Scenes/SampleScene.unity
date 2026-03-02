@@ -685,9 +685,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e957b58d3ab5dcb4a9b6a72b7f2e3021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: {fileID: 0}
-  executionGauge: {fileID: 0}
-  stamina: {fileID: 0}
+  hp: {fileID: 649008876}
+  executionGauge: {fileID: 1681223241}
+  stamina: {fileID: 761408521}
   playerStateController: {fileID: 1700423676}
 --- !u!114 &780219873
 MonoBehaviour:
@@ -1215,6 +1215,7 @@ MonoBehaviour:
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 128
+  executionRange: 50
 --- !u!114 &1700423676
 MonoBehaviour:
   m_ObjectHideFlags: 0
