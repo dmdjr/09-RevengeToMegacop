@@ -10,11 +10,7 @@ public class PlayerStateController : MonoBehaviour
         get => hp;
         private set
         {
-            hp = value;
-            if (hp < 0)
-            {
-                hp = 0;
-            }
+            hp = Mathf.Clamp(value, 0, maxHp);
             OnHpChanged?.Invoke(Hp / MaxHp);
         }
     }
@@ -26,11 +22,7 @@ public class PlayerStateController : MonoBehaviour
         get => executionGauge;
         private set
         {
-            executionGauge = value;
-            if (executionGauge < 0)
-            {
-                executionGauge = 0;
-            }
+            executionGauge = Mathf.Clamp(value, 0, maxExecutionGauge);
             OnExecutionGaugeChanged?.Invoke(ExecutionGauge / MaxExecutionGauge);
         }
     }
@@ -45,11 +37,7 @@ public class PlayerStateController : MonoBehaviour
         get => stamina;
         private set
         {
-            stamina = value;
-            if (stamina < 0)
-            {
-                stamina = 0;
-            }
+            stamina = Mathf.Clamp(value, 0, maxStamina);
             OnStaminaChanged?.Invoke(Stamina / MaxStamina);
         }
     }
@@ -83,10 +71,6 @@ public class PlayerStateController : MonoBehaviour
     {
         if (ExecutionGaugeIncreaseStep <= 0) return;
         ExecutionGauge += ExecutionGaugeIncreaseStep;
-        if (MaxExecutionGauge < ExecutionGauge)
-        {
-            ExecutionGauge = MaxExecutionGauge;
-        }
     }
 
     public bool CanExecute()
@@ -105,10 +89,6 @@ public class PlayerStateController : MonoBehaviour
         if (currentStaminaRecoveryTime <= 0)
         {
             if (staminaRecoveryStep > 0) Stamina += staminaRecoveryStep;
-            if (MaxStamina < Stamina)
-            {
-                Stamina = MaxStamina;
-            }
             currentStaminaRecoveryTime = staminaRecoveryTimeStep;
         }
     }

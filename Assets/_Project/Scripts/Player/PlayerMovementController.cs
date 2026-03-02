@@ -72,7 +72,7 @@ public class PlayerMovementController : MonoBehaviour
     private void HandleMove()
     {
         Vector2 input = moveAction.ReadValue<Vector2>();
-        isMoving = input.magnitude > 0f;
+        isMoving = input.sqrMagnitude > 0f;
         Vector3 dir = (Vector3.right * input.x + Vector3.forward * input.y).normalized;
         controller.Move(dir * (realSpeed * Time.deltaTime));
     }
