@@ -64,6 +64,12 @@ public class DashAfterimageEffect : MonoBehaviour
 
         // Shader.Find는 여기서 딱 한 번만 호출한다.
         Shader unlitShader = Shader.Find("Universal Render Pipeline/Unlit");
+        if (unlitShader == null)
+        {
+            Debug.LogError("DashAfterimageEffect: Could not find URP Unlit shader. Afterimage effect disabled.");
+            enabled = false;
+            return;
+        }
 
         pool = new PoolItem[poolSize];
         freeIndices = new Queue<int>(poolSize);
