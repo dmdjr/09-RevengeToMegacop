@@ -7,6 +7,7 @@ public abstract class Bullet : MonoBehaviour
 
     private float destroyTime;
     private bool isReflected = false;
+    private bool isReleased = false;
     private GameObject owner;
     private GameObject prefab;
 
@@ -20,6 +21,7 @@ public abstract class Bullet : MonoBehaviour
     {
         Speed = 0f;
         isReflected = false;
+        isReleased = false;
         owner = null;
         SetDestroyTime();
     }
@@ -76,6 +78,9 @@ public abstract class Bullet : MonoBehaviour
 
     public void Remove()
     {
+        if (isReleased) return;
+        isReleased = true;
+
         if (prefab == null)
         {
             Destroy(gameObject);
