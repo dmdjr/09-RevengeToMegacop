@@ -1,3 +1,7 @@
+using System.Collections;
+
+using UnityEngine;
+
 /// <summary>
 /// 보스 적의 베이스 클래스. Enemy를 상속하며 페이즈/패턴 시스템을 제공한다.
 ///
@@ -20,10 +24,6 @@
 ///   → HP 감소 시 페이즈 전환 → OnPhaseChanged() + GetPatternsForPhase()
 ///   → HP 0 → OnBossDeath() (사망 연출) → Die()
 /// </code>
-
-using System.Collections;
-
-using UnityEngine;
 /// </summary>
 public abstract class BossEnemy : Enemy
 {
