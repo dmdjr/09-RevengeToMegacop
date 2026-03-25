@@ -37,6 +37,7 @@ public class CircularBulletPattern : BossPattern
                 Vector3 position = boss.transform.position;
 
                 Bullet bullet = BulletPool.Instance.Get(bulletPrefab, position, rotation);
+                if (bullet == null) continue;
                 bullet.Speed = bulletSpeed;
                 bullet.SetOwner(boss.gameObject);
             }

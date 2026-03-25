@@ -28,6 +28,11 @@ public class BulletPool : MonoBehaviour
     public Bullet Get(GameObject prefab, Vector3 position, Quaternion rotation)
     {
         Bullet bullet = GetOrCreatePool(prefab).Get();
+        if (bullet == null)
+        {
+            Debug.LogError($"BulletPool: prefab '{prefab.name}'에 Bullet 컴포넌트가 없습니다.");
+            return null;
+        }
         bullet.transform.SetPositionAndRotation(position, rotation);
         bullet.Prepare();
         bullet.gameObject.SetActive(true);
