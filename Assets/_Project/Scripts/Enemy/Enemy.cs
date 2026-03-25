@@ -123,7 +123,7 @@ public class Enemy : MonoBehaviour, IDamageable
         }
         else
         {
-            transform.LookAt(target);
+            transform.LookAt(new Vector3(target.position.x, transform.position.y, target.position.z));
         }
     }
 
