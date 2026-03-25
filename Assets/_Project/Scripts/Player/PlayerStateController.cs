@@ -11,7 +11,7 @@ public class PlayerStateController : MonoBehaviour
         private set
         {
             hp = Mathf.Clamp(value, 0, maxHp);
-            OnHpChanged?.Invoke(Hp / MaxHp);
+            OnHpChanged?.Invoke(MaxHp > 0f ? Hp / MaxHp : 0f);
         }
     }
     [SerializeField] private float maxHp = 100f;
@@ -23,7 +23,7 @@ public class PlayerStateController : MonoBehaviour
         private set
         {
             executionGauge = Mathf.Clamp(value, 0, maxExecutionGauge);
-            OnExecutionGaugeChanged?.Invoke(ExecutionGauge / MaxExecutionGauge);
+            OnExecutionGaugeChanged?.Invoke(MaxExecutionGauge > 0f ? ExecutionGauge / MaxExecutionGauge : 0f);
         }
     }
     [SerializeField] private float maxExecutionGauge = 100f;
@@ -38,7 +38,7 @@ public class PlayerStateController : MonoBehaviour
         private set
         {
             stamina = Mathf.Clamp(value, 0, maxStamina);
-            OnStaminaChanged?.Invoke(Stamina / MaxStamina);
+            OnStaminaChanged?.Invoke(MaxStamina > 0f ? Stamina / MaxStamina : 0f);
         }
     }
     [SerializeField] private float maxStamina = 100f;
@@ -123,9 +123,9 @@ public class PlayerStateController : MonoBehaviour
 
     private void NotifyUI()
     {
-        OnHpChanged?.Invoke(Hp / MaxHp);
-        OnExecutionGaugeChanged?.Invoke(ExecutionGauge / MaxExecutionGauge);
-        OnStaminaChanged?.Invoke(Stamina / MaxStamina);
+        OnHpChanged?.Invoke(MaxHp > 0f ? Hp / MaxHp : 0f);
+        OnExecutionGaugeChanged?.Invoke(MaxExecutionGauge > 0f ? ExecutionGauge / MaxExecutionGauge : 0f);
+        OnStaminaChanged?.Invoke(MaxStamina > 0f ? Stamina / MaxStamina : 0f);
     }
 
     void OnValidate()
