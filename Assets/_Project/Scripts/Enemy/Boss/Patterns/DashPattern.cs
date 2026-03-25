@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 
 using UnityEngine;
+using UnityEngine.AI;
 
 public class DashPattern : BossPattern
 {
@@ -25,10 +26,17 @@ public class DashPattern : BossPattern
         Vector3 direction = (target.position - boss.transform.position).normalized;
         direction.y = 0f;
 
+        NavMeshAgent agent = boss.GetComponent<NavMeshAgent>();
+        if (agent != null) agent.ResetPath();
+
         float elapsed = 0f;
         while (elapsed < dashDuration)
         {
-            boss.transform.position += direction * (dashSpeed * Time.deltaTime);
+            Vector3 delta = direction * (dashSpeed * Time.deltaTime);
+            if (agent != null)
+                agent.Move(delta);
+            else
+                boss.transform.position += delta;
             elapsed += Time.deltaTime;
             yield return null;
         }
