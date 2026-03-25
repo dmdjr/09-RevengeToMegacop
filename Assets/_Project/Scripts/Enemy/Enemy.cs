@@ -115,7 +115,7 @@ public class Enemy : MonoBehaviour, IDamageable
         FSM();
     }
 
-    private void LookTarget()
+    protected void LookTarget()
     {
         if (weapon is GunWeapon gun)
         {
