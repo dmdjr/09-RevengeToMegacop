@@ -148,8 +148,7 @@ public class DashAfterimageEffect : MonoBehaviour
             int idx = freeIndices.Dequeue();
             PoolItem item = pool[idx];
 
-            item.go.transform.position = entry.transform.position;
-            item.go.transform.rotation = entry.transform.rotation;
+            item.go.transform.SetPositionAndRotation(entry.transform.position, entry.transform.rotation);
             item.go.transform.localScale = entry.transform.lossyScale;
             item.filter.sharedMesh = entry.filter.sharedMesh;
             item.material.SetColor(BaseColorId, afterimageColor);
