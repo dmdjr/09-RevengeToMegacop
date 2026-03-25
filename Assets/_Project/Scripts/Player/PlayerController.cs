@@ -18,8 +18,16 @@ public class PlayerController : MonoBehaviour
     private PlayerStateController playerStateController;
     private PlayerSwordController playerSwordController;
 
+    private bool isInitialized = false;
+
     void Awake()
     {
+        if (inputActions == null)
+        {
+            Debug.LogError("PlayerController: inputActions is not assigned.");
+            return;
+        }
+
         playerExecutionController = GetComponent<PlayerExecutionController>();
         playerHitController = GetComponent<PlayerHitController>();
         playerMovementController = GetComponent<PlayerMovementController>();
@@ -39,6 +47,8 @@ public class PlayerController : MonoBehaviour
             playerMap.FindAction("ThrowSword", throwIfNotFound: true));
         playerExecutionController.Initialize(
             playerMap.FindAction("Attack", throwIfNotFound: true));
+
+        isInitialized = true;
     }
 
     void OnEnable()
@@ -53,6 +63,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (!isInitialized) return;
+
         playerHitController.UpdateParries();
         playerMovementController.UpdateGravity();
         playerShurikenController.UpdateCooldown();
