@@ -60,11 +60,13 @@ public class PlayerShurikenController : MonoBehaviour
 
     private void Teleport()
     {
-        controller.Teleport(shuriken.transform.position);
+        if (shuriken == null) return;
+        Vector3 teleportPos = shuriken.transform.position;
         Destroy(shuriken);
         shuriken = null;
         isShurikenThrown = false;
         currentCooldown = coolTime;
+        controller.Teleport(teleportPos);
     }
 
     private void ThrowShuriken()
