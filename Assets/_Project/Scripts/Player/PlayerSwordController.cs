@@ -28,7 +28,12 @@ public class PlayerSwordController : MonoBehaviour
 
             lastThrowTime = Time.time;
 
-            if (!Instantiate(swordPrefab, transform.position, Quaternion.identity).TryGetComponent<SwordController>(out var sword)) return;
+            GameObject swordObj = Instantiate(swordPrefab, transform.position, Quaternion.identity);
+            if (!swordObj.TryGetComponent<SwordController>(out var sword))
+            {
+                Destroy(swordObj);
+                return;
+            }
 
             Vector3 mousePos = MousePositionGetter.GetMousePositionInWorld(sword.transform.position);
             sword.Throw(mousePos);

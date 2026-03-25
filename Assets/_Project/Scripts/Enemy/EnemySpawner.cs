@@ -51,10 +51,11 @@ public class EnemySpawner : MonoBehaviour
                 Weapon weaponComponent = weaponInstance.GetComponent<Weapon>();
                 if (weaponComponent != null)
                 {
-                    if (enemy != null)
-                    {
-                        enemy.EquipWeapon(weaponComponent);
-                    }
+                    enemy.EquipWeapon(weaponComponent);
+                }
+                else
+                {
+                    Destroy(weaponInstance);
                 }
             }
         }

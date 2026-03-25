@@ -75,6 +75,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public void EquipWeapon(Weapon w)
     {
         if (w == null) return;
+        if (weapon != null) Destroy(weapon.gameObject);
         weapon = w;
         weapon.transform.SetParent(weaponPoint, false);
         weapon.transform.localPosition = Vector3.zero;
