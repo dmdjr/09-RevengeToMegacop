@@ -128,7 +128,9 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private void AimToTarget(GunWeapon gun)
     {
-        Vector3 targetVelocity = (target.position - previousTargetPosition) / Time.deltaTime;
+        Vector3 targetVelocity = Time.deltaTime > 0f
+            ? (target.position - previousTargetPosition) / Time.deltaTime
+            : Vector3.zero;
         previousTargetPosition = target.position;
 
         Vector3 leadPosition = CalculateLeadPosition(gun, targetVelocity);
