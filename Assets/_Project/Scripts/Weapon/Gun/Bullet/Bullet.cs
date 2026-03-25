@@ -83,8 +83,7 @@ public abstract class Bullet : MonoBehaviour
 
         if (!isReflected && obj.CompareTag("Enemy")) return;
 
-        IDamageable damageable = obj.GetComponent<IDamageable>();
-        if (damageable != null)
+        if (obj.TryGetComponent<IDamageable>(out IDamageable damageable))
             damageable.Hit(this);
     }
 
