@@ -42,7 +42,7 @@ public class BossUI : MonoBehaviour
         }
     }
 
-    private void OnBossDied(GameObject obj)
+    private void OnBossDied(Enemy enemy)
     {
         Hide();
     }

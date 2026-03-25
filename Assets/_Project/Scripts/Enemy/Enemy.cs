@@ -21,7 +21,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private enum State { Idle, MoveToTarget, Attack }
     private State currentState = State.Idle;
 
-    public event Action<GameObject> OnDeath;
+    public event Action<Enemy> OnDeath;
     public event Action<float> OnHpChanged;
 
     private bool isDead = false;
@@ -70,7 +70,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (isDead) return;
         isDead = true;
-        OnDeath?.Invoke(gameObject);
+        OnDeath?.Invoke(this);
         Destroy(gameObject);
     }
 
