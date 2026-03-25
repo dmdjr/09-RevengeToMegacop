@@ -50,7 +50,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (bullet == null) return;
 
-        hp -= bullet.Damage;
+        hp = Mathf.Max(0f, hp - bullet.Damage);
 
         OnHpChanged?.Invoke(HpRatio);
 
