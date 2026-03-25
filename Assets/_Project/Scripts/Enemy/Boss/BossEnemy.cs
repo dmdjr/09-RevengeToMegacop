@@ -55,6 +55,7 @@ public abstract class BossEnemy : Enemy
 
         if (Hp <= 0f && bossState != BossState.Death)
         {
+            bossState = BossState.Death;
             StartCoroutine(DeathSequence());
         }
     }
@@ -80,7 +81,6 @@ public abstract class BossEnemy : Enemy
 
     private IEnumerator DeathSequence()
     {
-        bossState = BossState.Death;
         yield return StartCoroutine(OnBossDeath());
         Die();
     }
