@@ -9,6 +9,11 @@ public class SwordController : MonoBehaviour
     private bool isArrived = false;
     private Vector3 targetPosition;
 
+    void Awake()
+    {
+        targetPosition = transform.position;
+    }
+
     public void Throw(Vector3 position)
     {
         targetPosition = Vector3.Distance(transform.position, position) <= range ? position : transform.position + (position - transform.position).normalized * range;
