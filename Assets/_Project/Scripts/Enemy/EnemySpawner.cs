@@ -48,8 +48,7 @@ public class EnemySpawner : MonoBehaviour
             if (weaponPrefab != null)
             {
                 GameObject weaponInstance = Instantiate(weaponPrefab);
-                Weapon weaponComponent = weaponInstance.GetComponent<Weapon>();
-                if (weaponComponent != null)
+                if (weaponInstance.TryGetComponent<Weapon>(out Weapon weaponComponent))
                 {
                     enemy.EquipWeapon(weaponComponent);
                 }
