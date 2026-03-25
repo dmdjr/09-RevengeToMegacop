@@ -9,6 +9,7 @@ public static class MousePositionGetter
     public static Vector3 GetMousePositionInWorld(Vector3 target)
     {
         if (mainCamera == null) mainCamera = Camera.main;
+        if (mainCamera == null) return target;
 
         Plane groundPlane = new Plane(Vector3.up, new Vector3(0, target.y, 0));
 
