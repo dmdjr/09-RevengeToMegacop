@@ -54,9 +54,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (bullet == null) return;
 
-        hp = Mathf.Max(0f, hp - bullet.Damage);
-
-        OnHpChanged?.Invoke(HpRatio);
+        SetHp(Mathf.Max(0f, hp - bullet.Damage));
 
         if (hp <= 0)
         {
