@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 
 using UnityEngine;
-using UnityEngine.AI;
 
 public class DashPattern : BossPattern
 {
@@ -26,7 +25,7 @@ public class DashPattern : BossPattern
         Vector3 direction = (target.position - boss.transform.position).normalized;
         direction.y = 0f;
 
-        NavMeshAgent agent = boss.GetComponent<NavMeshAgent>();
+        var agent = boss.NavAgent;
         if (agent != null) agent.ResetPath();
 
         float elapsed = 0f;

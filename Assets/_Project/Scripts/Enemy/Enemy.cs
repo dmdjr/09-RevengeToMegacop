@@ -33,6 +33,10 @@ public class Enemy : MonoBehaviour, IDamageable
     /// 자식 클래스에서 현재 추적 대상(플레이어)에 접근할 때 사용한다.
     /// </summary>
     public Transform Target => target;
+    /// <summary>
+    /// NavMesh 사용 시 캐싱된 NavMeshAgent. useNavMesh가 false이거나 컴포넌트가 없으면 null.
+    /// </summary>
+    public NavMeshAgent NavAgent => agent;
 
     /// <summary>
     /// 자식 클래스에서 HP를 직접 변경할 때 사용한다. OnHpChanged 이벤트를 자동으로 발행한다.
