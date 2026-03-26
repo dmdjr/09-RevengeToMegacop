@@ -39,6 +39,7 @@ public class PlayerShurikenController : MonoBehaviour
 
     public void HandleShuriken()
     {
+        if (!SkillManager.Instance.IsUnlocked(SkillId.ShurikenThrow)) return;
         if (shurikenAction.WasPressedThisFrame())
         {
             if (InCoolTime()) return;

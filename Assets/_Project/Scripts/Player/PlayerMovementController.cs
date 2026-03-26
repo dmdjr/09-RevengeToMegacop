@@ -24,7 +24,8 @@ public class PlayerMovementController : MonoBehaviour
     private InputAction moveAction;
     private InputAction sprintAction;
 
-    public bool IsDashing => sprintAction != null && sprintAction.IsPressed() && isMoving;
+    public bool IsDashing => sprintAction != null && sprintAction.IsPressed() && isMoving
+        && SkillManager.Instance != null && SkillManager.Instance.IsUnlocked(SkillId.Dash);
 
     private float gravity = -9.81f;
     private Vector3 velocity;
@@ -77,7 +78,8 @@ public class PlayerMovementController : MonoBehaviour
 
     private void HandleDash()
     {
-        realSpeed = sprintAction.IsPressed() ? speed * 2 : speed;
+        bool canDash = SkillManager.Instance != null && SkillManager.Instance.IsUnlocked(SkillId.Dash);
+        realSpeed = (canDash && sprintAction.IsPressed()) ? speed * 2 : speed;
     }
 
     private void HandleMove()

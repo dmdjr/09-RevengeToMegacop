@@ -17,6 +17,7 @@ public class PlayerSwordController : MonoBehaviour
 
     public void HandleSword()
     {
+        if (!SkillManager.Instance.IsUnlocked(SkillId.SwordThrow)) return;
         if (throwSwordAction.WasPressedThisFrame())
         {
             if (InCooldown()) return;
