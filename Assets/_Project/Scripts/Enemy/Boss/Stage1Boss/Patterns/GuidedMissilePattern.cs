@@ -1,9 +1,15 @@
 using System;
 using System.Collections;
+
 using UnityEngine;
 
 public class GuidedMissilePattern : BossPattern
 {
+    [SerializeField] private GameObject missilePrefab;
+    [SerializeField] private float missileSpeed = 10f;
+    [SerializeField] private int missileCount = 3;
+    [SerializeField] private float interval = 0.5f;
+
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
         StartCoroutine(LaunchGuidedMissiles(boss, onComplete));
@@ -11,9 +17,30 @@ public class GuidedMissilePattern : BossPattern
 
     private IEnumerator LaunchGuidedMissiles(BossEnemy boss, Action onComplete)
     {
-        // TODO: 유도탄을 3연발사하는 로직 구현
+        if (missilePrefab == null || boss.Target == null)
+        {
+            yield return null;
+            onComplete?.Invoke();
+            yield break;
+        }
 
-        yield return null;
+        for (int i = 0; i < missileCount; i++)
+        {
+            LaunchMissile(boss);
+            yield return new WaitForSeconds(interval);
+        }
+
         onComplete?.Invoke();
+    }
+
+    private void LaunchMissile(BossEnemy boss)
+    {
+        Bullet bullet = BulletPool.Instance.Get(missilePrefab, boss.transform.position, boss.transform.rotation);
+        Stage1BossMissile missile = bullet as Stage1BossMissile;
+        if (missile == null) return;
+
+        missile.SetOwner(boss.gameObject);
+        missile.Speed = missileSpeed;
+        missile.Launch(boss.Target, boss.transform);
     }
 }

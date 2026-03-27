@@ -215,7 +215,7 @@ Transform:
   m_GameObject: {fileID: 6137043511918517177}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.29, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -384,6 +384,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 2
   weight: 1
+  missilePrefab: {fileID: 776963241871654587, guid: e8c13bbdc91a545f9920d01bc777b988, type: 3}
+  missileSpeed: 10
+  missileCount: 3
+  interval: 0.5
 --- !u!114 &3850946650909196443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -398,6 +402,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 2
   weight: 1
+  bombPrefab: {fileID: 776963241871654587, guid: 4e2375850ebe645b2b4ad410f56e3ae0, type: 3}
+  throwDelay: 0.3
 --- !u!114 &6274598172816198847
 MonoBehaviour:
   m_ObjectHideFlags: 0

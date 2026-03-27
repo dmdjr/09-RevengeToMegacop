@@ -9,7 +9,7 @@ public class Stage1BossShield : MonoBehaviour, IDamageable
 
     public float ShieldRatio => maxShieldGauge > 0f ? shieldGauge / maxShieldGauge : 0f;
 
-    public event Action<float> OnShieldChanged;
+    public event Action<float> OnShieldChanged; // 실드 게이지가 변할 때 비율(0~1)을 전달하는 이벤트    
 
     private Transform target;
 
@@ -37,7 +37,7 @@ public class Stage1BossShield : MonoBehaviour, IDamageable
     {
         if (target == null) return;
 
-        bullet.Reflect(gameObject, false);
+        bullet.Reflect(gameObject, true);
 
         Vector3 direction = target.position - bullet.transform.position;
         direction.y = 0f;
