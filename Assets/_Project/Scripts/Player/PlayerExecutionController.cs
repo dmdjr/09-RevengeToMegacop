@@ -11,6 +11,7 @@ public class PlayerExecutionController : MonoBehaviour
     [SerializeField] private LayerMask enemyLayerMask;
     [SerializeField] private float executionRange = 50f;
     [SerializeField] private ExecutionSliceEffect executionSliceEffect;
+    [SerializeField] private ExecutionSlashVfx executionSlashVfx;
 
     private InputAction attackAction;
     private Camera mainCamera;
@@ -64,6 +65,11 @@ public class PlayerExecutionController : MonoBehaviour
             // 슬라이스 방향: 플레이어 진행 방향의 수직 (좌우 절단)
             Vector3 sliceNormal = transform.right;
             Vector3 slicePosition = executionTarget.transform.position;
+
+            if (executionSlashVfx != null)
+            {
+                executionSlashVfx.Play(slicePosition, transform.forward);
+            }
 
             if (executionSliceEffect != null)
             {
