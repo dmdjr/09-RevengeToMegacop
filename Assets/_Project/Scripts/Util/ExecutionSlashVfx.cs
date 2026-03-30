@@ -30,7 +30,9 @@ public class ExecutionSlashVfx : MonoBehaviour
         ParticleSystem instance = Instantiate(slashVfxPrefab, spawnPosition, finalRotation);
         instance.transform.localScale = Vector3.one * vfxScale;
 
-        foreach (ParticleSystem childSystem in instance.GetComponentsInChildren<ParticleSystem>())
+        ParticleSystem[] childSystems = instance.GetComponentsInChildren<ParticleSystem>();
+
+        foreach (ParticleSystem childSystem in childSystems)
         {
             ParticleSystem.MainModule main = childSystem.main;
             main.simulationSpeed = simulationSpeed;
@@ -38,13 +40,13 @@ public class ExecutionSlashVfx : MonoBehaviour
 
         instance.Play(true);
 
-        Destroy(instance.gameObject, GetTotalDuration(instance) / simulationSpeed);
+        Destroy(instance.gameObject, GetTotalDuration(childSystems) / simulationSpeed);
     }
 
-    private float GetTotalDuration(ParticleSystem particleSystem)
+    private float GetTotalDuration(ParticleSystem[] systems)
     {
         float maxDuration = 0f;
-        foreach (ParticleSystem system in particleSystem.GetComponentsInChildren<ParticleSystem>())
+        foreach (ParticleSystem system in systems)
         {
             ParticleSystem.MainModule main = system.main;
             float systemDuration = main.duration + main.startLifetime.constantMax;
