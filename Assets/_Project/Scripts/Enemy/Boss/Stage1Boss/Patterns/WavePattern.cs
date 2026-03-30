@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WavePattern : BossPattern
 {
+    [SerializeField] private GameObject wavePrefab;
+
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
         StartCoroutine(EmitCircularWave(boss, onComplete));
@@ -11,7 +13,8 @@ public class WavePattern : BossPattern
 
     private IEnumerator EmitCircularWave(BossEnemy boss, Action onComplete)
     {
-        // TODO: 원형 파동을 방출하는 로직 구현
+        if (wavePrefab != null)
+            Instantiate(wavePrefab, boss.transform.position, Quaternion.identity);
 
         yield return null;
         onComplete?.Invoke();

@@ -418,3 +418,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 2
   weight: 1
+  wavePrefab: {fileID: 82095154474583385, guid: b0a57c086f3b94c40b863628ada2f3dc, type: 3}
