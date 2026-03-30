@@ -1371,7 +1371,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slashVfxPrefab: {fileID: 3096923336240688081, guid: 50f1354827c77ef4b99c4dca0ee3411d, type: 3}
   positionOffset: {x: 0, y: 1, z: 0}
-  rotationOffset: {x: 0, y: 0, z: 270}
+  rotationOffset: {x: -135, y: 0, z: 90}
   vfxScale: 3
   simulationSpeed: 1
 --- !u!1 &1956072997
