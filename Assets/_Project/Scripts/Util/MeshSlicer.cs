@@ -155,7 +155,9 @@ public static class MeshSlicer
 
         Mesh bakedMesh = new Mesh();
         skinnedRenderer.BakeMesh(bakedMesh);
-        return Slice(bakedMesh, localPlane);
+        SlicedMesh result = Slice(bakedMesh, localPlane);
+        Object.Destroy(bakedMesh);
+        return result;
     }
 
     private static Vector2 GetUV(Vector2[] uvs, int index)
