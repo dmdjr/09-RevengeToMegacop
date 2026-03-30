@@ -106,15 +106,22 @@ public class PlayerMovementController : MonoBehaviour
         controller.enabled = false;
         target.y = groundY;
 
-        while (Vector3.Distance(transform.position, target) > executionArrivalThreshold)
+        try
         {
-            transform.position = Vector3.MoveTowards(transform.position, target, executionDashSpeed * Time.deltaTime);
-            yield return null;
+            while (Vector3.Distance(transform.position, target) > executionArrivalThreshold)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, target, executionDashSpeed * Time.deltaTime);
+                yield return null;
+            }
+
+            transform.position = target;
+        }
+        finally
+        {
+            controller.enabled = true;
+            isExecutionDashing = false;
         }
 
-        transform.position = target;
-        controller.enabled = true;
-        isExecutionDashing = false;
         onComplete?.Invoke();
     }
 }
