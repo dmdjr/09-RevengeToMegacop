@@ -36,6 +36,12 @@ public class CircularBulletPattern : BossPattern
 
         for (int w = 0; w < waves; w++)
         {
+            if (boss == null)
+            {
+                onComplete?.Invoke();
+                yield break;
+            }
+
             for (int i = 0; i < bulletCount; i++)
             {
                 float angle = i * angleStep;
