@@ -86,6 +86,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public void SetTarget(Transform t)
     {
         target = t;
+        if (t != null) previousTargetPosition = t.position;
     }
 
     /// <summary>
