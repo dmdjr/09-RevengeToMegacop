@@ -54,6 +54,7 @@ public class PlayerStateController : MonoBehaviour
     public event Action<float> OnHpChanged;
     public event Action<float> OnExecutionGaugeChanged;
     public event Action<float> OnStaminaChanged;
+    public event Action OnDeath;
 
     void Awake()
     {
@@ -65,6 +66,7 @@ public class PlayerStateController : MonoBehaviour
     {
         if (damage <= 0) return;
         Hp -= damage;
+        if (Hp <= 0) OnDeath?.Invoke();
     }
 
     public void IncreaseExecutionGauge()
