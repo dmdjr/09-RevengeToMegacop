@@ -18,14 +18,13 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool isMoving;
     private bool isExecutionDashing;
+    private bool isDashing;
 
     public bool IsExecutionDashing => isExecutionDashing;
+    public bool IsDashing => isDashing;
 
     private InputAction moveAction;
     private InputAction sprintAction;
-
-    public bool IsDashing => sprintAction != null && sprintAction.IsPressed() && isMoving
-        && SkillManager.Instance != null && SkillManager.Instance.IsUnlocked(SkillId.Dash);
 
     private float gravity = -9.81f;
     private Vector3 velocity;
@@ -71,15 +70,9 @@ public class PlayerMovementController : MonoBehaviour
 
     public void HandleMovement()
     {
-        HandleDash();
         HandleMove();
+        HandleDash();
         HandleRotation();
-    }
-
-    private void HandleDash()
-    {
-        bool canDash = SkillManager.Instance != null && SkillManager.Instance.IsUnlocked(SkillId.Dash);
-        realSpeed = (canDash && sprintAction.IsPressed()) ? speed * 2 : speed;
     }
 
     private void HandleMove()
@@ -88,6 +81,14 @@ public class PlayerMovementController : MonoBehaviour
         isMoving = input.sqrMagnitude > 0f;
         Vector3 dir = (Vector3.right * input.x + Vector3.forward * input.y).normalized;
         controller.Move(dir * (realSpeed * Time.deltaTime));
+    }
+
+    private void HandleDash()
+    {
+        bool canDash = SkillManager.Instance != null && SkillManager.Instance.IsUnlocked(SkillId.Dash);
+        bool sprintPressed = sprintAction.IsPressed();
+        isDashing = canDash && sprintPressed && isMoving;
+        realSpeed = isDashing ? speed * 2 : speed;
     }
 
     private void HandleRotation()
