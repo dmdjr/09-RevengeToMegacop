@@ -18,8 +18,8 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private bool useNavMesh = true;
     private NavMeshAgent agent;
 
-    private enum State { Idle, MoveToTarget, Attack }
-    private State currentState = State.Idle;
+    private enum State { MoveToTarget, Attack }
+    private State currentState = State.MoveToTarget;
 
     public event Action<Enemy> OnDeath;
     public event Action<float> OnHpChanged;
@@ -108,11 +108,7 @@ public class Enemy : MonoBehaviour, IDamageable
     /// </summary>
     protected virtual void Update()
     {
-        if (target == null)
-        {
-            currentState = State.Idle;
-            return;
-        }
+        if (target == null) return;
 
         LookTarget();
         FSM();
@@ -161,10 +157,6 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         switch (currentState)
         {
-            case State.Idle:
-                currentState = State.MoveToTarget;
-                break;
-
             case State.MoveToTarget:
                 if (IsTargetInRange())
                 {
