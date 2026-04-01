@@ -20,6 +20,7 @@ public class ArrowRainPattern : BossPattern
     [SerializeField] private float bulletSpeed = 15f;
     [SerializeField] private float spawnHeight = 15f;
     [SerializeField] private float spawnDuration = 0.5f;
+    [SerializeField] private float afterDelay = 2f;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
@@ -80,6 +81,7 @@ public class ArrowRainPattern : BossPattern
             yield return new WaitForSeconds(interval);
         }
 
+        yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();
     }
 }

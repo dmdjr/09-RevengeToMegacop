@@ -18,6 +18,7 @@ public class AimedShotPattern : BossPattern
     [Header("Shot Settings")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float bulletSpeed = 25f;
+    [SerializeField] private float afterDelay = 1.5f;
 
     private LineRenderer lineRenderer;
 
@@ -87,6 +88,7 @@ public class AimedShotPattern : BossPattern
         bullet.Speed = bulletSpeed;
         bullet.SetOwner(boss.gameObject);
 
+        yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();
     }
 }

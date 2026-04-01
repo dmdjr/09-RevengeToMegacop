@@ -6,6 +6,8 @@ public class Stage1BossWave : MonoBehaviour
     [SerializeField] private float waveSpeed = 8f;
     [SerializeField] private float waveWidth = 2f;
     [SerializeField] private float damage = 20f;
+    [SerializeField] private Transform visual; // 실린더 자식 오브젝트
+    [SerializeField] private float visualHeight = 0.2f;
 
     private float currentRadius;
     private bool playerHit;
@@ -13,6 +15,9 @@ public class Stage1BossWave : MonoBehaviour
     void Update()
     {
         currentRadius += waveSpeed * Time.deltaTime;
+
+        if (visual != null)
+            visual.localScale = new Vector3(currentRadius * 2f, visualHeight, currentRadius * 2f);
 
         if (!playerHit)
             DetectPlayer();
