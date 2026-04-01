@@ -1,37 +1,10 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+이 파일은 Claude Code가 이 저장소에서 작업할 때 따라야 할 지침을 제공한다.
 
-## Project Overview
+## 프로젝트 개요
 
-**RevengeToMegacop** is a Unity 3D top-down action game where the player fights waves of enemies using guns, a throwable sword, and a teleporting shuriken. The player can parry/guard bullets and execute weakened enemies.
+**RevengeToMegacop** — Unity 3D 탑다운 액션 게임. 플레이어가 총, 투척 검, 텔레포트 수리검을 사용해 적 웨이브와 싸운다. 총알 패리/가드, 약화된 적 처형 가능.
 
-- Unity version: 6000.0.67f1 (Unity 6)
-- Language: C# (global namespace, no custom namespaces)
-
-## Build & Test Commands
-
-Set the Unity editor path first:
-```bash
-export UNITY_PATH="/Applications/Unity/Hub/Editor/6000.0.67f1/Unity.app/Contents/MacOS/Unity"
-# Windows: UNITY_PATH="C:\\Program Files\\Unity\\Hub\\Editor\\6000.0.67f1\\Editor\\Unity.exe"
-```
-
-**Build:**
-```bash
-"$UNITY_PATH" -batchmode -nographics -quit -projectPath "$PWD" -logFile build.log -executeMethod BuildScript.PerformBuild
-```
-
-**Run all tests (play mode):**
-```bash
-"$UNITY_PATH" -batchmode -nographics -quit -projectPath "$PWD" -runTests -testPlatform playmode -testResults testResults.xml -logFile test.log
-```
-
-**Run a single test:**
-```bash
-# Add: -testFilter "Namespace.ClassName.MethodName"
-"$UNITY_PATH" -batchmode -nographics -quit -projectPath "$PWD" -runTests -testPlatform playmode -testFilter "MyGame.Tests.PlayerMovementTests.TestJump" -testResults testResults.xml -logFile test.log
-```
-
-Check `build.log` for compilation errors (exit code 0 = success).
-
+- Unity 버전: 6000.0.67f1 (Unity 6)
+- 언어: C# (글로벌 네임스페이스, 커스텀 네임스페이스 미사용)
