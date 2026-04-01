@@ -11,6 +11,7 @@ public class OscillatingBulletPattern : BossPattern
 {
     [Header("진동 탄막 패턴 설정")]
     
+    [SerializeField] GameObject bulletPrefab ;// 총알 프리펩
 
     [SerializeField]
     private float bulletSpeed = 10f; // 생성될 총알의 속도
@@ -73,6 +74,7 @@ public class OscillatingBulletPattern : BossPattern
     /// <param name="onComplete">패턴 실행 완료 시 호출될 콜백 액션</param>
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
+        
        
         // 발사 지점(firePoint)이 할당되지 않았다면 오류를 기록하고 패턴 실행을 중지합니다.
         if (firePoint == null)
@@ -103,6 +105,7 @@ public class OscillatingBulletPattern : BossPattern
     /// <returns>총알 발사 및 진동을 위한 IEnumerator</returns>
     private IEnumerator FireOscillatingBullets(BossEnemy boss, Action onComplete)
     {
+        Debug.Log("ShotPattern");
         float currentPatternTime = 0f; // 현재 패턴이 실행된 시간
 
         // 패턴 지속 시간 동안 반복합니다.
@@ -132,13 +135,24 @@ public class OscillatingBulletPattern : BossPattern
             // 설정된 총알 수만큼 총알을 발사합니다.
             for (int i = 0; i < bulletsPerShot; i++)
             {
-                // BulletPool에서 총알을 가져와 발사 위치와 방향으로 초기화합니다.
-                // BulletPool.Instance는 싱글톤 패턴으로 구현되어 있어야 합니다.
-                BossBullet bullet = Boss3BulletPool.Instance.GetBullet().GetComponent<BossBullet>();
-                if (bullet != null)
+                // BulletPool에서 총알을 가져와 발사 위치와 방향으로 초기화합니다.  
+                // BulletPool.Instance는 싱글톤 패턴으로 구현되어 있어야 합니다.    
+                if(bulletPrefab != null)
                 {
+                    Bullet bullet1 = BulletPool.Instance.Get(bulletPrefab,firePoint.position,fireRotation);
+                    bullet1.Speed = bulletSpeed;
+                    bullet1.SetOwner(boss.gameObject);
+                    
+                }else if (bulletPrefab == null)
+                {
+                    BossBullet bullet = Boss3BulletPool.Instance.GetBullet().GetComponent<BossBullet>();
+                    if (bullet != null)
+                    {
                     bullet.Fire(firePoint.position, fireRotation, bulletSpeed, gameObject);
+                    }
                 }
+
+                
             }
 
             // 다음 총알 발사까지 대기합니다.
