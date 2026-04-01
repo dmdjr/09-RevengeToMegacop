@@ -5,7 +5,7 @@ using UnityEngine;
 public class BombPattern : BossPattern
 {
     [SerializeField] private GameObject bombPrefab;
-    [SerializeField] private float throwDelay = 0.3f;
+    [SerializeField] private float holdDuration = 1f;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
@@ -31,10 +31,12 @@ public class BombPattern : BossPattern
             yield break;
         }
 
+        (boss as Stage1Boss)?.NotifyPatternStart();
         bomb.SetOwner(boss.gameObject);
         bomb.Launch(boss.transform.position, boss.Target.position);
 
-        yield return new WaitForSeconds(throwDelay);
+        yield return new WaitForSeconds(holdDuration);
+        (boss as Stage1Boss)?.NotifyPatternEnd();
         onComplete?.Invoke();
     }
 }

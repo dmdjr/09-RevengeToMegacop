@@ -76,7 +76,7 @@ public class Stage1BossBomb : Bullet
         lastForward = transform.forward;
     }
 
-    void OnDrawGizmosSelected()
+    void OnDrawGizmos()
     {
         Gizmos.color = new Color(1f, 0.3f, 0f, 0.3f);
         Gizmos.DrawSphere(transform.position, explosionRadius);
