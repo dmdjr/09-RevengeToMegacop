@@ -132,6 +132,8 @@ GameObject:
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
   - component: {fileID: 330585548}
+  - component: {fileID: 330585550}
+  - component: {fileID: 330585549}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -273,6 +275,45 @@ MonoBehaviour:
   smoothTime: 0.2
   maxOffset: 7
   mouseInfluence: 15
+  cameraShake: {fileID: 330585550}
+--- !u!114 &330585549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6919b2898b137094cadc8b2ae9c97b8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraShake: {fileID: 330585550}
+  playerHitController: {fileID: 1700423673}
+  playerExecutionController: {fileID: 1700423675}
+  parryIntensity: 0.3
+  parryDuration: 0.15
+  guardIntensity: 0.15
+  guardDuration: 0.1
+  damageIntensity: 0.5
+  damageDuration: 0.25
+  executionIntensity: 0.5
+  executionDuration: 0.3
+  enemyDeathIntensity: 0.1
+  enemyDeathDuration: 0.1
+--- !u!114 &330585550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0259a64944bae2e4896c53ce9cc811d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maximumIntensity: 0.5
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -943,6 +984,7 @@ MonoBehaviour:
   - {fileID: 2574361922486423382, guid: e7857d2a2bda8dd45a44d6bb851e0491, type: 3}
   - {fileID: 2574361922486423382, guid: a53bdf555a696b84fa109601ee6b3501, type: 3}
   target: {fileID: 1700423670}
+  cameraShakeListener: {fileID: 330585549}
   spawnInterval: 3
   spawnArea: 70
   maxEnemies: 3

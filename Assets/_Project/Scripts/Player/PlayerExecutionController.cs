@@ -1,3 +1,5 @@
+using System;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,6 +7,8 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerStateController))]
 public class PlayerExecutionController : MonoBehaviour
 {
+    public event Action OnExecutionComplete;
+
     private PlayerMovementController playerMovementController;
     private PlayerStateController playerStateController;
 
@@ -81,6 +85,7 @@ public class PlayerExecutionController : MonoBehaviour
 
             executionTarget.Die();
             executionTarget = null;
+            OnExecutionComplete?.Invoke();
         }
     }
 }

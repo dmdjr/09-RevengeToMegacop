@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private List<GameObject> weaponPrefabs = new List<GameObject>();
     [SerializeField] private Transform target;
+    [SerializeField] private CameraShakeListener cameraShakeListener;
 
     [SerializeField] private float spawnInterval = 10f;
     [SerializeField] private float spawnArea = 100f;
@@ -60,6 +61,7 @@ public class EnemySpawner : MonoBehaviour
         }
 
         enemy.OnDeath += OnDeath;
+        cameraShakeListener?.RegisterEnemy(enemy);
         if (target != null)
         {
             enemy.SetTarget(target);
