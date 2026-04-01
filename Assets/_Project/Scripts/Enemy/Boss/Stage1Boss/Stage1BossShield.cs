@@ -26,7 +26,7 @@ public class Stage1BossShield : MonoBehaviour, IDamageable
 
         shieldGauge = Mathf.Max(shieldGauge - bullet.Damage, 0f);
         OnShieldChanged?.Invoke(ShieldRatio);
-
+        Debug.Log($"Shield hit! Remaining Shield: {shieldGauge}/{maxShieldGauge}");
         ReflectToPlayer(bullet);
 
         if (shieldGauge <= 0f)

@@ -63,7 +63,7 @@ public abstract class Bullet : MonoBehaviour
         if (destroyTime < Time.time) Remove();
     }
 
-    void OnTriggerEnter(Collider other)
+    virtual protected void OnTriggerEnter(Collider other)
     {
         if (other == null) return;
         GameObject obj = other.attachedRigidbody ? other.attachedRigidbody.gameObject : other.gameObject;

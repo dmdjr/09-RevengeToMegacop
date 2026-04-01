@@ -67,6 +67,9 @@ public class Stage1Boss : BossEnemy
 
     public override void Hit(Bullet bullet)
     {
+        if (shield != null && shield.gameObject.activeSelf)
+            return;
+
         base.Hit(bullet);
         bullet.Remove();
         Debug.Log($"Boss hit! Remaining HP: {Hp}");
