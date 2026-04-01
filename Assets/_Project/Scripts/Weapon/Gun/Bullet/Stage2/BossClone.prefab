@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5184929761348071907}
   - component: {fileID: 8095557125747113391}
   - component: {fileID: 3499059764236097546}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BossClone
   m_TagString: Enemy
   m_Icon: {fileID: 0}

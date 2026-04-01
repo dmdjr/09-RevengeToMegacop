@@ -12,6 +12,7 @@ public class TeleportPattern : BossPattern
     [Header("Teleport Settings")]
     [SerializeField] private float triggerDistance = 5f;
     [SerializeField] private float teleportDelay = 0.3f;
+    [SerializeField] private float afterDelay = 1f;
 
     [Header("Map Bounds")]
     [SerializeField] private float mapMinX = -20f;
@@ -58,6 +59,7 @@ public class TeleportPattern : BossPattern
 
         boss.transform.position = new Vector3(newX, bossPos.y, newZ);
 
+        yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();
     }
 }

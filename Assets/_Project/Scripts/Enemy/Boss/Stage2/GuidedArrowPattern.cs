@@ -14,6 +14,7 @@ public class GuidedArrowPattern : BossPattern
     [SerializeField] private float arrowSpeed = 6f;
     [SerializeField] private float guidedDuration = 4f;
     [SerializeField] private float turnSpeed = 2f;
+    [SerializeField] private float afterDelay = 1.5f;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
@@ -68,6 +69,7 @@ public class GuidedArrowPattern : BossPattern
             yield return null;
         }
 
+        yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();
     }
 }

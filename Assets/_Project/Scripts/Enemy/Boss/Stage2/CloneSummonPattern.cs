@@ -16,6 +16,7 @@ public class CloneSummonPattern : BossPattern
     [SerializeField] private int maxClones = 3;
     [SerializeField] private float spawnRadius = 8f;
     [SerializeField] private float cloneLifetime = 5f;
+    [SerializeField] private float afterDelay = 2f;
 
     [Header("Clone Attack")]
     [SerializeField] private GameObject bulletPrefab;
@@ -53,7 +54,8 @@ public class CloneSummonPattern : BossPattern
             StartCoroutine(CloneAttack(clone, target, boss));
         }
 
-        // 소환 후 바로 패턴 완료 (분신은 독립적으로 행동)
+        // 소환 후 대기 (분신은 독립적으로 행동)
+        yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();
     }
 

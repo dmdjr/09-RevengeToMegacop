@@ -17,6 +17,7 @@ public class RhythmShotPattern : BossPattern
     [Header("Shot Settings")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float bulletSpeed = 20f;
+    [SerializeField] private float afterDelay = 1.5f;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
@@ -54,6 +55,7 @@ public class RhythmShotPattern : BossPattern
         // 3발: 탕
         FireAtTarget(boss, target);
 
+        yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();
     }
 

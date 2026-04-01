@@ -16,6 +16,7 @@ public class AcceleratingRhythmShotPattern : BossPattern
     [SerializeField] private int shotCount = 5;
     [SerializeField] private float firstDelay = 0.6f;
     [SerializeField] private float lastDelay = 0.1f;
+    [SerializeField] private float afterDelay = 1.5f;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
@@ -58,6 +59,7 @@ public class AcceleratingRhythmShotPattern : BossPattern
             }
         }
 
+        yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();
     }
 }
