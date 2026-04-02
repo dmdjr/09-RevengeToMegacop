@@ -1,3 +1,5 @@
+using System;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,6 +7,8 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerStateController))]
 public class PlayerExecutionController : MonoBehaviour
 {
+    public event Action OnExecutionComplete;
+
     private PlayerMovementController playerMovementController;
     private PlayerStateController playerStateController;
 
@@ -55,12 +59,14 @@ public class PlayerExecutionController : MonoBehaviour
 
         executionTarget = enemy.TryGetComponent<Enemy>(out var enemyComponent) ? enemyComponent : null;
 
+        Time.timeScale = 0f;
         playerMovementController.ExecutionDash(enemyPosition, OnExecutionDashComplete);
         playerStateController.Executed();
     }
 
     private void OnExecutionDashComplete()
     {
+        Time.timeScale = 1f;
         if (executionTarget != null)
         {
             // 슬라이스 방향: 플레이어 진행 방향의 수직 (좌우 절단)
@@ -79,6 +85,7 @@ public class PlayerExecutionController : MonoBehaviour
 
             executionTarget.Die();
             executionTarget = null;
+            OnExecutionComplete?.Invoke();
         }
     }
 }

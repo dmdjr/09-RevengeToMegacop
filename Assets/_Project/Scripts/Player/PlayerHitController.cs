@@ -6,6 +6,10 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerStateController))]
 public class PlayerHitController : MonoBehaviour, IDamageable
 {
+    public event Action OnParry;
+    public event Action OnGuard;
+    public event Action OnDamaged;
+
     [Range(-1f, 1f)]
     [SerializeField]
     private float parryThreshold = 0.5f;
@@ -98,6 +102,7 @@ public class PlayerHitController : MonoBehaviour, IDamageable
         SpawnParryVfx();
         bullet.Reflect(gameObject, true);
         playerStateController.OnSuccessfulParry();
+        OnParry?.Invoke();
     }
 
     private void SpawnParryVfx()
@@ -117,11 +122,14 @@ public class PlayerHitController : MonoBehaviour, IDamageable
     {
         bullet.Reflect(gameObject, false);
         playerStateController.OnSuccessfulGuard();
+        OnGuard?.Invoke();
     }
 
     private void TakeDamage(Bullet bullet)
     {
         playerStateController.TakeDamage(bullet.Damage);
+        OnDamaged?.Invoke();
+        bullet.Remove();
     }
 
     void OnDrawGizmosSelected()

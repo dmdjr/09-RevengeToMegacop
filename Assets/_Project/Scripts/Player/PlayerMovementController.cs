@@ -111,7 +111,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             while (Vector3.Distance(transform.position, target) > executionArrivalThreshold)
             {
-                transform.position = Vector3.MoveTowards(transform.position, target, executionDashSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, target, executionDashSpeed * Time.unscaledDeltaTime);
                 yield return null;
             }
 
@@ -121,8 +121,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             controller.enabled = true;
             isExecutionDashing = false;
+            onComplete?.Invoke();
         }
-
-        onComplete?.Invoke();
     }
 }

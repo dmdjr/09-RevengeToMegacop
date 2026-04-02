@@ -141,7 +141,7 @@ public class DashAfterimageEffect : MonoBehaviour
         else
         {
             float interval = isExecutionDashing ? executionSpawnInterval : spawnInterval;
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
             if (timer >= interval)
             {
                 timer = 0f;
@@ -177,7 +177,7 @@ public class DashAfterimageEffect : MonoBehaviour
         for (int i = activeItems.Count - 1; i >= 0; i--)
         {
             ActiveItem active = activeItems[i];
-            active.elapsed += Time.deltaTime;
+            active.elapsed += Time.unscaledDeltaTime;
 
             if (active.elapsed >= fadeDuration)
             {

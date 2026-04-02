@@ -8,6 +8,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float maxOffset = 3.0f;
 
     [SerializeField] private float mouseInfluence = 2.0f;
+    [SerializeField] private CameraShake cameraShake;
 
     private Camera mainCamera;
 
@@ -45,5 +46,10 @@ public class CameraController : MonoBehaviour
         Vector3 cameraPosition = target.position + baseOffset + targetOffset;
 
         transform.position = Vector3.SmoothDamp(transform.position, cameraPosition, ref currentVelocity, smoothTime);
+
+        if (cameraShake != null)
+        {
+            transform.position += cameraShake.CurrentShakeOffset;
+        }
     }
 }

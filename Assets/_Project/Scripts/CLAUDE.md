@@ -1,73 +1,60 @@
-# C# Scripts
+# Unity C# 코드 컨벤션
 
-## Code Style
+이 파일을 새 Unity 프로젝트의 `Assets/_Project/Scripts/CLAUDE.md`에 복사하여 사용한다.
 
-- `private` fields use `camelCase`; public methods/types use `PascalCase`
-- Inspector-exposed fields use `[SerializeField] private`, never `public` fields for Unity serialization
-- One class per file; filename must match class name
-- No namespaces — all classes are in the global namespace
-- `System` usings before `UnityEngine` usings; remove unused usings
-- **No abbreviated variable names** — write the full word every time. `skillController` not `sc`, `enemy` not `e`, `gameObject` not `go`. This applies to loop variables, temporaries, and all local variables.
+---
 
-## Architecture
+## 네이밍
 
-### Player Sub-Controller Pattern
+- `private` 필드: `camelCase`
+- public 메서드/타입: `PascalCase`
+- Inspector 노출 필드: `[SerializeField] private` — `public` 필드 금지
+- **변수명 축약 금지** — 모든 변수(루프, 임시, 로컬 포함)에 단어 전체 표기
+  - `sc` → `skillController`, `e` → `enemy`, `go` → `gameObject`
+- 한 파일에 한 클래스, 파일명 = 클래스명
 
-`PlayerController` is a thin coordinator — it calls explicit `Update*` and `Handle*` methods each frame on six sub-controllers:
+## Unity 메시지 메서드
 
-| Sub-controller | Responsibility |
-|---|---|
-| `PlayerStateController` | HP, stamina, execution gauge; fires C# events for UI |
-| `PlayerMovementController` | WASD movement, LeftShift dash, mouse-based rotation, teleport |
-| `PlayerHitController` | Q/E parry & guard input; `IDamageable.Hit()` entry point |
-| `PlayerSwordController` | 1 key — throws `SwordController` prefab toward cursor |
-| `PlayerShurikenController` | F key — first press throws shuriken, second press teleports player to it |
-| `PlayerExecutionController` | LMB when execution gauge is full — raycast-kills an enemy, teleports player to it |
+- `Awake`, `Start`, `Update`, `OnDestroy` 등 Unity 예약 함수에는 `private` 접근 제한자를 **붙이지 않는다** (일반 private 메서드와 시각적 구별 목적)
 
-### Weapon Hierarchy
+## using 정리
 
-```
-Weapon (abstract)          — fire-rate throttle via TryUse() / Use()
-└── GunWeapon (abstract)   — ammo, reload coroutine, fires Bullet prefab
-    ├── HandGun
-    └── MachineGun
-SwordController            — thrown projectile with range limit; stopped by SwordHitController
-ShurikenController         — forward-moving projectile used for teleport
-```
+- `System` usings → `UnityEngine` usings 순서
+- 사용하지 않는 `using`은 반드시 제거
 
-`Weapon.TryUse()` enforces the `useDelay` cooldown. Subclasses implement `protected abstract void Use()`.
+## 상속 설계
 
-### Bullet & Damage System
+- `new` 키워드로 부모 메서드를 숨기지 말 것 → 부모를 `virtual`로 수정하고 자식에서 `override`
+- 부모 필드/프로퍼티를 자식에서 중복 정의 금지 → 부모의 멤버를 `protected`로 재사용
+- 명시적 인터페이스 재구현(`void IFoo.Method()`) 금지 → 부모가 이미 구현했으면 `override` 사용
 
-- `Bullet` (abstract) moves forward each frame and self-destructs after `destroyTime`.
-- `Bullet.OnTriggerEnter` calls `IDamageable.Hit(bullet)` on whatever it hits, **skipping enemies by tag** unless the bullet has been reflected (`isReflected = true`).
-- `IDamageable` is the single damage interface (`Hit(Bullet)`).
-- `PlayerHitController.Hit()` checks for parry (timing window + stamina) → guard (holding Q/E + stamina) → take damage.
-- **Parry**: `ParryController` queues timestamps of Q/E presses; a parry is valid within `parryDuration` seconds. On success, the bullet is reflected toward the mouse cursor and the execution gauge increases.
-- **Guard**: bullet is reflected at a random ±60° angle; stamina is consumed.
-- `SwordHitController` implements `IDamageable` to simply destroy bullets that hit the flying sword.
+## 이벤트 수명 관리
 
-### Enemy AI
+이벤트 구독 해제를 기계적으로 추가하지 말 것. 먼저 수명 관계를 판단한다:
+- 이벤트 소스가 구독자보다 먼저 파괴 → 해제 불필요
+- 구독자가 소스보다 먼저 파괴될 수 있음 → 해제 필요
+- 둘이 항상 함께 파괴 (같은 씬, 같은 GameObject) → 해제 불필요
 
-`Enemy` uses a three-state FSM (`Idle → MoveToTarget → Attack`). It supports both NavMesh navigation and direct transform movement (`useNavMesh` toggle). Gun-armed enemies lead their shots by calculating the player's velocity before firing.
+## try-finally
 
-`EnemySpawner` manages a live list of enemies, spawns them with a random weapon from `weaponPrefabs` on an interval, and removes them from the list via `Enemy.OnDeath`.
+"반드시 실행"이 요구되는 코드(콜백, 상태 복원, 리소스 해제)는 `try` 블록이 아닌 **`finally` 블록**에 넣는다. `try` 내부 마지막 줄은 예외 시 실행이 보장되지 않는다.
 
-### UI
+## Unity 오브젝트 null 체크
 
-`UIController` subscribes to `PlayerStateController` events (`OnHpChanged`, `OnExecutionGaugeChanged`, `OnStaminaChanged`) and scales bar GameObjects on the X axis (0–1 ratio).
+- `?.`, `??`, `??=`, `is null` 패턴 금지 — `UnityEngine.Object`의 커스텀 `==` 연산자를 우회하여 null 체크 실패 (UNT0007/0008)
+- 반드시 `if (obj != null)` 또는 `if (obj == null)` 사용
 
-### Camera
+## 코드 청결
 
-`CameraController` follows the player with `SmoothDamp` and offsets toward the mouse cursor position to extend the visible area in the aiming direction.
+- 사용하지 않는 변수, 프로퍼티 등 dead code는 전부 제거
+- 매직 넘버 지양 → `[SerializeField]` 또는 `const`로 추출
 
-## Key Input Bindings
+## 문서화
 
-| Key | Action |
-|---|---|
-| WASD | Move |
-| Left Shift | Dash (2× speed) |
-| Q / E | Parry / Guard |
-| F | Throw shuriken / Teleport to shuriken |
-| 1 | Throw sword |
-| LMB (when gauge full) | Execute enemy |
+- 베이스/프레임워크 코드에는 XML doc comment(`/// <summary>`) 추가
+- 한국어, API 사용 관점, `[필수 구현]` vs `[선택 override]` 명시
+
+## 작업 방식
+
+- 한 번에 너무 많은 기능을 구현하지 말 것 — 점진적이고 통제된 단위로 작업
+- 작업 단위를 명확히 분리 — Git 충돌 최소화를 위해 기존 공유 파일 수정보다 새 파일 생성 선호
