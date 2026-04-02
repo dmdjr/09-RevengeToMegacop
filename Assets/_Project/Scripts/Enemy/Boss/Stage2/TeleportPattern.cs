@@ -4,21 +4,16 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// 플레이어가 근접하면 맵 반대편으로 순간이동하는 패턴.
-/// 일정 거리 이내일 때만 발동하며, 텔레포트 전 짧은 연출 시간이 있다.
+/// 순간이동 패턴. 플레이어 주변 랜덤 위치로 이동한다.
+/// 반사탄 회피 용도로, 플레이어 근처에서 위치만 바꿔 긴장감을 유지한다.
 /// </summary>
 public class TeleportPattern : BossPattern
 {
     [Header("Teleport Settings")]
-    [SerializeField] private float triggerDistance = 5f;
     [SerializeField] private float teleportDelay = 0.3f;
     [SerializeField] private float afterDelay = 1f;
-
-    [Header("Map Bounds")]
-    [SerializeField] private float mapMinX = -20f;
-    [SerializeField] private float mapMaxX = 20f;
-    [SerializeField] private float mapMinZ = -20f;
-    [SerializeField] private float mapMaxZ = 20f;
+    [SerializeField] private float minDistance = 5f;
+    [SerializeField] private float maxDistance = 12f;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
@@ -34,30 +29,17 @@ public class TeleportPattern : BossPattern
             yield break;
         }
 
-        // 플레이어가 멀면 텔레포트 안 함
-        float distance = Vector3.Distance(boss.transform.position, target.position);
-        if (distance > triggerDistance)
-        {
-            onComplete?.Invoke();
-            yield break;
-        }
-
-        // 텔레포트 전 딜레이 (연출용)
         yield return new WaitForSeconds(teleportDelay);
 
-        // 맵 중심 기준 반대편으로 이동
-        float mapCenterX = (mapMinX + mapMaxX) / 2f;
-        float mapCenterZ = (mapMinZ + mapMaxZ) / 2f;
+        // 플레이어 주변 랜덤 방향, minDistance~maxDistance 거리
+        float angle = UnityEngine.Random.Range(0f, 360f);
+        float distance = UnityEngine.Random.Range(minDistance, maxDistance);
 
-        Vector3 bossPos = boss.transform.position;
-        float newX = mapCenterX + (mapCenterX - bossPos.x);
-        float newZ = mapCenterZ + (mapCenterZ - bossPos.z);
+        Vector3 offset = Quaternion.Euler(0f, angle, 0f) * Vector3.forward * distance;
+        Vector3 newPos = target.position + offset;
+        newPos.y = boss.transform.position.y;
 
-        // 맵 범위 내로 클램프
-        newX = Mathf.Clamp(newX, mapMinX, mapMaxX);
-        newZ = Mathf.Clamp(newZ, mapMinZ, mapMaxZ);
-
-        boss.transform.position = new Vector3(newX, bossPos.y, newZ);
+        boss.transform.position = newPos;
 
         yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();

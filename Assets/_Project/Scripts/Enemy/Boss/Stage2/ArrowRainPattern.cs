@@ -1,13 +1,15 @@
-using System;
 using System.Collections;
 
 using UnityEngine;
 
 /// <summary>
-/// 플레이어 위치 주변에 경고 구역을 표시한 후, 다수의 화살을 낙하시키는 패턴.
-/// 경고 구역은 바닥에 빨간 원(Projector 또는 Quad)으로 표현한다.
+/// 보스전 동안 백그라운드로 계속 작동하는 화살비 환경 위협.
+/// 패턴 시스템(BossPattern)과 독립적으로 동작하며,
+/// 일정 간격마다 플레이어 주변에 경고 구역 표시 → 화살 낙하를 반복한다.
+/// 패링 불가능 (위에서 떨어지므로), 플레이어 이동을 방해하는 용도.
+/// Stage2Boss에서 StartRain() / StopRain()으로 제어한다.
 /// </summary>
-public class ArrowRainPattern : BossPattern
+public class ArrowRainPattern : MonoBehaviour
 {
     [Header("Warning Settings")]
     [SerializeField] private GameObject warningPrefab;
@@ -20,28 +22,52 @@ public class ArrowRainPattern : BossPattern
     [SerializeField] private float bulletSpeed = 15f;
     [SerializeField] private float spawnHeight = 15f;
     [SerializeField] private float spawnDuration = 0.5f;
-    [SerializeField] private float afterDelay = 2f;
 
-    protected override void ExecutePattern(BossEnemy boss, Action onComplete)
+    [Header("Repeat Settings")]
+    [SerializeField] private float repeatInterval = 4f;
+
+    private Transform target;
+    private GameObject owner;
+    private Coroutine rainLoop;
+
+    /// <summary>
+    /// 화살비 반복 시작. 보스전 시작 시 호출한다.
+    /// </summary>
+    public void StartRain(Transform target, GameObject owner)
     {
-        StartCoroutine(ArrowRain(boss, onComplete));
+        this.target = target;
+        this.owner = owner;
+
+        if (rainLoop != null) StopCoroutine(rainLoop);
+        rainLoop = StartCoroutine(RainLoop());
     }
 
-    private IEnumerator ArrowRain(BossEnemy boss, Action onComplete)
+    /// <summary>
+    /// 화살비 중단. 보스 사망 시 호출한다.
+    /// </summary>
+    public void StopRain()
     {
-        Transform target = boss.Target;
-        if (target == null)
+        if (rainLoop != null)
         {
-            onComplete?.Invoke();
-            yield break;
+            StopCoroutine(rainLoop);
+            rainLoop = null;
         }
+    }
 
-        if (BulletPool.Instance == null)
+    private IEnumerator RainLoop()
+    {
+        WaitForSeconds repeatWait = new WaitForSeconds(repeatInterval);
+
+        while (true)
         {
-            Debug.LogError("BulletPool.Instance is null. ArrowRainPattern cannot fire.");
-            onComplete?.Invoke();
-            yield break;
+            yield return StartCoroutine(SingleArrowRain());
+            yield return repeatWait;
         }
+    }
+
+    private IEnumerator SingleArrowRain()
+    {
+        if (target == null || BulletPool.Instance == null) yield break;
 
         // 경고 구역 중심 = 플레이어 현재 위치
         Vector3 center = target.position;
@@ -68,20 +94,17 @@ public class ArrowRainPattern : BossPattern
         float interval = spawnDuration / bulletCount;
         for (int i = 0; i < bulletCount; i++)
         {
-            // 경고 범위 내 랜덤 위치
+            if (BulletPool.Instance == null) yield break;
+
             Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * warningRadius;
             Vector3 spawnPos = new Vector3(center.x + randomOffset.x, spawnHeight, center.z + randomOffset.y);
 
-            // 아래로 발사
             Quaternion downRotation = Quaternion.LookRotation(Vector3.down);
             Bullet bullet = BulletPool.Instance.Get(bulletPrefab, spawnPos, downRotation);
             bullet.Speed = bulletSpeed;
-            bullet.SetOwner(boss.gameObject);
+            bullet.SetOwner(owner);
 
             yield return new WaitForSeconds(interval);
         }
-
-        yield return new WaitForSeconds(afterDelay);
-        onComplete?.Invoke();
     }
 }
