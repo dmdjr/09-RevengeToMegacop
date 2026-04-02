@@ -21,7 +21,9 @@ namespace Boss3
             {
                 
                 _OscillatingBulletPattern,
-                _movePattern
+                _movePattern,
+                _scopePattern,
+                _smokeBombPattern
                 
             };
         }

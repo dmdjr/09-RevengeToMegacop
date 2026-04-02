@@ -11,8 +11,7 @@ public class SmokeBomb : BossPattern
     [Header("연막탄 패턴")]
     [SerializeField] private Boss3SmokeBomb _SmokeBombPrefab;
     [SerializeField] private Transform _throwPoint;
-    [SerializeField] private float _throwForce = 10f;
-    [SerializeField]private float _upwardForce = 5f;
+    
 
     private Transform _PlayerTransform;
 
@@ -54,21 +53,14 @@ public class SmokeBomb : BossPattern
     {
         Debug.Log("SmokeBombPattern Start");
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
 
         Vector3 startPos = _throwPoint.position;
         Vector3 targetPos = _PlayerTransform.position;
 
-         // 수평 방향 계산
-        Vector3 flatDirection = (targetPos - startPos);
-        flatDirection.y = 0f;
-        flatDirection.Normalize();
-
-        // 던질 속도 벡터
-        Vector3 throwVelocity = flatDirection * _throwForce + Vector3.up * _upwardForce;
 
         Boss3SmokeBomb bomb = Instantiate(_SmokeBombPrefab, startPos, Quaternion.identity);
-        bomb.Throw(startPos, throwVelocity, () =>
+        bomb.Throw(startPos, targetPos, () =>
         {
             Debug.Log("연막탄 패턴 완료");
             onComplete?.Invoke();
