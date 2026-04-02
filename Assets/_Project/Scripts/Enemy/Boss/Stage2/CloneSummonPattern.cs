@@ -4,9 +4,10 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// 분신 1~3명을 랜덤 소환하는 패턴.
-/// 분신은 보스와 동일한 외형이지만, 반사탄 1발에 소멸한다.
-/// 분신은 플레이어를 향해 단발 사격 후 일정 시간 뒤 자동 소멸한다.
+/// 분신 1~3명을 순차적으로 소환하는 패턴.
+/// 분신은 BossClone 컴포넌트를 가진 프리팹이어야 한다.
+/// 분신은 자체적으로 반복 사격하며, 반사탄 1발에 소멸한다.
+/// 모든 분신이 소멸하거나 lifetime이 끝나면 패턴이 완료된다.
 /// </summary>
 public class CloneSummonPattern : BossPattern
 {
@@ -15,13 +16,13 @@ public class CloneSummonPattern : BossPattern
     [SerializeField] private int minClones = 1;
     [SerializeField] private int maxClones = 3;
     [SerializeField] private float spawnRadius = 8f;
-    [SerializeField] private float cloneLifetime = 5f;
-    [SerializeField] private float afterDelay = 2f;
+    [SerializeField] private float cloneLifetime = 6f;
+    [SerializeField] private float spawnInterval = 0.5f;
+    [SerializeField] private float afterDelay = 3f;
 
     [Header("Clone Attack")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float bulletSpeed = 18f;
-    [SerializeField] private float attackDelay = 1f;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
@@ -38,6 +39,7 @@ public class CloneSummonPattern : BossPattern
         }
 
         int cloneCount = UnityEngine.Random.Range(minClones, maxClones + 1);
+        WaitForSeconds spawnWait = new WaitForSeconds(spawnInterval);
 
         for (int i = 0; i < cloneCount; i++)
         {
@@ -45,37 +47,27 @@ public class CloneSummonPattern : BossPattern
             Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * spawnRadius;
             Vector3 spawnPos = boss.transform.position + new Vector3(randomOffset.x, 0f, randomOffset.y);
 
-            GameObject clone = Instantiate(clonePrefab, spawnPos, Quaternion.identity);
+            GameObject cloneObj = Instantiate(clonePrefab, spawnPos, Quaternion.identity);
 
-            // 분신 자동 소멸
-            Destroy(clone, cloneLifetime);
+            // BossClone 초기화
+            BossClone clone = cloneObj.GetComponent<BossClone>();
+            if (clone != null)
+            {
+                clone.Initialize(target, boss.gameObject, bulletPrefab, bulletSpeed);
+            }
 
-            // 분신이 일정 시간 후 플레이어를 향해 사격
-            StartCoroutine(CloneAttack(clone, target, boss));
+            // 자동 소멸
+            Destroy(cloneObj, cloneLifetime);
+
+            // 분신 간 소환 간격
+            if (i < cloneCount - 1)
+            {
+                yield return spawnWait;
+            }
         }
 
-        // 소환 후 대기 (분신은 독립적으로 행동)
+        // 분신이 활동할 시간 확보 후 패턴 완료
         yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();
-    }
-
-    private IEnumerator CloneAttack(GameObject clone, Transform target, BossEnemy boss)
-    {
-        yield return new WaitForSeconds(attackDelay);
-
-        if (clone == null || target == null) yield break;
-
-        if (BulletPool.Instance == null) yield break;
-
-        Vector3 direction = (target.position - clone.transform.position).normalized;
-        direction.y = 0f;
-
-        // 분신이 플레이어를 바라봄
-        clone.transform.forward = direction;
-
-        Quaternion rotation = Quaternion.LookRotation(direction);
-        Bullet bullet = BulletPool.Instance.Get(bulletPrefab, clone.transform.position, rotation);
-        bullet.Speed = bulletSpeed;
-        bullet.SetOwner(boss.gameObject);
     }
 }

@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,7 +6,7 @@ public class BossUI : MonoBehaviour
 {
     [SerializeField] private GameObject container;
     [SerializeField] private GameObject hpBar;
-    [SerializeField] private Text bossNameText;
+    [SerializeField] private TextMeshProUGUI bossNameText;
 
     private BossEnemy boss;
 

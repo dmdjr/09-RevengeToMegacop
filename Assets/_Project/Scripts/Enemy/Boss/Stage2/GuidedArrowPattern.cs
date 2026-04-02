@@ -4,16 +4,14 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// 느린 유도 화살을 발사하는 패턴.
-/// 화살이 천천히 플레이어를 추적하며, 패링하면 보스에게 유도된다.
+/// 유도 화살을 발사하는 패턴.
+/// GuidedArrowBullet 프리팹을 생성하고 Initialize()로 추적 대상을 설정한다.
+/// 화살은 독립적으로 플레이어를 추적하며, 패링 시 보스를 추적한다.
 /// </summary>
 public class GuidedArrowPattern : BossPattern
 {
     [Header("Guided Arrow Settings")]
     [SerializeField] private GameObject guidedArrowPrefab;
-    [SerializeField] private float arrowSpeed = 6f;
-    [SerializeField] private float guidedDuration = 4f;
-    [SerializeField] private float turnSpeed = 2f;
     [SerializeField] private float afterDelay = 1.5f;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
@@ -30,44 +28,32 @@ public class GuidedArrowPattern : BossPattern
             yield break;
         }
 
+        if (guidedArrowPrefab == null)
+        {
+            Debug.LogError("[GuidedArrowPattern] guidedArrowPrefab이 할당되지 않았습니다!");
+            onComplete?.Invoke();
+            yield break;
+        }
+
         // 발사 방향
         Vector3 direction = (target.position - boss.transform.position).normalized;
         direction.y = 0f;
         Quaternion rotation = Quaternion.LookRotation(direction);
 
-        // 유도 화살 생성 (풀 사용하지 않고 직접 생성 - 특수 동작이라)
+        // 유도 화살 생성
         GameObject arrowObj = Instantiate(guidedArrowPrefab, boss.transform.position, rotation);
-        Bullet bullet = arrowObj.GetComponent<Bullet>();
-        if (bullet == null)
+        GuidedArrowBullet guidedBullet = arrowObj.GetComponent<GuidedArrowBullet>();
+
+        if (guidedBullet == null)
         {
+            Debug.LogError("[GuidedArrowPattern] 프리팹에 GuidedArrowBullet 컴포넌트가 없습니다!");
             Destroy(arrowObj);
             onComplete?.Invoke();
             yield break;
         }
 
-        bullet.Speed = arrowSpeed;
-        bullet.SetOwner(boss.gameObject);
-
-        // 유도 로직: guidedDuration 동안 플레이어를 추적
-        float elapsed = 0f;
-        while (elapsed < guidedDuration && arrowObj != null)
-        {
-            if (target != null)
-            {
-                Vector3 toTarget = (target.position - arrowObj.transform.position).normalized;
-                toTarget.y = 0f;
-
-                Quaternion targetRotation = Quaternion.LookRotation(toTarget);
-                arrowObj.transform.rotation = Quaternion.Slerp(
-                    arrowObj.transform.rotation,
-                    targetRotation,
-                    turnSpeed * Time.deltaTime
-                );
-            }
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
+        guidedBullet.Initialize(target, boss.transform, boss.gameObject);
+        Debug.Log("[GuidedArrowPattern] 유도 화살 발사!");
 
         yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();

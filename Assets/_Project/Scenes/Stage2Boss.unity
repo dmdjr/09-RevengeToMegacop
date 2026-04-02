@@ -245,8 +245,9 @@ MonoBehaviour:
   weight: 1
   guidedArrowPrefab: {fileID: 3370167828950650170, guid: 37de9c3600b164ec4a5202ed1796389b, type: 3}
   arrowSpeed: 6
-  guidedDuration: 4
+  guidedDuration: 1000
   turnSpeed: 2
+  afterDelay: 1.5
 --- !u!1 &314148341
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,7 +584,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1774342352}
+  m_Father: {fileID: 931758845}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &447062199
 MonoBehaviour:
@@ -597,8 +598,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1332bd655b33436881fcb31ad1db82c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cooldown: 2
-  weight: 1
   warningPrefab: {fileID: 733045781012032798, guid: 6024e5a298a504b2787c086ff19b327f, type: 3}
   warningDuration: 1.5
   warningRadius: 3
@@ -607,6 +606,7 @@ MonoBehaviour:
   bulletSpeed: 15
   spawnHeight: 15
   spawnDuration: 0.5
+  repeatInterval: 4
 --- !u!1 &450960401
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,10 +657,11 @@ MonoBehaviour:
   minClones: 1
   maxClones: 3
   spawnRadius: 8
-  cloneLifetime: 5
+  cloneLifetime: 1000
+  spawnInterval: 0.5
+  afterDelay: 2
   bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
   bulletSpeed: 18
-  attackDelay: 1
 --- !u!1 &542561540
 GameObject:
   m_ObjectHideFlags: 0
@@ -1127,6 +1128,7 @@ MonoBehaviour:
   aimLineLength: 50
   bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
   bulletSpeed: 25
+  afterDelay: 1.5
 --- !u!4 &904950012
 Transform:
   m_ObjectHideFlags: 0
@@ -1209,7 +1211,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 9e7a0ad4b5c7a0747bf9161e1c71bdd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1257,6 +1259,7 @@ Transform:
   - {fileID: 1774342352}
   - {fileID: 944183187}
   - {fileID: 268899214}
+  - {fileID: 447062198}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &931758846
@@ -1280,10 +1283,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c1b84ad2d80c84c64b7156222a0d56b0, type: 2}
   - {fileID: 11400000, guid: 1e46c563d41354789a75800c1391b823, type: 2}
   maxDamagePerHitRatio: 0.15
+  arrowRainPattern: {fileID: 447062199}
   phase1Patterns:
   - {fileID: 904950011}
   - {fileID: 1789487666}
-  - {fileID: 447062199}
   - {fileID: 1180897391}
   phase2Patterns:
   - {fileID: 1053918992}
@@ -1473,6 +1476,7 @@ MonoBehaviour:
   shotCount: 5
   firstDelay: 0.6
   lastDelay: 0.1
+  afterDelay: 1.5
 --- !u!4 &1053918993
 Transform:
   m_ObjectHideFlags: 0
@@ -1519,12 +1523,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 2
   weight: 1
-  triggerDistance: 5
   teleportDelay: 0.3
-  mapMinX: -20
-  mapMaxX: 20
-  mapMinZ: -20
-  mapMaxZ: 20
+  afterDelay: 1
+  minDistance: 5
+  maxDistance: 12
 --- !u!4 &1180897392
 Transform:
   m_ObjectHideFlags: 0
@@ -2053,7 +2055,6 @@ Transform:
   m_Children:
   - {fileID: 904950012}
   - {fileID: 1789487667}
-  - {fileID: 447062198}
   m_Father: {fileID: 931758845}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1789487665
@@ -2091,6 +2092,7 @@ MonoBehaviour:
   secondDelay: 0.2
   bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
   bulletSpeed: 20
+  afterDelay: 1.5
 --- !u!4 &1789487667
 Transform:
   m_ObjectHideFlags: 0
