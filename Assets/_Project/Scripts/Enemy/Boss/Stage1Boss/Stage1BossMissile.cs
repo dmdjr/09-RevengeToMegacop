@@ -6,12 +6,14 @@ public class Stage1BossMissile : Bullet
     [SerializeField] private float lifetime = 5f;
 
     private Transform target;
+    private Transform playerTarget;
     private Transform bossTransform;
     private float elapsed;
     private Vector3 lastForward;
 
     public void Launch(Transform playerTarget, Transform boss)
     {
+        this.playerTarget = playerTarget;
         target = playerTarget;
         bossTransform = boss;
         elapsed = 0f;
@@ -49,6 +51,6 @@ public class Stage1BossMissile : Bullet
         Vector3 currentForwardH = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
         Vector3 lastForwardH = new Vector3(lastForward.x, 0f, lastForward.z).normalized;
         if (Vector3.Dot(currentForwardH, lastForwardH) < 0.95f)
-            target = bossTransform;
+            target = (target == bossTransform) ? playerTarget : bossTransform;
     }
 }

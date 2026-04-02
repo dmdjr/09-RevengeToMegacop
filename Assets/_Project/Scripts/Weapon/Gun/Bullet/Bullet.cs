@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// 총알 기반 클래스. 매 프레임 Speed만큼 전진하며 destroyTime 이후 풀로 반환된다.
+/// BulletPool.Get() 호출 시 Prepare()가 자동으로 실행되어 상태가 초기화된다.
+/// </summary>
 public abstract class Bullet : MonoBehaviour
 {
     public float Speed { get; set; }
@@ -16,7 +20,9 @@ public abstract class Bullet : MonoBehaviour
         this.prefab = prefab;
     }
 
-    // 풀에서 꺼낼 때마다 호출되어 상태를 초기화한다
+    /// <summary>
+    /// 풀에서 꺼낼 때 자동 호출된다. Speed, 반사 여부, 소유자 등 상태를 초기화한다.
+    /// </summary>
     public void Prepare()
     {
         Speed = 0f;
@@ -26,11 +32,17 @@ public abstract class Bullet : MonoBehaviour
         SetDestroyTime();
     }
 
+    /// <summary>
+    /// 총알 소유자를 설정한다. 소유자는 OnTriggerEnter 피격 판정에서 제외된다.
+    /// </summary>
     public void SetOwner(GameObject owner)
     {
         this.owner = owner;
     }
 
+    /// <summary>
+    /// 총알을 반사시킨다. isParry가 true면 마우스 방향으로, false면 ±60° 랜덤 방향으로 튕긴다.
+    /// </summary>
     public void Reflect(GameObject owner, bool isParry)
     {
         this.owner = owner;
@@ -63,7 +75,7 @@ public abstract class Bullet : MonoBehaviour
         if (destroyTime < Time.time) Remove();
     }
 
-    void OnTriggerEnter(Collider other)
+    virtual protected void OnTriggerEnter(Collider other)
     {
         if (other == null) return;
         GameObject obj = other.attachedRigidbody ? other.attachedRigidbody.gameObject : other.gameObject;
@@ -71,11 +83,13 @@ public abstract class Bullet : MonoBehaviour
 
         if (!isReflected && obj.CompareTag("Enemy")) return;
 
-        IDamageable damageable = obj.GetComponent<IDamageable>();
-        if (damageable != null)
+        if (obj.TryGetComponent<IDamageable>(out IDamageable damageable))
             damageable.Hit(this);
     }
 
+    /// <summary>
+    /// 총알을 제거하고 풀로 반환한다. 이미 반환된 경우 중복 실행을 방지한다.
+    /// </summary>
     public void Remove()
     {
         if (isReleased) return;

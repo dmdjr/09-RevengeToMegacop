@@ -14,14 +14,14 @@ TagManager:
   - UI
   - 
   - Enemy
-  - 
+  - SlicedMesh
   - BulletWall
   - 
   - Player
   - 
   - 
-  - 
-  - 
+  - SmokeHidden
+  - Obsacle
   - 
   - 
   - 

@@ -18,10 +18,10 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private bool useNavMesh = true;
     private NavMeshAgent agent;
 
-    private enum State { Idle, MoveToTarget, Attack }
-    private State currentState = State.Idle;
+    private enum State { MoveToTarget, Attack }
+    private State currentState = State.MoveToTarget;
 
-    public event Action<GameObject> OnDeath;
+    public event Action<Enemy> OnDeath;
     public event Action<float> OnHpChanged;
 
     private bool isDead = false;
@@ -33,6 +33,10 @@ public class Enemy : MonoBehaviour, IDamageable
     /// 자식 클래스에서 현재 추적 대상(플레이어)에 접근할 때 사용한다.
     /// </summary>
     public Transform Target => target;
+    /// <summary>
+    /// NavMesh 사용 시 캐싱된 NavMeshAgent. useNavMesh가 false이거나 컴포넌트가 없으면 null.
+    /// </summary>
+    public NavMeshAgent NavAgent => agent;
 
     /// <summary>
     /// 자식 클래스에서 HP를 직접 변경할 때 사용한다. OnHpChanged 이벤트를 자동으로 발행한다.
@@ -50,9 +54,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (bullet == null) return;
 
-        hp -= bullet.Damage;
-
-        OnHpChanged?.Invoke(HpRatio);
+        SetHp(Mathf.Max(0f, hp - bullet.Damage));
 
         if (hp <= 0)
         {
@@ -68,13 +70,14 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         if (isDead) return;
         isDead = true;
-        OnDeath?.Invoke(gameObject);
+        OnDeath?.Invoke(this);
         Destroy(gameObject);
     }
 
     public void EquipWeapon(Weapon w)
     {
         if (w == null) return;
+        if (weapon != null) Destroy(weapon.gameObject);
         weapon = w;
         weapon.transform.SetParent(weaponPoint, false);
         weapon.transform.localPosition = Vector3.zero;
@@ -83,6 +86,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public void SetTarget(Transform t)
     {
         target = t;
+        if (t != null) previousTargetPosition = t.position;
     }
 
     /// <summary>
@@ -104,17 +108,13 @@ public class Enemy : MonoBehaviour, IDamageable
     /// </summary>
     protected virtual void Update()
     {
-        if (target == null)
-        {
-            currentState = State.Idle;
-            return;
-        }
+        if (target == null) return;
 
         LookTarget();
         FSM();
     }
 
-    private void LookTarget()
+    protected void LookTarget()
     {
         if (weapon is GunWeapon gun)
         {
@@ -122,13 +122,15 @@ public class Enemy : MonoBehaviour, IDamageable
         }
         else
         {
-            transform.LookAt(target);
+            transform.LookAt(new Vector3(target.position.x, transform.position.y, target.position.z));
         }
     }
 
     private void AimToTarget(GunWeapon gun)
     {
-        Vector3 targetVelocity = (target.position - previousTargetPosition) / Time.deltaTime;
+        Vector3 targetVelocity = Time.deltaTime > 0f
+            ? (target.position - previousTargetPosition) / Time.deltaTime
+            : Vector3.zero;
         previousTargetPosition = target.position;
 
         Vector3 leadPosition = CalculateLeadPosition(gun, targetVelocity);
@@ -155,10 +157,6 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         switch (currentState)
         {
-            case State.Idle:
-                currentState = State.MoveToTarget;
-                break;
-
             case State.MoveToTarget:
                 if (IsTargetInRange())
                 {

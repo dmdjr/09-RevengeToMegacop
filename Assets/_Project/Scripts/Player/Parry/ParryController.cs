@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-public class ParryController
+public sealed class ParryController
 {
     private Queue<ParryInfo> queue = new Queue<ParryInfo>(30);
 

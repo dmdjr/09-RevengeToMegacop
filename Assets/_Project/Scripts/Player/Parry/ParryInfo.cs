@@ -1,6 +1,6 @@
 public struct ParryInfo
 {
-    public float time;
+    public readonly float time;
 
     public ParryInfo(float time)
     {

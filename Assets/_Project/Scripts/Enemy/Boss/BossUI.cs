@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,7 +6,7 @@ public class BossUI : MonoBehaviour
 {
     [SerializeField] private GameObject container;
     [SerializeField] private GameObject hpBar;
-    [SerializeField] private Text bossNameText;
+    [SerializeField] private TextMeshProUGUI bossNameText;
 
     private BossEnemy boss;
 
@@ -42,14 +43,14 @@ public class BossUI : MonoBehaviour
         }
     }
 
-    private void OnBossDied(GameObject obj)
+    private void OnBossDied(Enemy enemy)
     {
         Hide();
     }
 
     void OnDestroy()
     {
-        if (boss != null)
+        if (!ReferenceEquals(boss, null))
         {
             boss.OnHpChanged -= UpdateHpBar;
             boss.OnDeath -= OnBossDied;

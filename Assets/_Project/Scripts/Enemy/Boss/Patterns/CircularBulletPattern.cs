@@ -11,6 +11,13 @@ public class CircularBulletPattern : BossPattern
     [SerializeField] private float waveCooldown = 0.5f;
     [SerializeField] private float bulletSpeed = 10f;
 
+    private WaitForSeconds waitForWave;
+
+    void Awake()
+    {
+        waitForWave = new WaitForSeconds(waveCooldown);
+    }
+
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
         StartCoroutine(FireCircularBullets(boss, onComplete));
@@ -26,10 +33,15 @@ public class CircularBulletPattern : BossPattern
         }
 
         float angleStep = 360f / bulletCount;
-        WaitForSeconds wait = new WaitForSeconds(waveCooldown);
 
         for (int w = 0; w < waves; w++)
         {
+            if (boss == null)
+            {
+                onComplete?.Invoke();
+                yield break;
+            }
+
             for (int i = 0; i < bulletCount; i++)
             {
                 float angle = i * angleStep;
@@ -37,13 +49,14 @@ public class CircularBulletPattern : BossPattern
                 Vector3 position = boss.transform.position;
 
                 Bullet bullet = BulletPool.Instance.Get(bulletPrefab, position, rotation);
+                if (bullet == null) continue;
                 bullet.Speed = bulletSpeed;
                 bullet.SetOwner(boss.gameObject);
             }
 
             if (w < waves - 1)
             {
-                yield return wait;
+                yield return waitForWave;
             }
         }
 

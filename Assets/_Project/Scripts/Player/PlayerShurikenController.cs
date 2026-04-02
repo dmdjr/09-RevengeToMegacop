@@ -2,10 +2,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(PlayerMovementController))]
-public class PlayerShurikenController : MonoBehaviour
+public class PlayerShurikenController : PlayerSkillController
 {
     [SerializeField] private GameObject shurikenPrefab;
-    [SerializeField] private float coolTime = 3f;
+    [SerializeField] private float cooldown = 3f;
 
     private PlayerMovementController controller;
 
@@ -16,39 +16,46 @@ public class PlayerShurikenController : MonoBehaviour
 
     private InputAction shurikenAction;
 
+    public override SkillId SkillId => SkillId.ShurikenThrow;
+
     void Awake()
     {
         controller = GetComponent<PlayerMovementController>();
     }
 
-    public void Initialize(InputAction shurikenAction)
+    public override void InitializeSkill(InputActionMap playerMap)
     {
-        this.shurikenAction = shurikenAction;
+        shurikenAction = playerMap.FindAction("Shuriken", throwIfNotFound: true);
     }
 
-    public void UpdateCooldown()
+    public override void Tick()
     {
         if (0 < currentCooldown) currentCooldown -= Time.deltaTime;
 
-        if (shuriken == null && isShurikenThrown)
+        if (!HasFlyingShuriken() && isShurikenThrown)
         {
             isShurikenThrown = false;
-            currentCooldown = coolTime;
+            currentCooldown = cooldown;
         }
     }
 
-    public void HandleShuriken()
+    public override void Handle()
     {
         if (shurikenAction.WasPressedThisFrame())
         {
-            if (InCoolTime()) return;
+            if (InCooldown()) return;
+            if (shurikenPrefab == null)
+            {
+                Debug.LogWarning("PlayerShurikenController: shurikenPrefab is not assigned.");
+                return;
+            }
 
             if (HasFlyingShuriken()) Teleport();
             else ThrowShuriken();
         }
     }
 
-    private bool InCoolTime()
+    private bool InCooldown()
     {
         return 0 < currentCooldown;
     }
@@ -60,20 +67,17 @@ public class PlayerShurikenController : MonoBehaviour
 
     private void Teleport()
     {
-        controller.Teleport(shuriken.transform.position);
+        if (shuriken == null) return;
+        Vector3 teleportPos = shuriken.transform.position;
         Destroy(shuriken);
         shuriken = null;
         isShurikenThrown = false;
-        currentCooldown = coolTime;
+        currentCooldown = cooldown;
+        controller.Teleport(teleportPos);
     }
 
     private void ThrowShuriken()
     {
-        if (shurikenPrefab == null)
-        {
-            Debug.LogWarning("PlayerShurikenController: shurikenPrefab is not assigned.");
-            return;
-        }
         shuriken = Instantiate(shurikenPrefab);
         shuriken.transform.position = transform.position;
         shuriken.transform.forward = transform.forward;

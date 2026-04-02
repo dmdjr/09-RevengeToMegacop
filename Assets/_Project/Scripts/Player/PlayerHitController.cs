@@ -16,6 +16,9 @@ public class PlayerHitController : MonoBehaviour, IDamageable
     [SerializeField]
     private GameObject parryVfxPrefab;
 
+    [SerializeField]
+    private float parryVfxDistance = 1.5f;
+
     private PlayerStateController playerStateController;
 
     private ParryController parryController = new ParryController();
@@ -88,9 +91,6 @@ public class PlayerHitController : MonoBehaviour, IDamageable
 
         return parryThreshold < dot;
     }
-
-    [SerializeField]
-    private float parryVfxDistance = 1.5f;
 
     private void Parry(Bullet bullet)
     {

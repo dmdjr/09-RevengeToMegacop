@@ -685,9 +685,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e957b58d3ab5dcb4a9b6a72b7f2e3021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: {fileID: 649008876}
-  executionGauge: {fileID: 1681223241}
-  stamina: {fileID: 761408521}
+  hp: {fileID: 649008879}
+  executionGauge: {fileID: 1681223244}
+  stamina: {fileID: 761408524}
   playerStateController: {fileID: 1700423676}
 --- !u!114 &780219873
 MonoBehaviour:
@@ -946,6 +946,7 @@ MonoBehaviour:
   spawnInterval: 3
   spawnArea: 70
   maxEnemies: 3
+  minSpawnDistance: 10
 --- !u!4 &1473619429
 Transform:
   m_ObjectHideFlags: 0
@@ -953,6 +954,52 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1473619427}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1569772616
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1569772618}
+  - component: {fileID: 1569772617}
+  m_Layer: 0
+  m_Name: SkillManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1569772617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569772616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28e69ef934caba34d9a8326feff5c2da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  database: {fileID: 11400000, guid: bbfb89c520fbc1649aeb6d77302963f1, type: 2}
+  initiallyUnlockedSkills: 010000000200000003000000
+--- !u!4 &1569772618
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1569772616}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1056,7 +1103,8 @@ GameObject:
   - component: {fileID: 1700423675}
   - component: {fileID: 1700423678}
   - component: {fileID: 1700423679}
-  - component: {fileID: 1700423680}
+  - component: {fileID: 1700423681}
+  - component: {fileID: 1700423682}
   m_Layer: 11
   m_Name: Player
   m_TagString: Untagged
@@ -1172,6 +1220,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   executionDashSpeed: 80
+  groundY: 1
+  executionArrivalThreshold: 0.1
 --- !u!114 &1700423673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1201,7 +1251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shurikenPrefab: {fileID: 9198560586046724312, guid: 1f1c9d2ad4c559349b7a6bba83e6aeff, type: 3}
-  coolTime: 3
+  cooldown: 3
 --- !u!114 &1700423675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1218,7 +1268,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   executionRange: 50
-  executionTrail: {fileID: 1700423680}
+  executionSliceEffect: {fileID: 1700423681}
+  executionSlashVfx: {fileID: 1700423682}
 --- !u!114 &1700423676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1284,113 +1335,45 @@ MonoBehaviour:
   spawnInterval: 0.05
   fadeDuration: 0.3
   afterimageColor: {r: 1, g: 1, b: 1, a: 0.5}
---- !u!96 &1700423680
-TrailRenderer:
-  serializedVersion: 3
+  executionSpawnInterval: 0.02
+  executionAfterimageColor: {r: 1, g: 0.2, b: 0.1, a: 0.7}
+  unlitShader: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
+--- !u!114 &1700423681
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1700423665}
   m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 0
-  m_LightProbeUsage: 0
-  m_ReflectionProbeUsage: 0
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: ee88a1f429287054dbff086b81eb38ad, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Time: 0.3
-  m_PreviewTimeScale: 1
-  m_Parameters:
-    serializedVersion: 3
-    widthMultiplier: 1
-    widthCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 1
-        value: 0.08571446
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    colorGradient:
-      serializedVersion: 2
-      key0: {r: 0, g: 0, b: 0, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
-      key2: {r: 0, g: 0, b: 0, a: 0}
-      key3: {r: 0, g: 0, b: 0, a: 0}
-      key4: {r: 0, g: 0, b: 0, a: 0}
-      key5: {r: 0, g: 0, b: 0, a: 0}
-      key6: {r: 0, g: 0, b: 0, a: 0}
-      key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 0
-      ctime1: 65535
-      ctime2: 0
-      ctime3: 0
-      ctime4: 0
-      ctime5: 0
-      ctime6: 0
-      ctime7: 0
-      atime0: 0
-      atime1: 65535
-      atime2: 0
-      atime3: 0
-      atime4: 0
-      atime5: 0
-      atime6: 0
-      atime7: 0
-      m_Mode: 0
-      m_ColorSpace: 0
-      m_NumColorKeys: 2
-      m_NumAlphaKeys: 2
-    numCornerVertices: 0
-    numCapVertices: 0
-    alignment: 0
-    textureMode: 0
-    textureScale: {x: 1, y: 1}
-    shadowBias: 0.5
-    generateLightingData: 0
-  m_MinVertexDistance: 0.1
-  m_MaskInteraction: 0
-  m_Autodestruct: 0
-  m_Emitting: 0
-  m_ApplyActiveColorSpace: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c40d0b5a5e41e1e49af2e67a7998d114, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  separationForce: 8
+  upwardForce: 3
+  torqueForce: 5
+  crossSectionMaterial: {fileID: 0}
+  destroyDelay: 3
+  fadeStartTime: 1.5
+  unlitShader: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
+--- !u!114 &1700423682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700423665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c18114729f4224fa64afcd9d4d1163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slashVfxPrefab: {fileID: 3096923336240688081, guid: 50f1354827c77ef4b99c4dca0ee3411d, type: 3}
+  positionOffset: {x: 0, y: 1, z: 0}
+  rotationOffset: {x: -135, y: 0, z: 90}
+  vfxScale: 3
+  simulationSpeed: 1
 --- !u!1 &1956072997
 GameObject:
   m_ObjectHideFlags: 0
@@ -1527,3 +1510,4 @@ SceneRoots:
   - {fileID: 2145070040}
   - {fileID: 780219876}
   - {fileID: 1956073000}
+  - {fileID: 1569772618}

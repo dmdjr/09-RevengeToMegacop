@@ -123,7 +123,6 @@ Material:
     - _DistortionPower: 0.08
     - _DistortionSpeed: 0.1
     - _DstBlend: 10
-    - _DstBlendAlpha: 10
     - _Emission: 1
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
@@ -146,7 +145,6 @@ Material:
     - _Soft_Particle: 1
     - _SpecularHighlights: 1
     - _SrcBlend: 5
-    - _SrcBlendAlpha: 1
     - _Strech: 1
     - _Surface: 1
     - _TexPower: 5

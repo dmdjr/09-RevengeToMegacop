@@ -1531,12 +1531,28 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 171627873018261999, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
+      propertyPath: bulletSpeed
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 171627873018261999, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: maxHoldDuration
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 171627873018261999, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
+      propertyPath: maxShotDuration
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 171627873018261999, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: minHoldDuration
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 171627873018261999, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
+      propertyPath: minShotDuration
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2654975058737273334, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
+      propertyPath: maxShieldGauge
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 3850946650909196443, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: cooldown
@@ -1552,7 +1568,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4327586105273919820, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 41
+      value: -13.5
       objectReference: {fileID: 0}
     - target: {fileID: 4327586105273919820, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1560,7 +1576,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4327586105273919820, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -38.8
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 4327586105273919820, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1591,6 +1607,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4548666451752014564, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
+      propertyPath: weight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4548666451752014564, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: cooldown
       value: 10
       objectReference: {fileID: 0}
@@ -1612,11 +1632,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6274598172816198847, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: weight
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6274598172816198847, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: cooldown
-      value: 10
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6274598172816198847, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
+      propertyPath: holdDuration
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8150755713233186335, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: player

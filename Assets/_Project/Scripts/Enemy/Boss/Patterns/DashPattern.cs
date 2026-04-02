@@ -15,6 +15,12 @@ public class DashPattern : BossPattern
 
     private IEnumerator DashTowardsTarget(BossEnemy boss, Action onComplete)
     {
+        if (boss == null)
+        {
+            onComplete?.Invoke();
+            yield break;
+        }
+
         Transform target = boss.Target;
         if (target == null)
         {
@@ -25,10 +31,23 @@ public class DashPattern : BossPattern
         Vector3 direction = (target.position - boss.transform.position).normalized;
         direction.y = 0f;
 
+        var agent = boss.NavAgent;
+        if (agent != null) agent.ResetPath();
+
         float elapsed = 0f;
         while (elapsed < dashDuration)
         {
-            boss.transform.position += direction * (dashSpeed * Time.deltaTime);
+            if (boss == null)
+            {
+                onComplete?.Invoke();
+                yield break;
+            }
+
+            Vector3 delta = direction * (dashSpeed * Time.deltaTime);
+            if (agent != null)
+                agent.Move(delta);
+            else
+                boss.transform.position += delta;
             elapsed += Time.deltaTime;
             yield return null;
         }

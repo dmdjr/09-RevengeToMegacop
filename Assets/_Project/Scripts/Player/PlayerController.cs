@@ -4,9 +4,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerExecutionController))]
 [RequireComponent(typeof(PlayerHitController))]
 [RequireComponent(typeof(PlayerMovementController))]
-[RequireComponent(typeof(PlayerShurikenController))]
 [RequireComponent(typeof(PlayerStateController))]
-[RequireComponent(typeof(PlayerSwordController))]
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private InputActionAsset inputActions;
@@ -14,18 +12,24 @@ public class PlayerController : MonoBehaviour
     private PlayerExecutionController playerExecutionController;
     private PlayerHitController playerHitController;
     private PlayerMovementController playerMovementController;
-    private PlayerShurikenController playerShurikenController;
     private PlayerStateController playerStateController;
-    private PlayerSwordController playerSwordController;
+
+    private PlayerSkillController[] skillControllers;
+
+    private bool isInitialized = false;
 
     void Awake()
     {
+        if (inputActions == null)
+        {
+            Debug.LogError("PlayerController: inputActions is not assigned.");
+            return;
+        }
+
         playerExecutionController = GetComponent<PlayerExecutionController>();
         playerHitController = GetComponent<PlayerHitController>();
         playerMovementController = GetComponent<PlayerMovementController>();
-        playerShurikenController = GetComponent<PlayerShurikenController>();
         playerStateController = GetComponent<PlayerStateController>();
-        playerSwordController = GetComponent<PlayerSwordController>();
 
         var playerMap = inputActions.FindActionMap("Player", throwIfNotFound: true);
         playerMovementController.Initialize(
@@ -33,12 +37,14 @@ public class PlayerController : MonoBehaviour
             playerMap.FindAction("Sprint", throwIfNotFound: true));
         playerHitController.Initialize(
             playerMap.FindAction("Parry", throwIfNotFound: true));
-        playerShurikenController.Initialize(
-            playerMap.FindAction("Shuriken", throwIfNotFound: true));
-        playerSwordController.Initialize(
-            playerMap.FindAction("ThrowSword", throwIfNotFound: true));
         playerExecutionController.Initialize(
             playerMap.FindAction("Attack", throwIfNotFound: true));
+
+        skillControllers = GetComponents<PlayerSkillController>();
+        foreach (var skillController in skillControllers)
+            skillController.InitializeSkill(playerMap);
+
+        isInitialized = true;
     }
 
     void OnEnable()
@@ -53,17 +59,26 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (!isInitialized) return;
+
         playerHitController.UpdateParries();
         playerMovementController.UpdateGravity();
-        playerShurikenController.UpdateCooldown();
         playerStateController.UpdateStamina();
+
+        foreach (var skillController in skillControllers)
+            skillController.Tick();
 
         if (playerMovementController.IsExecutionDashing) return;
 
         playerHitController.HandleHit();
         playerMovementController.HandleMovement();
-        playerShurikenController.HandleShuriken();
-        playerSwordController.HandleSword();
+
+        foreach (var skillController in skillControllers)
+        {
+            if (SkillManager.Instance != null && SkillManager.Instance.IsUnlocked(skillController.SkillId))
+                skillController.Handle();
+        }
+
         playerExecutionController.HandleExecution();
     }
 }

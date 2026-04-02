@@ -28,8 +28,14 @@ public class BulletPool : MonoBehaviour
     public Bullet Get(GameObject prefab, Vector3 position, Quaternion rotation)
     {
         Bullet bullet = GetOrCreatePool(prefab).Get();
+        if (bullet == null)
+        {
+            Debug.LogError($"BulletPool: prefab '{prefab.name}'에 Bullet 컴포넌트가 없습니다.");
+            return null;
+        }
         bullet.transform.SetPositionAndRotation(position, rotation);
         bullet.Prepare();
+        bullet.gameObject.SetActive(true);
         return bullet;
     }
 
@@ -50,11 +56,17 @@ public class BulletPool : MonoBehaviour
         pool = new ObjectPool<Bullet>(
             createFunc: () =>
             {
-                Bullet bullet = Instantiate(prefab, transform).GetComponent<Bullet>();
+                GameObject bulletObject = Instantiate(prefab, transform);
+                if (!bulletObject.TryGetComponent<Bullet>(out Bullet bullet))
+                {
+                    Debug.LogError($"BulletPool: prefab '{prefab.name}'에 Bullet 컴포넌트가 없습니다.");
+                    Destroy(bulletObject);
+                    return null;
+                }
                 bullet.SetPrefab(prefab);
                 return bullet;
             },
-            actionOnGet: bullet => bullet.gameObject.SetActive(true),
+            actionOnGet: _ => { },
             actionOnRelease: bullet => bullet.gameObject.SetActive(false),
             actionOnDestroy: bullet => Destroy(bullet.gameObject),
             defaultCapacity: 20,

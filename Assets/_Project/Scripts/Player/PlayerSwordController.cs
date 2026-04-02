@@ -1,21 +1,28 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerSwordController : MonoBehaviour
+public class PlayerSwordController : PlayerSkillController
 {
     [SerializeField] private GameObject swordPrefab;
     [SerializeField] private float throwCooldown = 3f;
 
-    private float lastThrowTime;
+    private float currentCooldown;
 
     private InputAction throwSwordAction;
 
-    public void Initialize(InputAction throwSwordAction)
+    public override SkillId SkillId => SkillId.SwordThrow;
+
+    public override void InitializeSkill(InputActionMap playerMap)
     {
-        this.throwSwordAction = throwSwordAction;
+        throwSwordAction = playerMap.FindAction("ThrowSword", throwIfNotFound: true);
     }
 
-    public void HandleSword()
+    public override void Tick()
+    {
+        if (0 < currentCooldown) currentCooldown -= Time.deltaTime;
+    }
+
+    public override void Handle()
     {
         if (throwSwordAction.WasPressedThisFrame())
         {
@@ -26,22 +33,22 @@ public class PlayerSwordController : MonoBehaviour
                 return;
             }
 
-            lastThrowTime = Time.time;
+            currentCooldown = throwCooldown;
 
-            if (!Instantiate(swordPrefab, transform.position, Quaternion.identity).TryGetComponent<SwordController>(out var sword)) return;
+            GameObject swordObj = Instantiate(swordPrefab, transform.position, Quaternion.identity);
+            if (!swordObj.TryGetComponent<SwordController>(out var swordController))
+            {
+                Destroy(swordObj);
+                return;
+            }
 
-            Vector3 mousePos = MousePositionGetter.GetMousePositionInWorld(sword.transform.position);
-            sword.Throw(mousePos);
+            Vector3 mousePos = MousePositionGetter.GetMousePositionInWorld(swordController.transform.position);
+            swordController.Throw(mousePos);
         }
     }
 
     private bool InCooldown()
     {
-        return Time.time - lastThrowTime < throwCooldown;
-    }
-
-    void Start()
-    {
-        lastThrowTime = -throwCooldown;
+        return 0 < currentCooldown;
     }
 }

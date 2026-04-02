@@ -10,10 +10,13 @@ public class PlayerExecutionController : MonoBehaviour
 
     [SerializeField] private LayerMask enemyLayerMask;
     [SerializeField] private float executionRange = 50f;
-    [SerializeField] private TrailRenderer executionTrail;
+    [SerializeField] private ExecutionSliceEffect executionSliceEffect;
+    [SerializeField] private ExecutionSlashVfx executionSlashVfx;
 
     private InputAction attackAction;
     private Camera mainCamera;
+
+    private Enemy executionTarget;
 
     void Awake()
     {
@@ -37,6 +40,7 @@ public class PlayerExecutionController : MonoBehaviour
 
     private void TryExecute()
     {
+        if (Mouse.current == null) return;
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, executionRange, enemyLayerMask))
         {
@@ -48,15 +52,33 @@ public class PlayerExecutionController : MonoBehaviour
     {
         if (enemy == null) return;
         Vector3 enemyPosition = enemy.transform.position;
-        if (enemy.TryGetComponent<Enemy>(out var e)) e.Die();
 
-        if (executionTrail != null) executionTrail.emitting = true;
+        executionTarget = enemy.TryGetComponent<Enemy>(out var enemyComponent) ? enemyComponent : null;
+
         playerMovementController.ExecutionDash(enemyPosition, OnExecutionDashComplete);
         playerStateController.Executed();
     }
 
     private void OnExecutionDashComplete()
     {
-        if (executionTrail != null) executionTrail.emitting = false;
+        if (executionTarget != null)
+        {
+            // 슬라이스 방향: 플레이어 진행 방향의 수직 (좌우 절단)
+            Vector3 sliceNormal = transform.right;
+            Vector3 slicePosition = executionTarget.transform.position;
+
+            if (executionSlashVfx != null)
+            {
+                executionSlashVfx.Play(slicePosition, transform.forward);
+            }
+
+            if (executionSliceEffect != null)
+            {
+                executionSliceEffect.Slice(executionTarget.gameObject, slicePosition, sliceNormal);
+            }
+
+            executionTarget.Die();
+            executionTarget = null;
+        }
     }
 }

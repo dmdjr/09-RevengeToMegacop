@@ -121,6 +121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de6b5ba2020db4a8b8c232de612f0644, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Damage>k__BackingField: 10
+  <Damage>k__BackingField: 15
   turnSpeed: 500
   lifetime: 5

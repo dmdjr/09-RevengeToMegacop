@@ -9,6 +9,8 @@ public class PlayerMovementController : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
     [SerializeField] private float executionDashSpeed = 80f;
+    [SerializeField] private float groundY = 1f;
+    [SerializeField] private float executionArrivalThreshold = 0.1f;
 
     private CharacterController controller;
 
@@ -16,13 +18,13 @@ public class PlayerMovementController : MonoBehaviour
 
     private bool isMoving;
     private bool isExecutionDashing;
+    private bool isDashing;
 
     public bool IsExecutionDashing => isExecutionDashing;
+    public bool IsDashing => isDashing;
 
     private InputAction moveAction;
     private InputAction sprintAction;
-
-    public bool IsDashing => sprintAction != null && sprintAction.IsPressed() && isMoving;
 
     private float gravity = -9.81f;
     private Vector3 velocity;
@@ -47,7 +49,7 @@ public class PlayerMovementController : MonoBehaviour
             Debug.LogWarning("PlayerMovementController: Teleport targetPosition is invalid.");
             return;
         }
-        targetPosition.y = 1f;
+        targetPosition.y = groundY;
         controller.enabled = false;
         transform.position = targetPosition;
         controller.enabled = true;
@@ -68,14 +70,9 @@ public class PlayerMovementController : MonoBehaviour
 
     public void HandleMovement()
     {
-        HandleDash();
         HandleMove();
+        HandleDash();
         HandleRotation();
-    }
-
-    private void HandleDash()
-    {
-        realSpeed = sprintAction.IsPressed() ? speed * 2 : speed;
     }
 
     private void HandleMove()
@@ -84,6 +81,14 @@ public class PlayerMovementController : MonoBehaviour
         isMoving = input.sqrMagnitude > 0f;
         Vector3 dir = (Vector3.right * input.x + Vector3.forward * input.y).normalized;
         controller.Move(dir * (realSpeed * Time.deltaTime));
+    }
+
+    private void HandleDash()
+    {
+        bool canDash = SkillManager.Instance != null && SkillManager.Instance.IsUnlocked(SkillId.Dash);
+        bool sprintPressed = sprintAction.IsPressed();
+        isDashing = canDash && sprintPressed && isMoving;
+        realSpeed = isDashing ? speed * 2 : speed;
     }
 
     private void HandleRotation()
@@ -100,17 +105,24 @@ public class PlayerMovementController : MonoBehaviour
     {
         isExecutionDashing = true;
         controller.enabled = false;
-        target.y = 1f;
+        target.y = groundY;
 
-        while (Vector3.Distance(transform.position, target) > 0.1f)
+        try
         {
-            transform.position = Vector3.MoveTowards(transform.position, target, executionDashSpeed * Time.deltaTime);
-            yield return null;
+            while (Vector3.Distance(transform.position, target) > executionArrivalThreshold)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, target, executionDashSpeed * Time.deltaTime);
+                yield return null;
+            }
+
+            transform.position = target;
+        }
+        finally
+        {
+            controller.enabled = true;
+            isExecutionDashing = false;
         }
 
-        transform.position = target;
-        controller.enabled = true;
-        isExecutionDashing = false;
         onComplete?.Invoke();
     }
 }

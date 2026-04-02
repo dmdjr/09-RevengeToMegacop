@@ -12,9 +12,10 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float spawnInterval = 10f;
     [SerializeField] private float spawnArea = 100f;
     [SerializeField] private int maxEnemies = 10;
+    [SerializeField] private float minSpawnDistance = 10f;
 
     private float timer = 0f;
-    private HashSet<GameObject> spawnedEnemies = new HashSet<GameObject>();
+    private HashSet<Enemy> spawnedEnemies = new HashSet<Enemy>();
 
     void Update()
     {
@@ -33,8 +34,7 @@ public class EnemySpawner : MonoBehaviour
         Vector3 pos = GenerateSpawnPosition();
         Quaternion rot = Quaternion.identity;
         GameObject enemyObj = Instantiate(enemyPrefab, pos, rot, transform);
-        Enemy enemy = enemyObj.GetComponent<Enemy>();
-        if (enemy == null)
+        if (!enemyObj.TryGetComponent<Enemy>(out Enemy enemy))
         {
             Debug.LogWarning("EnemySpawner: Spawned prefab is missing Enemy component. Destroying.");
             Destroy(enemyObj);
@@ -48,13 +48,13 @@ public class EnemySpawner : MonoBehaviour
             if (weaponPrefab != null)
             {
                 GameObject weaponInstance = Instantiate(weaponPrefab);
-                Weapon weaponComponent = weaponInstance.GetComponent<Weapon>();
-                if (weaponComponent != null)
+                if (weaponInstance.TryGetComponent<Weapon>(out Weapon weaponComponent))
                 {
-                    if (enemy != null)
-                    {
-                        enemy.EquipWeapon(weaponComponent);
-                    }
+                    enemy.EquipWeapon(weaponComponent);
+                }
+                else
+                {
+                    Destroy(weaponInstance);
                 }
             }
         }
@@ -65,7 +65,7 @@ public class EnemySpawner : MonoBehaviour
             enemy.SetTarget(target);
         }
 
-        spawnedEnemies.Add(enemyObj);
+        spawnedEnemies.Add(enemy);
     }
 
     private Vector3 GenerateSpawnPosition()
@@ -77,10 +77,10 @@ public class EnemySpawner : MonoBehaviour
         if (target == null) return pos;
 
         float dist = Vector3.Distance(pos, target.position);
-        if (dist < 10f)
+        if (dist < minSpawnDistance)
         {
             Vector3 dir = (pos - target.position).normalized;
-            pos = target.position + dir * 10.1f;
+            pos = target.position + dir * (minSpawnDistance + 0.1f);
             pos.y = 0f;
         }
 
@@ -94,16 +94,14 @@ public class EnemySpawner : MonoBehaviour
 
     void OnDestroy()
     {
-        foreach (GameObject enemyObj in spawnedEnemies)
+        foreach (Enemy enemy in spawnedEnemies)
         {
-            if (enemyObj == null) continue;
-            Enemy enemy = enemyObj.GetComponent<Enemy>();
             if (enemy != null) enemy.OnDeath -= OnDeath;
         }
     }
 
-    private void OnDeath(GameObject enemyObj)
+    private void OnDeath(Enemy enemy)
     {
-        spawnedEnemies.Remove(enemyObj);
+        spawnedEnemies.Remove(enemy);
     }
 }

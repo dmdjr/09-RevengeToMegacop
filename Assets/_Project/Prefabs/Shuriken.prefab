@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3150339429534427228}
-  - component: {fileID: 7443565488644497066}
+  - component: {fileID: 8208522310286329001}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -34,7 +34,7 @@ Transform:
   - {fileID: 1181637392306566339}
   m_Father: {fileID: 7721052426320624484}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7443565488644497066
+--- !u!114 &8208522310286329001
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43,10 +43,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 746278692574830164}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a06e0ac181400304392f8ce069771074, type: 3}
+  m_Script: {fileID: 11500000, guid: 7f9d65da0000806468882deedc97aaad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spinSpeed: 1000
+  rotationSpeed: 3
 --- !u!1 &6499957787465945389
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,7 +265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a68812aceee857a4aa301a6aee169242, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 40
+  speed: 30
   lifeTime: 3
 --- !u!65 &3320942388299460644
 BoxCollider:

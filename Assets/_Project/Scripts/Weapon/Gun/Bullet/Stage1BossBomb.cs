@@ -6,6 +6,7 @@ public class Stage1BossBomb : Bullet
     [SerializeField] private float arcHeight = 4f;
     [SerializeField] private float fuseTime = 4f;
     [SerializeField] private float explosionRadius = 3f;
+    [SerializeField] private GameObject explosionEffectPrefab;
 
     private Vector3 startPos;
     private Vector3 targetPos;
@@ -14,7 +15,18 @@ public class Stage1BossBomb : Bullet
     private float elapsed;
     private float totalElapsed;
     private bool isLaunched;
+    private bool playerDirectlyHit;
     private Vector3 lastForward;
+
+    override protected void OnTriggerEnter(Collider other)
+    {
+        if (!isLaunched) return;
+        base.OnTriggerEnter(other);
+ 
+        GameObject obj = other.attachedRigidbody ? other.attachedRigidbody.gameObject : other.gameObject;
+        if (obj.GetComponent<PlayerStateController>() != null)
+            playerDirectlyHit = true;
+    }
 
     public void Launch(Vector3 start, Vector3 target)
     {
@@ -25,6 +37,7 @@ public class Stage1BossBomb : Bullet
         elapsed = 0f;
         totalElapsed = 0f;
         isLaunched = true;
+        playerDirectlyHit = false;
 
         Vector3 horizontal = new Vector3(target.x - start.x, 0f, target.z - start.z);
         if (horizontal.sqrMagnitude > 0.01f)
@@ -84,7 +97,7 @@ public class Stage1BossBomb : Bullet
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
     }
 
-    private void Explode()
+    private void Explode() // 폭발 데미지 적용(패링 불가) 및 이펙트 재생
     {
         isLaunched = false;
 
@@ -92,12 +105,27 @@ public class Stage1BossBomb : Bullet
         foreach (var hit in hits)
         {
             GameObject obj = hit.attachedRigidbody ? hit.attachedRigidbody.gameObject : hit.gameObject;
+
             PlayerStateController playerState = obj.GetComponent<PlayerStateController>();
             if (playerState != null)
             {
-                playerState.TakeDamage(Damage);
+                if (!playerDirectlyHit)
+                    playerState.TakeDamage(Damage);
                 break;
             }
+
+            IDamageable damageable = obj.GetComponent<IDamageable>();
+            if (damageable != null)
+            {
+                damageable.Hit(this);
+                break;
+            }
+        }
+
+        if (explosionEffectPrefab != null)
+        {
+            GameObject fx = Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
+            fx.GetComponent<BombExplosionEffect>()?.Play(explosionRadius);
         }
 
         Remove();

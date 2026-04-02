@@ -11,7 +11,7 @@ public class PlayerStateController : MonoBehaviour
         private set
         {
             hp = Mathf.Clamp(value, 0, maxHp);
-            OnHpChanged?.Invoke(Hp / MaxHp);
+            OnHpChanged?.Invoke(HpRatio);
         }
     }
     [SerializeField] private float maxHp = 100f;
@@ -23,7 +23,7 @@ public class PlayerStateController : MonoBehaviour
         private set
         {
             executionGauge = Mathf.Clamp(value, 0, maxExecutionGauge);
-            OnExecutionGaugeChanged?.Invoke(ExecutionGauge / MaxExecutionGauge);
+            OnExecutionGaugeChanged?.Invoke(ExecutionGaugeRatio);
         }
     }
     [SerializeField] private float maxExecutionGauge = 100f;
@@ -38,7 +38,7 @@ public class PlayerStateController : MonoBehaviour
         private set
         {
             stamina = Mathf.Clamp(value, 0, maxStamina);
-            OnStaminaChanged?.Invoke(Stamina / MaxStamina);
+            OnStaminaChanged?.Invoke(StaminaRatio);
         }
     }
     [SerializeField] private float maxStamina = 100f;
@@ -51,20 +51,27 @@ public class PlayerStateController : MonoBehaviour
     [SerializeField] private float staminaRecoveryTimeStep = 0.5f;
     private float currentStaminaRecoveryTime;
 
+    public float HpRatio => MaxHp > 0f ? Hp / MaxHp : 0f;
+    public float ExecutionGaugeRatio => MaxExecutionGauge > 0f ? ExecutionGauge / MaxExecutionGauge : 0f;
+    public float StaminaRatio => MaxStamina > 0f ? Stamina / MaxStamina : 0f;
+
     public event Action<float> OnHpChanged;
     public event Action<float> OnExecutionGaugeChanged;
     public event Action<float> OnStaminaChanged;
+    public event Action OnDeath;
 
     void Awake()
     {
         if (hp <= 0) hp = maxHp;
         if (stamina <= 0) stamina = maxStamina;
+        currentStaminaRecoveryTime = staminaRecoveryTimeStep;
     }
 
     public void TakeDamage(float damage)
     {
         if (damage <= 0) return;
         Hp -= damage;
+        if (Hp <= 0) OnDeath?.Invoke();
     }
 
     public void IncreaseExecutionGauge()
@@ -123,9 +130,9 @@ public class PlayerStateController : MonoBehaviour
 
     private void NotifyUI()
     {
-        OnHpChanged?.Invoke(Hp / MaxHp);
-        OnExecutionGaugeChanged?.Invoke(ExecutionGauge / MaxExecutionGauge);
-        OnStaminaChanged?.Invoke(Stamina / MaxStamina);
+        OnHpChanged?.Invoke(HpRatio);
+        OnExecutionGaugeChanged?.Invoke(ExecutionGaugeRatio);
+        OnStaminaChanged?.Invoke(StaminaRatio);
     }
 
     void OnValidate()
