@@ -22,6 +22,8 @@ public class Stage2Boss : BossEnemy
     [Header("Phase2 Patterns")]
     [SerializeField] private BossPattern[] phase2Patterns;
 
+    private int lastKnownPhase;
+
     /// <summary>
     /// 반사탄/처형만 데미지 허용. 1회 최대 데미지는 MaxHp의 15%.
     /// base.Hit() 호출 후 HP가 너무 많이 깎였으면 보정한다.
@@ -83,7 +85,12 @@ public class Stage2Boss : BossEnemy
 
     protected override BossPattern[] GetPatternsForPhase(int phaseIndex)
     {
-        return phaseIndex switch
+        // ActivateBoss()가 EnterPhase(0)을 호출해 phase를 리셋하지만,
+        // EnterPhase 내부에서 GetPatternsForPhase가 OnPhaseChanged보다 먼저 호출되므로
+        // lastKnownPhase에 이전 페이즈가 아직 남아있다.
+        // 더 높은 페이즈를 유지하여 처형 저항 후에도 올바른 패턴을 반환한다.
+        int effectivePhase = Mathf.Max(phaseIndex, lastKnownPhase);
+        return effectivePhase switch
         {
             0 => phase1Patterns,
             1 => phase2Patterns,
@@ -93,6 +100,8 @@ public class Stage2Boss : BossEnemy
 
     protected override void OnPhaseChanged(int phaseIndex, BossPhaseData data)
     {
+        lastKnownPhase = phaseIndex;
+
         // Phase2 진입 시 색상 변경 (임시 시각 피드백)
         if (phaseIndex == 1)
         {
