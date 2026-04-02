@@ -62,8 +62,7 @@ public class Stage2Boss : BossEnemy
         SetHp(newHp);
 
         if (newHp <= 0f)
-            base.Die();
-
+            TriggerDeathSequence();
         return new ExecutionResult
         {
             Target = this,
