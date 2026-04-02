@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8eaffe7d56b1f42d488a33ad3e03b0d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 6
+  speed: 10
   turnSpeed: 200
   lifetime: 8
   playerDamage: 15

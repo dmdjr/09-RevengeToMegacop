@@ -22,6 +22,7 @@ public class ArrowRainPattern : MonoBehaviour
     [SerializeField] private float bulletSpeed = 15f;
     [SerializeField] private float spawnHeight = 15f;
     [SerializeField] private float spawnDuration = 0.5f;
+    [SerializeField] private float rainDamage = 10f;
 
     [Header("Repeat Settings")]
     [SerializeField] private float repeatInterval = 4f;
@@ -90,7 +91,24 @@ public class ArrowRainPattern : MonoBehaviour
             Destroy(warning);
         }
 
-        // 화살 낙하
+        // 영역 내 플레이어에게 직접 데미지 (총알 물리 판정 대신 확실한 판정)
+        if (target != null)
+        {
+            float distanceToCenter = Vector3.Distance(
+                new Vector3(target.position.x, 0f, target.position.z),
+                new Vector3(center.x, 0f, center.z));
+
+            if (distanceToCenter <= warningRadius)
+            {
+                PlayerStateController playerState = target.GetComponent<PlayerStateController>();
+                if (playerState != null)
+                {
+                    playerState.TakeDamage(rainDamage);
+                }
+            }
+        }
+
+        // 시각 효과용 화살 낙하 (데미지 없음)
         float interval = spawnDuration / bulletCount;
         for (int i = 0; i < bulletCount; i++)
         {
