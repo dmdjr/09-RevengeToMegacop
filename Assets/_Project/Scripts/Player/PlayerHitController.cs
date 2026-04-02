@@ -129,6 +129,7 @@ public class PlayerHitController : MonoBehaviour, IDamageable
     {
         playerStateController.TakeDamage(bullet.Damage);
         OnDamaged?.Invoke();
+        bullet.Remove();
     }
 
     void OnDrawGizmosSelected()
