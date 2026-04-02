@@ -143,13 +143,6 @@ public class OscillatingBulletPattern : BossPattern
                     bullet1.Speed = bulletSpeed;
                     bullet1.SetOwner(boss.gameObject);
                     
-                }else if (bulletPrefab == null)
-                {
-                    BossBullet bullet = Boss3BulletPool.Instance.GetBullet().GetComponent<BossBullet>();
-                    if (bullet != null)
-                    {
-                    bullet.Fire(firePoint.position, fireRotation, bulletSpeed, gameObject);
-                    }
                 }
 
                 

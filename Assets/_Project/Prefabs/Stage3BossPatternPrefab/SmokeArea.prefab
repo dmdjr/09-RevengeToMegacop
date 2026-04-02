@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe3b88188cc84d74a9e22a9b9f7d6ee5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _smokeAreaParticle: {fileID: 686260296930992533}
+  _smokeAreaParticle: {fileID: 265766274217486953, guid: 06aa57bd9e499774799de04bfded4baa, type: 3}
   _smokeLifeTime: 5
 --- !u!135 &6971723552230195109
 SphereCollider:
@@ -154,11 +154,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3015b7eea383f64d8b81f965cc466e7, type: 3}
---- !u!198 &686260296930992533 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 265766274217486953, guid: d3015b7eea383f64d8b81f965cc466e7, type: 3}
-  m_PrefabInstance: {fileID: 735818599293619196}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &812944447320240551 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 107540711077034587, guid: d3015b7eea383f64d8b81f965cc466e7, type: 3}
