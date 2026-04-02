@@ -104,6 +104,7 @@ public class ScopeScript : MonoBehaviour
         float t = elapsed / _waitTime;
         _scopeImage.color = Color.Lerp(Color.white, Color.red, t);
 
+        _scopeImage.rectTransform.position = _mainCamera.WorldToScreenPoint(transform.position);
         yield return null;
         }
 
