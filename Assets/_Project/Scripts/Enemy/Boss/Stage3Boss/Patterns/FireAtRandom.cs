@@ -12,6 +12,7 @@ public class FireAtRandom : BossPattern
     private IEnumerator  FireRandom(BossEnemy boss , Action onComplete)
     {
         //TODO : 총알을 45도 방향으로 흩뿌리는 패턴
+        Debug.Log("firePattern");
         yield return null;
     }
 }

@@ -1,20 +1,38 @@
+using System.Collections;
 using UnityEngine;
 
-public class Stage3Boss : BossEnemy
+namespace Boss3
 {
-    private FireAtRandom _fireAtRandomPattern;
-    private ScopePattern _scopePattern;
-    private SmokeBomb _SmokeBombPattern;
+    public class Stage3Boss : BossEnemy
+{
     
-    protected override BossPattern[] GetPatternsForPhase(int phaseIndex)
+    [SerializeField] private ScopePattern _scopePattern;
+    [SerializeField] private SmokeBomb _smokeBombPattern;
+    [SerializeField] private OscillatingBulletPattern _OscillatingBulletPattern;
+    [SerializeField] private MovePattern _movePattern;
+
+        
+
+        protected override BossPattern[] GetPatternsForPhase(int phaseIndex)
     {
-        if (phaseIndex == 1)
+        if (phaseIndex == 0)
         {
             return new BossPattern[] 
             {
-                _fireAtRandomPattern,
+                
+                _OscillatingBulletPattern,
+                _movePattern
+                
+            };
+        }
+        if (phaseIndex == 1)
+        {
+            return new BossPattern[]
+            {
+                _OscillatingBulletPattern,
+                _smokeBombPattern,
                 _scopePattern,
-                _SmokeBombPattern
+                _movePattern
             };
         }
 
@@ -23,6 +41,22 @@ public class Stage3Boss : BossEnemy
 
     protected override void OnPhaseChanged(int phaseIndex, BossPhaseData data)
     {
-        throw new System.NotImplementedException();
+        Debug.Log($"페이즈 {phaseIndex + 1} 진입!");
     }
+
+    public override void Hit(Bullet bullet)
+    {
+            
+
+            base.Hit(bullet);
+            Debug.Log("hit" + bullet);
+            
+    }
+
+    protected override IEnumerator OnBossIntro()
+    {
+        FindAnyObjectByType<BossUI>().Initialize(this);
+        return base.OnBossIntro();
+    }
+}
 }
