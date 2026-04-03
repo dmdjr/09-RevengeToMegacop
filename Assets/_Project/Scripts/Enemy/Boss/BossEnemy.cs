@@ -53,10 +53,9 @@ public abstract class BossEnemy : Enemy
 
         CheckPhaseTransition();
 
-        if (Hp <= 0f && bossState != BossState.Death)
+        if (Hp <= 0f)
         {
-            bossState = BossState.Death;
-            StartCoroutine(DeathSequence());
+            TriggerDeathSequence();
         }
     }
 
@@ -77,6 +76,17 @@ public abstract class BossEnemy : Enemy
         bossState = BossState.Intro;
         yield return StartCoroutine(OnBossIntro());
         bossState = BossState.Active;
+    }
+
+    /// <summary>
+    /// 보스 사망 시퀀스를 시작한다. OnBossDeath() 연출 후 Die()를 호출한다.
+    /// 이미 Death 상태이면 무시한다. 자식 클래스에서 처형 등으로 HP가 0이 될 때 사용한다.
+    /// </summary>
+    protected void TriggerDeathSequence()
+    {
+        if (bossState == BossState.Death) return;
+        bossState = BossState.Death;
+        StartCoroutine(DeathSequence());
     }
 
     private IEnumerator DeathSequence()

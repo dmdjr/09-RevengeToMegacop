@@ -25,10 +25,12 @@ public class Enemy : MonoBehaviour, IDamageable
     public event Action<float> OnHpChanged;
 
     private bool isDead = false;
+    private bool wasExecuted = false;
 
     public float MaxHp => maxHp;
     public float Hp => hp;
     public float HpRatio => maxHp > 0f ? hp / maxHp : 0f;
+    public bool WasExecuted => wasExecuted;
     /// <summary>
     /// 자식 클래스에서 현재 추적 대상(플레이어)에 접근할 때 사용한다.
     /// </summary>
@@ -60,6 +62,29 @@ public class Enemy : MonoBehaviour, IDamageable
         {
             Die();
         }
+    }
+
+    /// <summary>
+    /// 처형 시 호출. 기본 구현: 슬래시 VFX 재생 → 메시 슬라이스 → 즉사.
+    /// 자식 클래스에서 override하여 보스 등 특수 처형 반응을 구현할 수 있다.
+    /// </summary>
+    public virtual ExecutionResult HandleExecution(ExecutionContext context)
+    {
+        wasExecuted = true;
+
+        if (context.SlashVfx != null)
+            context.SlashVfx.Play(context.SlicePosition, context.SlashDirection);
+
+        if (context.SliceEffect != null)
+            context.SliceEffect.Slice(gameObject, context.SlicePosition, context.SliceNormal);
+
+        Die();
+
+        return new ExecutionResult
+        {
+            Target = this,
+            Position = context.SlicePosition
+        };
     }
 
     /// <summary>

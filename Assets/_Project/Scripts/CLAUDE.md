@@ -58,3 +58,12 @@
 
 - 한 번에 너무 많은 기능을 구현하지 말 것 — 점진적이고 통제된 단위로 작업
 - 작업 단위를 명확히 분리 — Git 충돌 최소화를 위해 기존 공유 파일 수정보다 새 파일 생성 선호
+
+## 오답노트
+
+### `GetComponentInChildren` vs `TryGetComponent` 혼동 금지
+
+- `TryGetComponent<T>()` — **자기 자신 GameObject**에서만 탐색 (`GetComponent`와 동일 범위, 할당 없음)
+- `GetComponentInChildren<T>()` — 자기 자신 + **모든 자식**에서 탐색
+- 리뷰 체크리스트의 "GetComponent → TryGetComponent" 권장은 **자식 탐색이 불필요한 경우**에만 적용한다.
+  Renderer 등 컴포넌트가 자식 오브젝트에 붙는 경우가 흔하므로, 대체 전에 반드시 탐색 범위를 확인할 것.

@@ -59,6 +59,6 @@ public class CameraShakeListener : MonoBehaviour
     }
 
     private void OnDamaged() => cameraShake?.Shake(damageIntensity, damageDuration);
-    private void OnExecutionComplete() => cameraShake?.Shake(executionIntensity, executionDuration);
+    private void OnExecutionComplete(ExecutionResult result) => cameraShake?.Shake(executionIntensity, executionDuration);
     private void OnEnemyDeath(Enemy enemy) => cameraShake?.Shake(enemyDeathIntensity, enemyDeathDuration);
 }

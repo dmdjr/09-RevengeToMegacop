@@ -106,3 +106,10 @@ Assets/_Practice/
 AGENTS.md
 
 .claude/settings.local.json
+
+# PPTX 보고서 생성 관련
+*.pptx
+generate_report.mjs
+node_modules/
+package.json
+package-lock.json

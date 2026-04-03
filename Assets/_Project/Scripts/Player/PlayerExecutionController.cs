@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerStateController))]
 public class PlayerExecutionController : MonoBehaviour
 {
-    public event Action OnExecutionComplete;
+    public event Action<ExecutionResult> OnExecutionComplete;
 
     private PlayerMovementController playerMovementController;
     private PlayerStateController playerStateController;
@@ -69,23 +69,18 @@ public class PlayerExecutionController : MonoBehaviour
         Time.timeScale = 1f;
         if (executionTarget != null)
         {
-            // 슬라이스 방향: 플레이어 진행 방향의 수직 (좌우 절단)
-            Vector3 sliceNormal = transform.right;
-            Vector3 slicePosition = executionTarget.transform.position;
-
-            if (executionSlashVfx != null)
+            ExecutionContext context = new ExecutionContext
             {
-                executionSlashVfx.Play(slicePosition, transform.forward);
-            }
+                SlicePosition = executionTarget.transform.position,
+                SliceNormal = transform.right,
+                SlashDirection = transform.forward,
+                SliceEffect = executionSliceEffect,
+                SlashVfx = executionSlashVfx
+            };
 
-            if (executionSliceEffect != null)
-            {
-                executionSliceEffect.Slice(executionTarget.gameObject, slicePosition, sliceNormal);
-            }
-
-            executionTarget.Die();
+            ExecutionResult result = executionTarget.HandleExecution(context);
             executionTarget = null;
-            OnExecutionComplete?.Invoke();
+            OnExecutionComplete?.Invoke(result);
         }
     }
 }
