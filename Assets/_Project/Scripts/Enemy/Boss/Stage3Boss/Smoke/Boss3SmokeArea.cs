@@ -1,18 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Security;
-using NUnit.Framework.Constraints;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.iOS;
 
 public class Boss3SmokeArea : MonoBehaviour
 {
+    [Header("SmokeSetting")]
     [SerializeField] ParticleSystem _smokeAreaParticle;
 
     [SerializeField] float _smokeLifeTime = 5f;
 
-    int _smokeHiddenLayer ;
+
+    [Header("상시 감춰야 하는 레이어")]
+    [Tooltip("Enemy가 연막 안에 들어왔을 때 바뀔 레이어 번호 (예: SmokeHide)")]
+    [SerializeField] private int _hideLayer;
+
+    [Header("Enemy")]
+    [Tooltip("연막 안에 들어가면 가려지는 레이어")]
+    [SerializeField] int _EnemyLayer;
+
+    [Header("연막에 가려지는 레이어")]
+    [Tooltip("플레이어가 연막 안에 들어왔을 때 카메라에서 숨길 레이어들")]
+
+    [SerializeField] LayerMask _beHideLayers;
+
+    
     
     private Camera _mainCamera;
 
@@ -21,8 +32,10 @@ public class Boss3SmokeArea : MonoBehaviour
 
     void Awake()
     {
-        _smokeHiddenLayer = LayerMask.NameToLayer("SmokeHidden");
         _mainCamera = Camera.main;
+        if(_mainCamera != null)
+        _mainCamera.cullingMask &= ~(1<<_hideLayer);
+        
     }
     
 
@@ -42,24 +55,39 @@ public class Boss3SmokeArea : MonoBehaviour
     void OnTriggerEnter(Collider other) {
         Debug.Log(other.name + "연막 안에 들어옴");
 
-        if (other.CompareTag("Enemy") && !_hiddenEnemys.Contains(other.gameObject))
+        if (other.CompareTag("Enemy"))
         {
-            _hiddenEnemys.Add(other.gameObject);
-            other.GetComponent<MeshRenderer>().enabled = false;
+           GameObject enemyRoot = other.transform.root.gameObject;
+
+            if (!_hiddenEnemys.Contains(enemyRoot))
+            {
+                _hiddenEnemys.Add(enemyRoot);
+                SetTargetLayer(enemyRoot, _hideLayer);
+            }
             
         }
         if (other.CompareTag("Player"))
         {
-            _mainCamera.cullingMask &= ~(1<<_smokeHiddenLayer);
+            MainCameraLayerSet(_beHideLayers,false);
+            
         }
     }
     private void OnTriggerExit(Collider other) {
-        _mainCamera.cullingMask |= 1<<_smokeHiddenLayer;
-
-        if (_hiddenEnemys.Contains(other.gameObject))
+        
+        if (other.CompareTag("Player"))
         {
-            other.GetComponent<MeshRenderer>().enabled = true;
-            _hiddenEnemys.Remove(other.gameObject);
+            MainCameraLayerSet(_beHideLayers,true);
+        }
+
+        if (other.CompareTag("Enemy"))
+        {
+            GameObject enemyRoot = other.transform.root.gameObject;
+
+            if (_hiddenEnemys.Contains(enemyRoot))
+            {
+                SetTargetLayer(enemyRoot, _EnemyLayer);
+                _hiddenEnemys.Remove(enemyRoot);
+            }
         }
     }
 
@@ -74,11 +102,41 @@ public class Boss3SmokeArea : MonoBehaviour
         foreach(GameObject enemy in _hiddenEnemys)
         {
             if(enemy == null) continue;
-            enemy.GetComponent<MeshRenderer>().enabled = true; 
+            SetTargetLayer(enemy, _EnemyLayer); 
         }
+        _hiddenEnemys.Clear();
 
-        _mainCamera.cullingMask |= 1<<_smokeHiddenLayer;
+        MainCameraLayerSet(_beHideLayers,true);
+
         yield return null;
         Destroy(gameObject);
+    }
+
+
+    private void SetTargetLayer(GameObject target, LayerMask currentLayer)
+    {
+        target.layer = currentLayer;
+
+        foreach(Transform child in target.transform)
+        {
+            SetTargetLayer(child.gameObject,currentLayer);
+        }
+    }
+
+    private void MainCameraLayerSet(LayerMask layers , bool isactiveLayers)
+    {
+        if(_mainCamera ==null)return;
+
+        
+            if(isactiveLayers == true)
+            {
+                _mainCamera.cullingMask |= layers.value;
+            }else
+            {
+                _mainCamera.cullingMask &= ~layers.value;
+            }
+        
+        
+
     }
 }

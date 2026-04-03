@@ -1,6 +1,7 @@
 using System; // Action 델리게이트를 사용하기 위해 추가
 using System.Collections;
 using Boss3;
+using Unity.Mathematics;
 using UnityEngine;
 
 /// <summary>
@@ -49,6 +50,7 @@ public class OscillatingBulletPattern : BossPattern
     {
         // 총알 발사 지점을 이 게임 오브젝트의 Transform으로 설정합니다.
         // 이를 통해 보스 자체의 위치에서 총알이 발사됩니다.
+        if(firePoint ==null)
         firePoint = this.transform; 
         
         // "Player" 태그를 가진 게임 오브젝트를 찾아 플레이어 Transform을 설정합니다.
@@ -112,11 +114,12 @@ public class OscillatingBulletPattern : BossPattern
         while (currentPatternTime < patternDuration)
         {
             // 보스 위치에서 플레이어를 향하는 정규화된 벡터를 계산합니다.
-            Vector3 directionToPlayer = (playerTransform.position - transform.position).normalized;
+            Vector3 directionToPlayer = (playerTransform.position - boss.transform.position).normalized;
             
             // 플레이어를 향하는 회전에서 Y축 회전만 추출합니다.
             Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer);
             Quaternion yOnlyRotation = Quaternion.Euler(0, lookRotation.eulerAngles.y, 0);
+
 
             // 현재 진동 타이머와 방향에 따라 발사 각도를 계산합니다.
             float currentRelativeAngle;
@@ -131,6 +134,9 @@ public class OscillatingBulletPattern : BossPattern
 
             // 플레이어를 향하는 기본 회전에 현재 진동 각도를 적용하여 최종 발사 회전을 결정합니다.
             Quaternion fireRotation = yOnlyRotation * Quaternion.Euler(0, currentRelativeAngle, 0);
+
+            boss.transform.rotation = fireRotation;
+
 
             // 설정된 총알 수만큼 총알을 발사합니다.
             for (int i = 0; i < bulletsPerShot; i++)

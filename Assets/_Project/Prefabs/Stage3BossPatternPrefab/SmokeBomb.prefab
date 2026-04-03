@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5825154249479957332}
   - component: {fileID: 6291559461498047967}
   - component: {fileID: 3679199553021940906}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: SmokeBomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +122,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b411a77bdcb72494e8eb8c747962b29c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _travelTime: 1.2
   lifeTime: 5
+  _arcHeight: 2
   smokeEffectPrefab: {fileID: 5112891442227410604, guid: df2e110258a74a742b21b2812477b941, type: 3}
 --- !u!54 &3679199553021940906
 Rigidbody:
