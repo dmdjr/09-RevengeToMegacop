@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 6896bc5386bb1564a8d457eb6252cbdd
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 273354
+  packageName: Energy Shield & Force Field Effect v2 with Hit FX and Activation Animation
+  packageVersion: 2.2.7
+  assetPath: Assets/FXV/ShieldEffect/Prefabs/Demo2/ShieldTank1.prefab
+  uploadId: 878148
