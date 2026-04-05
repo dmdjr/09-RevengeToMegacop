@@ -1,0 +1,31 @@
+# Unity 자동 생성 디렉토리
+Library/
+Temp/
+Logs/
+obj/
+
+# 패키지/의존성
+node_modules/
+
+# IDE 설정
+.idea/
+.vscode/
+
+# Unity 메타데이터 (GUID 매핑용, 코드 작업에 불필요)
+*.meta
+
+# 자동 생성 프로젝트 파일
+*.csproj
+*.sln
+*.slnx
+*.DotSettings.user
+
+# 바이너리/미디어
+*.mp4
+*.pptx
+*.fbx
+*.exr
+*.ttf
+
+# 녹화 영상
+Recordings/
