@@ -17,6 +17,7 @@ public class MainMenuController : MonoBehaviour
         optionsButton.onClick.AddListener(OnOptionsClicked);
         quitButton.onClick.AddListener(OnQuitClicked);
         optionsPanelController.OnBackButtonClicked += OnOptionsBackClicked;
+        EventSystem.current.SetSelectedGameObject(startButton.gameObject);
     }
 
     private void OnStartClicked()
