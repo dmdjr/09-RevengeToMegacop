@@ -6,6 +6,8 @@ public class Stage1BossShield : MonoBehaviour, IDamageable
 {
     [SerializeField] private float maxShieldGauge = 100f;
     [SerializeField] private Shield shield;
+    [SerializeField] private float reflectSpeedMultiplier = 0.7f;
+    [SerializeField] private float minReflectSpeed = 5f;
     private float shieldGauge;
 
     public float ShieldRatio => maxShieldGauge > 0f ? shieldGauge / maxShieldGauge : 0f;
@@ -49,6 +51,7 @@ public class Stage1BossShield : MonoBehaviour, IDamageable
         if (_target == null) return;
 
         bullet.Reflect(gameObject, true);
+        bullet.Speed = Mathf.Max(bullet.Speed * reflectSpeedMultiplier, minReflectSpeed);
 
         Vector3 direction = _target.position - bullet.transform.position;
         direction.y = 0f;

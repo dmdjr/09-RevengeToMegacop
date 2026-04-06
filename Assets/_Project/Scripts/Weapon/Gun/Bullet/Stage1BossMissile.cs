@@ -11,6 +11,12 @@ public class Stage1BossMissile : Bullet
     private float elapsed;
     private Vector3 lastForward;
 
+    override protected void OnTriggerEnter(Collider other)
+    {
+        base.OnTriggerEnter(other);
+        GetComponentInChildren<BulletVFX>()?.PlayHit(transform.position, Quaternion.identity);
+    }
+
     public void Launch(Transform playerTarget, Transform boss)
     {
         this.playerTarget = playerTarget;
