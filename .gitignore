@@ -101,6 +101,18 @@ InitTestScene*.unity*
 
 Assets/_Practice/
 /Assets/_Practice.meta
+
+# 외부 에셋 (Git 미추적, 클라우드/Asset Store로 관리)
+Assets/Synty/
+Assets/Synty.meta
+Assets/PolygonSamurai/
+Assets/PolygonSamurai.meta
+Assets/Free Slash VFX/
+Assets/Free Slash VFX.meta
+Assets/TutorialInfo/
+Assets/TutorialInfo.meta
+Movie_002.mp4
+Movie_002.mp4.meta
 .idea/
 .vscode/
 AGENTS.md
