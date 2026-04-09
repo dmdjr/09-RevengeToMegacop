@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 9d5a2d53cadba0449adb617657a17c71
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures: []
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 273354
+  packageName: Energy Shield & Force Field Effect v2 with Hit FX and Activation Animation
+  packageVersion: 2.2.7
+  assetPath: Assets/FXV/ShieldEffect/Shaders/FXVShieldEffectFunctions.cginc
+  uploadId: 878148

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: da5e5c14b813ebd479971ee926b7ed5b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 273354
+  packageName: Energy Shield & Force Field Effect v2 with Hit FX and Activation Animation
+  packageVersion: 2.2.7
+  assetPath: Assets/FXV/ShieldEffect/Prefabs/SkinnedMesh/ShieldSkinnedMesh3.mat
+  uploadId: 878148

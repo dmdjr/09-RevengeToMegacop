@@ -49,5 +49,6 @@ public class BasicShotPattern : BossPattern
 
         bullet.SetOwner(boss.gameObject);
         bullet.Speed = bulletSpeed;
+        bullet.GetComponentInChildren<BulletVFX>()?.PlayMuzzle();
     }
 }

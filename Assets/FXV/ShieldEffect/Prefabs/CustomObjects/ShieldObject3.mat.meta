@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 5dc23555279e9444987ac427eb2e8157
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 273354
+  packageName: Energy Shield & Force Field Effect v2 with Hit FX and Activation Animation
+  packageVersion: 2.2.7
+  assetPath: Assets/FXV/ShieldEffect/Prefabs/CustomObjects/ShieldObject3.mat
+  uploadId: 878148

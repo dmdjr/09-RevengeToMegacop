@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f1c5910b461d59143aed3aacce94eae9
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 273354
+  packageName: Energy Shield & Force Field Effect v2 with Hit FX and Activation Animation
+  packageVersion: 2.2.7
+  assetPath: Assets/FXV/ShieldEffect/Prefabs/SkinnedMesh/GrenadierWithShield7.prefab
+  uploadId: 878148
