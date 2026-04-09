@@ -12,6 +12,11 @@ public class Stage2Boss : BossEnemy
 {
     [Header("Stage2 Boss Settings")]
     [SerializeField] private float maxDamagePerHitRatio = 0.15f;
+    [SerializeField] private Stage2BossAnimator bossAnimator;
+    [SerializeField] private Transform weaponPoint;
+
+    /// <summary>화살 발사 기준점. 미설정 시 보스 루트 위치를 사용한다.</summary>
+    public Transform WeaponPoint => weaponPoint != null ? weaponPoint : transform;
 
     [Header("Arrow Rain (Background Hazard)")]
     [SerializeField] private ArrowRainPattern arrowRainPattern;
@@ -42,6 +47,7 @@ public class Stage2Boss : BossEnemy
             SetHp(minHpAfterHit);
         }
 
+        bossAnimator?.PlayHit();
         Debug.Log($"[Stage2Boss] HP: {Hp}/{MaxHp} ({Mathf.RoundToInt(HpRatio * 100)}%)");
     }
 
@@ -53,6 +59,8 @@ public class Stage2Boss : BossEnemy
     {
         if (context.SlashVfx != null)
             context.SlashVfx.Play(context.SlicePosition, context.SlashDirection);
+
+        bossAnimator?.PlayHit();
 
         float damage = MaxHp * maxDamagePerHitRatio;
         float newHp = Hp - damage;
@@ -120,6 +128,8 @@ public class Stage2Boss : BossEnemy
 
     protected override IEnumerator OnBossDeath()
     {
+        bossAnimator?.PlayDie();
+
         // 사망 시 화살비 중단
         if (arrowRainPattern != null)
         {

@@ -39,14 +39,17 @@ public class AcceleratingRhythmShotPattern : BossPattern
             yield break;
         }
 
+        Transform firePoint = (boss as Stage2Boss)?.WeaponPoint ?? boss.transform;
         for (int i = 0; i < shotCount; i++)
         {
             // 매 발마다 플레이어 방향 재조준
-            Vector3 direction = (target.position - boss.transform.position).normalized;
+            Vector3 direction = (target.position - firePoint.position).normalized;
             direction.y = 0f;
 
+            boss.GetComponent<Stage2BossAnimator>()?.PlayAttack();
+
             Quaternion rotation = Quaternion.LookRotation(direction);
-            Bullet bullet = BulletPool.Instance.Get(bulletPrefab, boss.transform.position, rotation);
+            Bullet bullet = BulletPool.Instance.Get(bulletPrefab, firePoint.position, rotation);
             bullet.Speed = bulletSpeed;
             bullet.SetOwner(boss.gameObject);
 

@@ -1,21 +1,34 @@
 using System;
-
+using FXV;
 using UnityEngine;
 
 public class Stage1BossShield : MonoBehaviour, IDamageable
 {
     [SerializeField] private float maxShieldGauge = 100f;
+    [SerializeField] private Shield shield;
+    [SerializeField] private float reflectSpeedMultiplier = 0.7f;
+    [SerializeField] private float minReflectSpeed = 5f;
     private float shieldGauge;
 
     public float ShieldRatio => maxShieldGauge > 0f ? shieldGauge / maxShieldGauge : 0f;
 
     public event Action<float> OnShieldChanged; // 실드 게이지가 변할 때 비율(0~1)을 전달하는 이벤트    
 
-    private Transform target;
+    private Transform _target;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.TryGetComponent<Bullet>(out var bullet))
+        {
+            Vector3 hitPos = other.ClosestPoint(transform.position);
+            Vector3 hitNormal = (hitPos - transform.position).normalized;
+            shield.OnHit(hitPos, hitNormal, 1.5f, 0.8f);
+        }
+    }
 
     public void Initialize(Transform target)
     {
-        this.target = target;
+        this._target = target;
         shieldGauge = maxShieldGauge;
     }
 
@@ -35,11 +48,12 @@ public class Stage1BossShield : MonoBehaviour, IDamageable
 
     private void ReflectToPlayer(Bullet bullet)
     {
-        if (target == null) return;
+        if (_target == null) return;
 
         bullet.Reflect(gameObject, true);
+        bullet.Speed = Mathf.Max(bullet.Speed * reflectSpeedMultiplier, minReflectSpeed);
 
-        Vector3 direction = target.position - bullet.transform.position;
+        Vector3 direction = _target.position - bullet.transform.position;
         direction.y = 0f;
         if (direction != Vector3.zero)
             bullet.transform.forward = direction.normalized;

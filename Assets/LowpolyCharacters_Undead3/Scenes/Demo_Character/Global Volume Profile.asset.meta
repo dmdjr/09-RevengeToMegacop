@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ffc56d4f3f2ff0441a42e42e8e9a3a1a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 11400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 320226
+  packageName: LowpolyCharacters_Undead3
+  packageVersion: 1.0
+  assetPath: Assets/LowpolyCharacters_Undead3/Scenes/Demo_Character/Global Volume
+    Profile.asset
+  uploadId: 756557

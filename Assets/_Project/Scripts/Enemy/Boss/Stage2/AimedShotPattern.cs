@@ -54,7 +54,8 @@ public class AimedShotPattern : BossPattern
         }
 
         // 조준 방향 고정
-        Vector3 aimDirection = (target.position - boss.transform.position).normalized;
+        Transform firePoint = (boss as Stage2Boss)?.WeaponPoint ?? boss.transform;
+        Vector3 aimDirection = (target.position - firePoint.position).normalized;
         aimDirection.y = 0f;
 
         // 조준선 표시
@@ -63,7 +64,7 @@ public class AimedShotPattern : BossPattern
 
         while (elapsed < aimDuration)
         {
-            Vector3 startPos = boss.transform.position;
+            Vector3 startPos = firePoint.position;
             Vector3 endPos = startPos + aimDirection * aimLineLength;
             lineRenderer.SetPosition(0, startPos);
             lineRenderer.SetPosition(1, endPos);
@@ -74,6 +75,8 @@ public class AimedShotPattern : BossPattern
 
         lineRenderer.enabled = false;
 
+        boss.GetComponent<Stage2BossAnimator>()?.PlayAttack();
+
         // 발사
         if (BulletPool.Instance == null)
         {
@@ -82,7 +85,7 @@ public class AimedShotPattern : BossPattern
             yield break;
         }
 
-        Vector3 firePos = boss.transform.position;
+        Vector3 firePos = firePoint.position;
         Quaternion fireRotation = Quaternion.LookRotation(aimDirection);
         Bullet bullet = BulletPool.Instance.Get(bulletPrefab, firePos, fireRotation);
         bullet.Speed = bulletSpeed;

@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d40f7429cfea6c949a285e05dd2c213a
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 273354
+  packageName: Energy Shield & Force Field Effect v2 with Hit FX and Activation Animation
+  packageVersion: 2.2.7
+  assetPath: Assets/FXV/ShieldEffect/Prefabs/DropShips/ShieldDropship2.prefab
+  uploadId: 878148

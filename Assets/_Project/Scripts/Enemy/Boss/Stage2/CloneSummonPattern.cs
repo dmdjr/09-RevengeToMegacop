@@ -15,6 +15,7 @@ public class CloneSummonPattern : BossPattern
     [SerializeField] private GameObject clonePrefab;
     [SerializeField] private int minClones = 1;
     [SerializeField] private int maxClones = 3;
+    [SerializeField] private int maxConcurrentClones = 3;
     [SerializeField] private float spawnRadius = 8f;
     [SerializeField] private float cloneLifetime = 6f;
     [SerializeField] private float spawnInterval = 0.5f;
@@ -43,6 +44,10 @@ public class CloneSummonPattern : BossPattern
 
         for (int i = 0; i < cloneCount; i++)
         {
+            // 현재 살아있는 분신 수가 최대치면 소환 중단
+            int currentCount = FindObjectsByType<BossClone>(FindObjectsSortMode.None).Length;
+            if (currentCount >= maxConcurrentClones) break;
+
             // 보스 주변 랜덤 위치에 소환
             Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * spawnRadius;
             Vector3 spawnPos = boss.transform.position + new Vector3(randomOffset.x, 0f, randomOffset.y);

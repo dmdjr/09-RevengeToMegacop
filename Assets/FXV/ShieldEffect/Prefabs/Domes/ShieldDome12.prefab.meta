@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 8968d774c4a62954f902e505dab5480e
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 273354
+  packageName: Energy Shield & Force Field Effect v2 with Hit FX and Activation Animation
+  packageVersion: 2.2.7
+  assetPath: Assets/FXV/ShieldEffect/Prefabs/Domes/ShieldDome12.prefab
+  uploadId: 878148
