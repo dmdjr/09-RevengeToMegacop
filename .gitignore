@@ -117,6 +117,14 @@ Movie_002.mp4.meta
 .vscode/
 AGENTS.md
 
+Assets/Robot assets/
+Assets/Robot assets/.meta
+Assets/PixelProjectileShootingEffectsURP/
+Assets/PixelProjectileShootingEffectsURP/.meta
+Assets/IndieImpulse_Assets/
+Assets/IndieImpulse_Assets/.meta
+GEMINI.md
+
 .claude/settings.local.json
 
 # PPTX 보고서 생성 관련
@@ -136,10 +144,4 @@ Assets/_Project/Resource/PolygonSamurai/**
 Assets/_Project/Resource/UNI VFX/**
 !Assets/_Project/Resource/UNI VFX/**/*.meta
 
-Assets/_Project/Resource/Robot asset/**
-!Assets/_Project/Resource/Robot asset/**/*.meta
-Assets/_Project/Resource/PixelProjectileShootingEffectsURP/**
-!Assets/_Project/Resource/PixelProjectileShootingEffectsURP/**/*.meta
-Assets/_Project/Resource/IndieImpulse_Assets/**
-!Assets/_Project/Resource/IndieImpulse_Assets/**/*.meta
 
