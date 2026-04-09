@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,6 +14,8 @@ public class Stage1Boss : BossEnemy
     [SerializeField] private Stage1BossShield shield;
     [SerializeField] private float attackRange = 10f;
     [SerializeField] private float bossMoveSpeed = 3f;
+    [SerializeField] private float deathSinkAmount = 0.7f;
+    [SerializeField] private float deathSinkDuration = 1.5f;
     [SerializeField] private Animator bossAnimator;
 
     private NavMeshAgent bossAgent;
@@ -105,8 +108,8 @@ public class Stage1Boss : BossEnemy
             return;
 
         base.Hit(bullet);
-        bossAnimator?.SetTrigger("Hit");
-
+        // bossAnimator?.SetTrigger("Hit");
+        
         if (bullet is not Stage1BossBomb bomb)
             bullet.Remove();
         Debug.Log($"Boss hit! Remaining HP: {Hp}");
@@ -125,9 +128,29 @@ public class Stage1Boss : BossEnemy
 
     protected override void OnPhaseChanged(int phaseIndex, BossPhaseData data) { }
 
-    protected override System.Collections.IEnumerator OnBossDeath()
+    protected override IEnumerator OnBossDeath()
     {
+        SetTarget(null);
+        if (bossAgent != null) bossAgent.ResetPath();
+        bool deathAnimComplete = false;
+        RegisterAnimationCompleteCallback(() => deathAnimComplete = true);
         bossAnimator?.SetTrigger("Die");
-        yield break;
+        StartCoroutine(SinkDown());
+        yield return new WaitUntil(() => deathAnimComplete);
+    }
+
+    private IEnumerator SinkDown()
+    {
+        yield return new WaitForSeconds(3.5f); // 애니메이션과 싱크 맞추기 위한 딜레이
+        Vector3 startPos = transform.position;
+        Vector3 endPos = startPos - new Vector3(0f, deathSinkAmount, 0f);
+        float elapsed = 0f;
+        while (elapsed < deathSinkDuration)
+        {
+            elapsed += Time.deltaTime;
+            transform.position = Vector3.Lerp(startPos, endPos, elapsed / deathSinkDuration);
+            yield return null;
+        }
+        transform.position = endPos;
     }
 }

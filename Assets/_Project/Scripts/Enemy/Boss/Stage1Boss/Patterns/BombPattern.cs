@@ -23,7 +23,9 @@ public class BombPattern : BossPattern
         }
 
         Transform origin = firePoint != null ? firePoint : boss.transform;
-        Bullet bullet = BulletPool.Instance.Get(bombPrefab, origin.position, Quaternion.identity);
+        Vector3 toPlayer = new Vector3(boss.Target.position.x - origin.position.x, 0f, boss.Target.position.z - origin.position.z);
+        Quaternion spawnRotation = toPlayer.sqrMagnitude > 0.01f ? Quaternion.LookRotation(toPlayer.normalized) : Quaternion.identity;
+        Bullet bullet = BulletPool.Instance.Get(bombPrefab, origin.position, spawnRotation);
         Stage1BossBomb bomb = bullet as Stage1BossBomb;
 
         if (bomb == null)
