@@ -135,13 +135,11 @@ package.json
 package-lock.json
 
 # Third-party assets (too large for Git LFS)
-Assets/_Project/Resource/Archer_LowPoly/**
-!Assets/_Project/Resource/Archer_LowPoly/**/*.meta
-Assets/_Project/Resource/ArrowsVFX/**
-!Assets/_Project/Resource/ArrowsVFX/**/*.meta
-Assets/_Project/Resource/PolygonSamurai/**
-!Assets/_Project/Resource/PolygonSamurai/**/*.meta
-Assets/_Project/Resource/UNI VFX/**
-!Assets/_Project/Resource/UNI VFX/**/*.meta
-
-
+Assets/_Project/Resource/Archer_LowPoly/
+Assets/_Project/Resource/Archer_LowPoly.meta
+Assets/_Project/Resource/ArrowsVFX/
+Assets/_Project/Resource/ArrowsVFX.meta
+Assets/_Project/Resource/PolygonSamurai/
+Assets/_Project/Resource/PolygonSamurai.meta
+Assets/_Project/Resource/UNI VFX/
+Assets/_Project/Resource/UNI VFX.meta
