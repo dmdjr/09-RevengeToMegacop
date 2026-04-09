@@ -2,16 +2,19 @@ using UnityEngine;
 
 public class Stage1BossBomb : Bullet
 {
+    [SerializeField] private GameObject explosionPrefab;
     [SerializeField] private float bombSpeed = 8f;
-    [SerializeField] private float arcHeight = 4f;
+    [SerializeField] private float currentArcHeightRatio = 0.4f; // 거리 대비 호 높이 비율
+    [SerializeField] private float minArcHeight = 3f;            // 최소 호 높이 (가까울 때 보장)
+    [SerializeField] private float minFlightTime = 1.2f;         // 최소 비행 시간(초)
     [SerializeField] private float fuseTime = 4f;
     [SerializeField] private float explosionRadius = 3f;
-    [SerializeField] private GameObject explosionEffectPrefab;
 
     private Vector3 startPos;
     private Vector3 targetPos;
     private float flightTime;
     private float launchDistance;
+    private float currentArcHeight;
     private float elapsed;
     private float totalElapsed;
     private bool isLaunched;
@@ -28,12 +31,15 @@ public class Stage1BossBomb : Bullet
             playerDirectlyHit = true;
     }
 
-    public void Launch(Vector3 start, Vector3 target)
+    public void Launch(Vector3 start, Vector3 target, float overrideLaunchDistance = -1f)
     {
         startPos = start;
         targetPos = target;
+        Speed = bombSpeed;
+        float distXZ = Vector3.Distance(new Vector3(start.x, 0f, start.z), new Vector3(target.x, 0f, target.z));
+        launchDistance = overrideLaunchDistance > 0f ? overrideLaunchDistance : distXZ;
         flightTime = CalculateFlightTime(start, target);
-        launchDistance = Vector3.Distance(new Vector3(start.x, 0f, start.z), new Vector3(target.x, 0f, target.z));
+        currentArcHeight = Mathf.Max(launchDistance * currentArcHeightRatio, minArcHeight);
         elapsed = 0f;
         totalElapsed = 0f;
         isLaunched = true;
@@ -43,12 +49,14 @@ public class Stage1BossBomb : Bullet
         if (horizontal.sqrMagnitude > 0.01f)
             transform.forward = horizontal.normalized;
         lastForward = transform.forward;
+
+        GetComponentInChildren<BulletVFX>()?.PlayMuzzle();
     }
 
     private float CalculateFlightTime(Vector3 from, Vector3 to)
     {
         float distance = Vector3.Distance(new Vector3(from.x, 0f, from.z), new Vector3(to.x, 0f, to.z));
-        return distance / bombSpeed;
+        return Mathf.Max(distance / Speed, minFlightTime);
     }
 
     void Update()
@@ -74,7 +82,7 @@ public class Stage1BossBomb : Bullet
             startPos = transform.position;
             targetPos = transform.position + currentForwardH * launchDistance;
             targetPos.y = 0f;
-            flightTime = launchDistance / bombSpeed;
+            flightTime = Mathf.Max(launchDistance / Speed, minFlightTime);
             elapsed = 0f;
         }
     }
@@ -83,10 +91,21 @@ public class Stage1BossBomb : Bullet
     {
         float t = Mathf.Clamp01(elapsed / flightTime);
         Vector3 pos = Vector3.Lerp(startPos, targetPos, t);
-        pos.y = Mathf.Lerp(startPos.y, targetPos.y, t) + arcHeight * Mathf.Sin(Mathf.PI * t);
+        pos.y = Mathf.Lerp(startPos.y, targetPos.y, t) + currentArcHeight * Mathf.Sin(Mathf.PI * t);
+
+        Vector3 nextPos = Vector3.Lerp(startPos, targetPos, Mathf.Clamp01((elapsed + Time.deltaTime) / flightTime));
+        nextPos.y = Mathf.Lerp(startPos.y, targetPos.y, Mathf.Clamp01((elapsed + Time.deltaTime) / flightTime))
+                    + currentArcHeight * Mathf.Sin(Mathf.PI * Mathf.Clamp01((elapsed + Time.deltaTime) / flightTime));
+
+        Vector3 moveDirection = (nextPos - pos);
+        if (moveDirection != Vector3.zero)
+            transform.rotation = Quaternion.LookRotation(moveDirection);
+
         transform.position = pos;
 
-        lastForward = transform.forward;
+        Vector3 horizontalMove = new Vector3(moveDirection.x, 0f, moveDirection.z);
+        if (horizontalMove != Vector3.zero)
+            lastForward = horizontalMove.normalized;
     }
 
     void OnDrawGizmos()
@@ -97,8 +116,14 @@ public class Stage1BossBomb : Bullet
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
     }
 
+    void OnDisable()
+    {
+        if (isLaunched && Application.isPlaying) Explode(); // Bullet.Update()의 destroyTime이 fuseTime보다 먼저 만료될 경우 강제 폭발
+    }
+
     private void Explode() // 폭발 데미지 적용(패링 불가) 및 이펙트 재생
     {
+        if (!isLaunched) return;
         isLaunched = false;
 
         Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius);
@@ -122,11 +147,14 @@ public class Stage1BossBomb : Bullet
             }
         }
 
-        if (explosionEffectPrefab != null)
+        if (explosionPrefab != null)
         {
-            GameObject fx = Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
-            fx.GetComponent<BombExplosionEffect>()?.Play(explosionRadius);
+            GameObject explosionVFX = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            ParticleSystem explosionPS = explosionVFX.GetComponent<ParticleSystem>();
+            if (explosionPS != null)
+                Destroy(explosionVFX, explosionPS.main.duration);
         }
+        GetComponentInChildren<BulletVFX>()?.PlayHit(transform.position, Quaternion.identity);
 
         Remove();
     }

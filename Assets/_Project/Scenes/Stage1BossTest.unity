@@ -1268,6 +1268,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1504220515 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4846502252009812861, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
+  m_PrefabInstance: {fileID: 1973854518321065920}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1603220458
 GameObject:
   m_ObjectHideFlags: 0
@@ -1285,6 +1290,7 @@ GameObject:
   - component: {fileID: 1603220461}
   - component: {fileID: 1603220460}
   - component: {fileID: 1603220459}
+  - component: {fileID: 1603220468}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1490,6 +1496,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 70, y: 0, z: 0}
+--- !u!114 &1603220468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603220458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db113e9011fc4941b4c2db431d2a374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawOrder: 1
+  blurMethod: 0
+  postprocessPower: 3
+  numberOfIterations: 4
+  downSampleRate: 0.3
+  separateAxes: 0
+  kernelRadius: 5
+  sigma: 4
+  sampleStep: 1
+  kernelRadiusVertical: 5
+  sigmaVertical: 4
+  sampleStepVertical: 1
+  globalIllumination: 0
+  giSampleRadius: 2.5
+  giNumberOfSamples: 2
+  giIntensity: 0.35
+  giLightRange: 7
+  giFadeBehind: 4
+  giDenoiseStepWidth: 2.5
+  giDenoiseStepChange: 0.7
+  giDenoiseIterations: 5
+  giAtIteration: 1
 --- !u!1 &1695656614
 GameObject:
   m_ObjectHideFlags: 0
@@ -1814,49 +1854,13 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 171627873018261999, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: weight
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 171627873018261999, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: cooldown
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 171627873018261999, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: bulletSpeed
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 171627873018261999, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: maxHoldDuration
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 171627873018261999, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: maxShotDuration
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 171627873018261999, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: minHoldDuration
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 171627873018261999, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: minShotDuration
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2654975058737273334, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: maxShieldGauge
-      value: 200
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 3850946650909196443, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: cooldown
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3850946650909196443, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: throwDelay
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3850946650909196443, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: holdDuration
-      value: 0.5
-      objectReference: {fileID: 0}
+      propertyPath: firePoint
+      value: 
+      objectReference: {fileID: 1504220515}
     - target: {fileID: 4327586105273919820, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: m_LocalPosition.x
       value: -13.5
@@ -1898,57 +1902,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4548666451752014564, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: weight
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4548666451752014564, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: cooldown
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 4548666451752014564, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: holdDuration
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4548666451752014564, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: missileCount
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4548666451752014564, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: missileSpeed
-      value: 20
-      objectReference: {fileID: 0}
+      propertyPath: firePoint
+      value: 
+      objectReference: {fileID: 1504220515}
     - target: {fileID: 6137043511918517177, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: m_Name
       value: Stage1 Boss
-      objectReference: {fileID: 0}
-    - target: {fileID: 6274598172816198847, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: weight
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6274598172816198847, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: cooldown
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6274598172816198847, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: holdDuration
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8150755713233186335, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1375663235}
-    - target: {fileID: 8150755713233186335, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: useNavMesh
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8150755713233186335, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: attackRange
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 8150755713233186335, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
-      propertyPath: bossMoveSpeed
-      value: 7
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

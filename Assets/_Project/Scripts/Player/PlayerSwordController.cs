@@ -1,3 +1,5 @@
+using System;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,6 +7,8 @@ public class PlayerSwordController : PlayerSkillController
 {
     [SerializeField] private GameObject swordPrefab;
     [SerializeField] private float throwCooldown = 3f;
+
+    public event Action OnSwordThrown;
 
     private float currentCooldown;
 
@@ -44,6 +48,7 @@ public class PlayerSwordController : PlayerSkillController
 
             Vector3 mousePos = MousePositionGetter.GetMousePositionInWorld(swordController.transform.position);
             swordController.Throw(mousePos);
+            OnSwordThrown?.Invoke();
         }
     }
 

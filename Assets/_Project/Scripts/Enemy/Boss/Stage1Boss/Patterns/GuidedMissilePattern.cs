@@ -6,6 +6,7 @@ using UnityEngine;
 public class GuidedMissilePattern : BossPattern
 {
     [SerializeField] private GameObject missilePrefab;
+    [SerializeField] private Transform firePoint;
     [SerializeField] private float missileSpeed = 10f;
     [SerializeField] private int missileCount = 3;
     [SerializeField] private float interval = 0.5f;
@@ -38,12 +39,14 @@ public class GuidedMissilePattern : BossPattern
 
     private void LaunchMissile(BossEnemy boss)
     {
-        Bullet bullet = BulletPool.Instance.Get(missilePrefab, boss.transform.position, boss.transform.rotation);
+        Transform origin = firePoint != null ? firePoint : boss.transform;
+        Bullet bullet = BulletPool.Instance.Get(missilePrefab, origin.position, boss.transform.rotation);
         Stage1BossMissile missile = bullet as Stage1BossMissile;
         if (missile == null) return;
 
         missile.SetOwner(boss.gameObject);
         missile.Speed = missileSpeed;
         missile.Launch(boss.Target, boss.transform);
+        missile.GetComponentInChildren<BulletVFX>()?.PlayMuzzle();
     }
 }

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 973dece30ebd4524fb36d66716b93776
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 4890085278179872738
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 320226
+  packageName: LowpolyCharacters_Undead3
+  packageVersion: 1.0
+  assetPath: Assets/LowpolyCharacters_Undead3/Scenes/Demo_CharacterSettings.lighting
+  uploadId: 756557

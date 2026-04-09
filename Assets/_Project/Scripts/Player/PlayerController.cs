@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(PlayerAnimationController))]
 [RequireComponent(typeof(PlayerExecutionController))]
 [RequireComponent(typeof(PlayerHitController))]
 [RequireComponent(typeof(PlayerMovementController))]
@@ -9,6 +10,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private InputActionAsset inputActions;
 
+    private PlayerAnimationController playerAnimationController;
     private PlayerExecutionController playerExecutionController;
     private PlayerHitController playerHitController;
     private PlayerMovementController playerMovementController;
@@ -26,6 +28,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        playerAnimationController = GetComponent<PlayerAnimationController>();
         playerExecutionController = GetComponent<PlayerExecutionController>();
         playerHitController = GetComponent<PlayerHitController>();
         playerMovementController = GetComponent<PlayerMovementController>();
@@ -44,6 +47,15 @@ public class PlayerController : MonoBehaviour
         foreach (var skillController in skillControllers)
             skillController.InitializeSkill(playerMap);
 
+        var playerSwordController = GetComponent<PlayerSwordController>();
+        var playerShurikenController = GetComponent<PlayerShurikenController>();
+        playerAnimationController.Initialize(
+            playerMovementController,
+            playerHitController,
+            playerStateController,
+            playerSwordController,
+            playerShurikenController);
+
         isInitialized = true;
     }
 
@@ -61,6 +73,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isInitialized) return;
 
+        playerAnimationController.UpdateAnimation();
         playerHitController.UpdateParries();
         playerMovementController.UpdateGravity();
         playerStateController.UpdateStamina();

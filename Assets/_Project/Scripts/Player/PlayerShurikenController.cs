@@ -1,3 +1,5 @@
+using System;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,6 +8,8 @@ public class PlayerShurikenController : PlayerSkillController
 {
     [SerializeField] private GameObject shurikenPrefab;
     [SerializeField] private float cooldown = 3f;
+
+    public event Action OnShurikenThrown;
 
     private PlayerMovementController controller;
 
@@ -82,5 +86,6 @@ public class PlayerShurikenController : PlayerSkillController
         shuriken.transform.position = transform.position;
         shuriken.transform.forward = transform.forward;
         isShurikenThrown = true;
+        OnShurikenThrown?.Invoke();
     }
 }

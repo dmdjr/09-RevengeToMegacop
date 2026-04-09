@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 6a62346754b0a7347a7122e5a1fa1246
+timeCreated: 1505213336
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: -1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 273354
+  packageName: Energy Shield & Force Field Effect v2 with Hit FX and Activation Animation
+  packageVersion: 2.2.7
+  assetPath: Assets/FXV/ShieldEffect/Meshes/Sphere2048.asset
+  uploadId: 878148
