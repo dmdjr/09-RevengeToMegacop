@@ -99,7 +99,7 @@ InitTestScene*.unity*
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
-Assets/_Practice/
+/Assets/_Practice/
 /Assets/_Practice.meta
 
 # 외부 에셋 (Git 미추적, 클라우드/Asset Store로 관리)
@@ -116,6 +116,14 @@ Movie_002.mp4.meta
 .idea/
 .vscode/
 AGENTS.md
+
+Assets/Robot assets/
+Assets/Robot assets/.meta
+Assets/PixelProjectileShootingEffectsURP/
+Assets/PixelProjectileShootingEffectsURP/.meta
+Assets/IndieImpulse_Assets/
+Assets/IndieImpulse_Assets/.meta
+GEMINI.md
 
 .claude/settings.local.json
 

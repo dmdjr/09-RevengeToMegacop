@@ -15,6 +15,8 @@ public class SmokeBomb : BossPattern
 
     private Transform _PlayerTransform;
 
+    private Animator _anim;
+
     void Awake()
     {
         if(_throwPoint == null)
@@ -25,7 +27,8 @@ public class SmokeBomb : BossPattern
         if(player != null)
         _PlayerTransform = player.transform;
 
-        
+        if(_anim ==null)
+        _anim = GetComponentInParent<Animator>();
     }
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
@@ -51,7 +54,12 @@ public class SmokeBomb : BossPattern
 
     IEnumerator ThrowSmokeBomb(BossEnemy boss, Action onComplete)
     {
+
+        
         Debug.Log("SmokeBombPattern Start");
+        
+        _anim.SetTrigger("Granade");
+
 
         yield return new WaitForSeconds(0.3f);
 

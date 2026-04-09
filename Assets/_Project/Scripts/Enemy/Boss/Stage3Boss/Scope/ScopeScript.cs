@@ -93,7 +93,8 @@ public class ScopeScript : MonoBehaviour
 
     IEnumerator ChangeColor()
     {
-        
+        Color minColor = new Color(1,1,1,0.25f);
+        Color maxColor = new Color(1,0,0,0.25f);
         
         float elapsed = 0f;
 
@@ -102,20 +103,21 @@ public class ScopeScript : MonoBehaviour
         elapsed += Time.deltaTime;
 
         float t = elapsed / _waitTime;
-        _scopeImage.color = Color.Lerp(Color.white, Color.red, t);
+        
+        _scopeImage.color = Color.Lerp(minColor,maxColor, t);
 
         _scopeImage.rectTransform.position = _mainCamera.WorldToScreenPoint(transform.position);
         yield return null;
         }
 
-    _scopeImage.color = Color.red;
+        _scopeImage.color = maxColor;
         yield return null;
     }
 
 
     private void ResetScope()
     {
-        _scopeImage.color = Color.white;
+        _scopeImage.color = new Color(1,1,1,0.25f);;
         transform.position = new Vector3(0,0,0); // TODO 시작 위치 리팩토링 할 것 
         _isActive = false;
         _scopeImage.gameObject.SetActive(false);

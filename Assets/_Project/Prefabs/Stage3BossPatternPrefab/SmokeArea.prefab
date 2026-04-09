@@ -48,6 +48,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _smokeAreaParticle: {fileID: 265766274217486953, guid: 06aa57bd9e499774799de04bfded4baa, type: 3}
   _smokeLifeTime: 5
+  _hideLayer: 14
+  _EnemyLayer: 7
+  _beHideLayers:
+    serializedVersion: 2
+    m_Bits: 8320
 --- !u!135 &6971723552230195109
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -80,6 +85,10 @@ PrefabInstance:
     - target: {fileID: 104829970813648393, guid: d3015b7eea383f64d8b81f965cc466e7, type: 3}
       propertyPath: m_Name
       value: msVFX_Stylized Smoke 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 104829970813648393, guid: d3015b7eea383f64d8b81f965cc466e7, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 107540711077034587, guid: d3015b7eea383f64d8b81f965cc466e7, type: 3}
       propertyPath: m_LocalPosition.x
