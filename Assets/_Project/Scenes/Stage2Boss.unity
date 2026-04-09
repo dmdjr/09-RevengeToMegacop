@@ -318,7 +318,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 2
   weight: 1
-  guidedArrowPrefab: {fileID: 3370167828950650170, guid: 37de9c3600b164ec4a5202ed1796389b, type: 3}
+  guidedArrowPrefab: {fileID: 3370167828950650170, guid: 5ab515a6a966b4d2aa852cdc9d144229, type: 3}
   afterDelay: 0.5
 --- !u!1 &314148341
 GameObject:
@@ -517,13 +517,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   warningPrefab: {fileID: 733045781012032798, guid: 6024e5a298a504b2787c086ff19b327f, type: 3}
-  warningDuration: 1.5
-  warningRadius: 3
-  bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
-  bulletCount: 15
+  warningRadius: 2.5
+  warningDuration: 0.5
+  bulletPrefab: {fileID: 3370167828950650170, guid: 041e2e27c600f4c8cb7e0d2910e3c5a6, type: 3}
+  burstCount: 5
+  bulletsPerBurst: 8
   bulletSpeed: 15
   spawnHeight: 15
-  spawnDuration: 0.5
   rainDamage: 10
   repeatInterval: 4
 --- !u!1 &450960401
@@ -575,6 +575,7 @@ MonoBehaviour:
   clonePrefab: {fileID: 1956905876324350751, guid: 46e1a2bff5e9b4fda94d738a6a55b0b0, type: 3}
   minClones: 2
   maxClones: 5
+  maxConcurrentClones: 3
   spawnRadius: 8
   cloneLifetime: 1000
   spawnInterval: 0.5
@@ -1282,7 +1283,7 @@ Transform:
   m_GameObject: {fileID: 931758840}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.1, y: 1, z: 0}
+  m_LocalPosition: {x: 13.1, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1325,7 +1326,6 @@ MonoBehaviour:
   - {fileID: 1180897391}
   phase2Patterns:
   - {fileID: 1053918992}
-  - {fileID: 301999377}
   - {fileID: 450960403}
   - {fileID: 1180897391}
 --- !u!54 &931758847
@@ -1432,9 +1432,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 1
   weight: 1
-  bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
-  bulletSpeed: 40
-  shotCount: 5
+  bulletPrefab: {fileID: 3370167828950650170, guid: e5c252c00427b43d09c4dcc9f296eacb, type: 3}
+  bulletSpeed: 60
+  shotCount: 7
   firstDelay: 0.6
   lastDelay: 0.1
   afterDelay: 0.5
@@ -1680,10 +1680,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 2
   weight: 1
+  minDistance: 12
+  maxDistance: 15
   teleportDelay: 0.3
-  afterDelay: 1
-  minDistance: 5
-  maxDistance: 12
+  afterDelay: 3
+  proximityTriggerDistance: 8
+  proximityCooldown: 5
 --- !u!4 &1180897392
 Transform:
   m_ObjectHideFlags: 0
@@ -1822,6 +1824,7 @@ GameObject:
   - component: {fileID: 1691624972}
   - component: {fileID: 1691624971}
   - component: {fileID: 1691624970}
+  - component: {fileID: 1691624983}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -2091,6 +2094,18 @@ Transform:
   - {fileID: 845364485}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1691624983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1691624968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a5281ff03eaec4c84110416fc7c3a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1774342351
 GameObject:
   m_ObjectHideFlags: 0
@@ -2157,7 +2172,7 @@ MonoBehaviour:
   weight: 1
   firstDelay: 0.7
   secondDelay: 0.2
-  bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
+  bulletPrefab: {fileID: 3370167828950650170, guid: 6543d834e8c1c469cae840167b8150d8, type: 3}
   bulletSpeed: 50
   afterDelay: 0.5
 --- !u!4 &1789487667

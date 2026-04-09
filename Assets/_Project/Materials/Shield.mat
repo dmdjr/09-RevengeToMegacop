@@ -36,7 +36,6 @@ Material:
   - _FEATURE_COLORRIM_ON
   - _FEATURE_DEPTHOVERLAPRIM_ON
   - _FEATURE_DIRECTIONALVISIBILITY_ON
-  - _FEATURE_MAINTEXTUREANIMATION_ON
   - _FEATURE_PATTERNTEXTUREANIMATION_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -168,8 +167,8 @@ Material:
     - _FEATURE_ColorRim: 1
     - _FEATURE_DepthOverlapRim: 1
     - _FEATURE_DirectionalVisibility: 1
-    - _FEATURE_MainTextureAnimation: -1
-    - _FEATURE_PatternTextureAnimation: -1
+    - _FEATURE_MainTextureAnimation: 0
+    - _FEATURE_PatternTextureAnimation: 0
     - _FadePow: 1
     - _FadeScale: 0
     - _GlobalAlphaCurve: 3

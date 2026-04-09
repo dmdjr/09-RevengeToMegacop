@@ -14,6 +14,9 @@ public class Stage2Boss : BossEnemy
     [SerializeField] private float maxDamagePerHitRatio = 0.15f;
     [SerializeField] private Stage2BossAnimator bossAnimator;
     [SerializeField] private Transform weaponPoint;
+    [Header("Knockback")]
+    [SerializeField] private float knockbackDistance = 1.5f;
+    [SerializeField] private float knockbackDuration = 0.15f;
 
     /// <summary>화살 발사 기준점. 미설정 시 보스 루트 위치를 사용한다.</summary>
     public Transform WeaponPoint => weaponPoint != null ? weaponPoint : transform;
@@ -48,6 +51,13 @@ public class Stage2Boss : BossEnemy
         }
 
         bossAnimator?.PlayHit();
+        // 반사탄 방향으로 넉백
+        Vector3 knockbackDirection = bullet.transform.forward;
+        knockbackDirection.y = 0f;
+        knockbackDirection.Normalize();
+        StartCoroutine(KnockbackCoroutine(knockbackDirection));
+
+
         Debug.Log($"[Stage2Boss] HP: {Hp}/{MaxHp} ({Mathf.RoundToInt(HpRatio * 100)}%)");
     }
 
@@ -148,5 +158,21 @@ public class Stage2Boss : BossEnemy
 
         // TODO: 사망 연출
         yield break;
+    }
+    private IEnumerator KnockbackCoroutine(Vector3 direction)
+    {
+        Vector3 startPosition = transform.position;
+        Vector3 endPosition = startPosition + direction * knockbackDistance;
+        float elapsed = 0f;
+
+        while (elapsed < knockbackDuration)
+        {
+            elapsed += Time.deltaTime;
+            float ratio = elapsed / knockbackDuration;
+            transform.position = Vector3.Lerp(startPosition, endPosition, ratio);
+            yield return null;
+        }
+
+        transform.position = endPosition;
     }
 }
