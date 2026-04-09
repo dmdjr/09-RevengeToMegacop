@@ -4998,17 +4998,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2781076839539695555}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df5c0e27253e8084bb1ea42e1db0bc86, type: 3}
+  m_Script: {fileID: 11500000, guid: adc06503efd13754c88893bd3c96d200, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 50
-  accuracy: 100
-  fireRate: 5
-  muzzlePrefab: {fileID: 7857947651840866224, guid: 6baa63a3771b1164896ace7216c01baf, type: 3}
-  hitPrefab: {fileID: 9088057533900404259, guid: 15cad33576dfb5e4bbacead733767217, type: 3}
-  trails:
-  - {fileID: 2781076839739028360}
-  - {fileID: 2781076839545949670}
+  _bounceLimit: 3
+  _bounceCooldown: 0.05
+  _pushOutDistance: 0.1
+  _moveDirection: {x: 0, y: 0, z: 0}
 --- !u!114 &1616082412835144334
 MonoBehaviour:
   m_ObjectHideFlags: 0
