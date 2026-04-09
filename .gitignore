@@ -101,6 +101,20 @@ InitTestScene*.unity*
 
 Assets/_Practice/
 /Assets/_Practice.meta
+
+# Third-party assets (not committed to repo)
+Assets/DoubleL/
+Assets/DoubleL.meta
+Assets/Blink/
+Assets/Blink.meta
+Assets/FXV/
+Assets/FXV.meta
+Assets/GabrielAguiarProductions/
+Assets/GabrielAguiarProductions.meta
+Assets/Hovl Studio/
+Assets/Hovl Studio.meta
+Assets/LowpolyCharacters_Undead3/
+Assets/LowpolyCharacters_Undead3.meta
 .idea/
 .vscode/
 AGENTS.md
