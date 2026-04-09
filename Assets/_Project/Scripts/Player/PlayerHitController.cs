@@ -27,6 +27,8 @@ public class PlayerHitController : MonoBehaviour, IDamageable
 
     private ParryController parryController = new ParryController();
 
+    public bool IsGuarding => isGuarding;
+
     private bool isGuarding = false;
 
     private InputAction parryAction;
