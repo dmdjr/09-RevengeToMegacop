@@ -897,7 +897,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7689673413298599499, guid: 02ffc48bddeec6e4ebf07f38e51502d8, type: 3}
       propertyPath: m_Name
-      value: Player (1)
+      value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1389,7 +1389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageFlash: {fileID: 1937989342}
-  playerHitController: {fileID: 1375663229}
+  playerHitController: {fileID: 1986182076}
   flashIntensity: 0.8
   flashDuration: 0.3
 --- !u!114 &1603220461
@@ -1405,7 +1405,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraShake: {fileID: 1603220462}
-  playerHitController: {fileID: 1375663229}
+  playerHitController: {fileID: 1986182076}
   playerExecutionController: {fileID: 1375663227}
   damageIntensity: 0.5
   damageDuration: 0.25
@@ -1438,7 +1438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ee1bb3b459cb314dbc9068e8fba4ec1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1375663235}
+  target: {fileID: 1986182067}
   smoothTime: 0.2
   maxOffset: 7
   mouseInfluence: 15
@@ -1866,6 +1866,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1986182067 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4912747416375231965, guid: 02ffc48bddeec6e4ebf07f38e51502d8, type: 3}
+  m_PrefabInstance: {fileID: 882785006}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1986182076 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1958043363007753897, guid: 02ffc48bddeec6e4ebf07f38e51502d8, type: 3}
+  m_PrefabInstance: {fileID: 882785006}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08365bddec1494448b9966c9629c0bad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2145070038
 GameObject:
   m_ObjectHideFlags: 0
@@ -1962,6 +1978,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stage1 Boss
       objectReference: {fileID: 0}
+    - target: {fileID: 8150755713233186335, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1986182067}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
