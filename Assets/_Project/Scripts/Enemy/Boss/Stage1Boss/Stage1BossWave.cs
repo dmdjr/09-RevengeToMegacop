@@ -77,6 +77,7 @@ public class Stage1BossWave : MonoBehaviour
             Destroy(vfx, ps.main.duration);
     }
 
+    #if UNITY_EDITOR
     void OnDrawGizmos()
     {
         Gizmos.color = new Color(0f, 0.8f, 1f, 0.3f);
@@ -89,4 +90,5 @@ public class Stage1BossWave : MonoBehaviour
             Gizmos.DrawWireSphere(transform.position, currentRadius - waveWidth);
         }
     }
+    #endif
 }

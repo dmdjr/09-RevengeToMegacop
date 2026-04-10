@@ -9,7 +9,6 @@ public class Stage1BossMissile : Bullet
     private Transform playerTarget;
     private Transform bossTransform;
     private float elapsed;
-    private Vector3 lastForward;
 
     override protected void OnTriggerEnter(Collider other)
     {
@@ -23,7 +22,11 @@ public class Stage1BossMissile : Bullet
         target = playerTarget;
         bossTransform = boss;
         elapsed = 0f;
-        lastForward = transform.forward;
+    }
+
+    protected override void OnReflected(bool isParry)
+    {
+        target = (target == playerTarget) ? bossTransform : playerTarget;
     }
 
     void Update()
@@ -34,8 +37,6 @@ public class Stage1BossMissile : Bullet
             Remove();
             return;
         }
-
-        DetectAndSwitchTarget();
 
         if (target != null)
         {
@@ -49,14 +50,5 @@ public class Stage1BossMissile : Bullet
         }
 
         transform.Translate(Vector3.forward * Speed * Time.deltaTime);
-        lastForward = transform.forward;
-    }
-
-    private void DetectAndSwitchTarget()
-    {
-        Vector3 currentForwardH = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
-        Vector3 lastForwardH = new Vector3(lastForward.x, 0f, lastForward.z).normalized;
-        if (Vector3.Dot(currentForwardH, lastForwardH) < 0.95f)
-            target = (target == bossTransform) ? playerTarget : bossTransform;
     }
 }
