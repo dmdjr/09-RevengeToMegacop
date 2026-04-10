@@ -30,6 +30,8 @@ public class BasicShotPattern : BossPattern
 
         yield return new WaitUntil(() => fireReady);
 
+        stage1Boss?.StartKiting();
+
         float shotDuration = UnityEngine.Random.Range(minShotDuration, maxShotDuration);
         float elapsed = 0f;
         while (elapsed < shotDuration)
@@ -39,6 +41,7 @@ public class BasicShotPattern : BossPattern
             elapsed += shotInterval;
         }
 
+        stage1Boss?.StopKiting();
         stage1Boss?.BossAnimator?.SetTrigger("EndFire");
 
         yield return new WaitUntil(() => animComplete);

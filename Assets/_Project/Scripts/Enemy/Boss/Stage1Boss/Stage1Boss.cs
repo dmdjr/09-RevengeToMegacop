@@ -14,19 +14,38 @@ public class Stage1Boss : BossEnemy
     [SerializeField] private Stage1BossShield shield;
     [SerializeField] private float attackRange = 10f;
     [SerializeField] private float bossMoveSpeed = 3f;
-    [SerializeField] private float deathSinkAmount = 0.7f;
-    [SerializeField] private float deathSinkDuration = 1.5f;
+    
     [SerializeField] private Animator bossAnimator;
+
+    [SerializeField] private float kiteDistance = 8f;
+    [SerializeField] private float kiteSwitchInterval = 1.5f;
 
     private NavMeshAgent bossAgent;
     private bool isPatternExecuting;
+    private bool isKiting;
+    private float kiteDirection = 1f;
+    private float kiteSwitchTimer;
     private Action pendingFireCallback;
     private Action pendingAnimationCompleteCallback;
+    private float deathSinkAmount = 0.7f;
+    private float deathSinkDuration = 1.5f;
 
     public Animator BossAnimator => bossAnimator;
 
     public void NotifyPatternStart() => isPatternExecuting = true;
     public void NotifyPatternEnd() => isPatternExecuting = false;
+
+    public void StartKiting()
+    {
+        isKiting = true;
+        kiteSwitchTimer = kiteSwitchInterval;
+    }
+
+    public void StopKiting()
+    {
+        isKiting = false;
+        if (bossAgent != null) bossAgent.ResetPath();
+    }
 
     public void RegisterFireCallback(Action callback) => pendingFireCallback = callback;
     public void RegisterAnimationCompleteCallback(Action callback) => pendingAnimationCompleteCallback = callback;
@@ -82,6 +101,12 @@ public class Stage1Boss : BossEnemy
 
     private void MoveTowardTarget(float distance)
     {
+        if (isKiting)
+        {
+            UpdateKiteMovement(distance);
+            return;
+        }
+
         if (isPatternExecuting) return; // 패턴 실행 중에는 이동 안 함
 
         if (distance <= attackRange)
@@ -100,6 +125,39 @@ public class Stage1Boss : BossEnemy
             dir.y = 0f;
             transform.position += bossMoveSpeed * Time.deltaTime * dir;
         }
+    }
+
+    private void UpdateKiteMovement(float distanceToTarget)
+    {
+        if (Target == null) return;
+
+        kiteSwitchTimer -= Time.deltaTime;
+        if (kiteSwitchTimer <= 0f)
+        {
+            kiteDirection = -kiteDirection;
+            kiteSwitchTimer = kiteSwitchInterval;
+        }
+
+        Vector3 toPlayer = Target.position - transform.position;
+        toPlayer.y = 0f;
+        if (toPlayer == Vector3.zero) return;
+
+        Vector3 forward = toPlayer.normalized;
+        Vector3 right = Vector3.Cross(Vector3.up, forward);
+
+        Vector3 moveDir = right * kiteDirection;
+
+        if (distanceToTarget < kiteDistance - 1f)
+            moveDir -= forward; 
+        else if (distanceToTarget > kiteDistance + 1f)
+            moveDir += forward; 
+
+        Vector3 targetPos = transform.position + moveDir.normalized * bossMoveSpeed * Time.deltaTime;
+
+        if (bossAgent != null)
+            bossAgent.SetDestination(targetPos);
+        else
+            transform.position = targetPos;
     }
 
     public override void Hit(Bullet bullet)
