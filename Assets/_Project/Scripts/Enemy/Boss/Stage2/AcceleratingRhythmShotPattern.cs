@@ -39,7 +39,10 @@ public class AcceleratingRhythmShotPattern : BossPattern
             yield break;
         }
 
-        Transform firePoint = (boss as Stage2Boss)?.WeaponPoint ?? boss.transform;
+        Stage2Boss stage2Boss = boss as Stage2Boss;
+        stage2Boss?.PauseMovement();
+
+        Transform firePoint = stage2Boss != null ? stage2Boss.WeaponPoint : boss.transform;
         for (int i = 0; i < shotCount; i++)
         {
             // 매 발마다 플레이어 방향 재조준
@@ -61,6 +64,8 @@ public class AcceleratingRhythmShotPattern : BossPattern
                 yield return new WaitForSeconds(delay);
             }
         }
+
+        stage2Boss?.ResumeMovement();
 
         yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();

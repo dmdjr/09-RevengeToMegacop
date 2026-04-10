@@ -61,8 +61,11 @@ public class BossClone : MonoBehaviour, IDamageable
 
         transform.forward = direction;
 
+        Vector3 firePosition = transform.position;
+        firePosition.y = target.position.y;
+
         Quaternion rotation = Quaternion.LookRotation(direction);
-        Bullet bullet = BulletPool.Instance.Get(bulletPrefab, transform.position, rotation);
+        Bullet bullet = BulletPool.Instance.Get(bulletPrefab, firePosition, rotation);
         bullet.Speed = bulletSpeed;
         bullet.SetOwner(owner);
     }

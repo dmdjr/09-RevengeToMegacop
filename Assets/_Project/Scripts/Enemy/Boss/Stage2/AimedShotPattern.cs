@@ -44,6 +44,7 @@ public class AimedShotPattern : BossPattern
         StartCoroutine(AimAndShoot(boss, onComplete));
     }
 
+
     private IEnumerator AimAndShoot(BossEnemy boss, Action onComplete)
     {
         Transform target = boss.Target;
@@ -52,6 +53,10 @@ public class AimedShotPattern : BossPattern
             onComplete?.Invoke();
             yield break;
         }
+
+        // 조준 중 이동 정지
+        Stage2Boss stage2Boss = boss as Stage2Boss;
+        stage2Boss?.PauseMovement();
 
         // 조준 방향 고정
         Transform firePoint = (boss as Stage2Boss)?.WeaponPoint ?? boss.transform;
@@ -81,6 +86,7 @@ public class AimedShotPattern : BossPattern
         if (BulletPool.Instance == null)
         {
             Debug.LogError("BulletPool.Instance is null. AimedShotPattern cannot fire.");
+            stage2Boss?.ResumeMovement();
             onComplete?.Invoke();
             yield break;
         }
@@ -90,6 +96,9 @@ public class AimedShotPattern : BossPattern
         Bullet bullet = BulletPool.Instance.Get(bulletPrefab, firePos, fireRotation);
         bullet.Speed = bulletSpeed;
         bullet.SetOwner(boss.gameObject);
+
+        // 이동 재개
+        stage2Boss?.ResumeMovement();
 
         yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();

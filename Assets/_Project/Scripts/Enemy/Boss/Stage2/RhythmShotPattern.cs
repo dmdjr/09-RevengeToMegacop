@@ -40,6 +40,9 @@ public class RhythmShotPattern : BossPattern
             yield break;
         }
 
+        Stage2Boss stage2Boss = boss as Stage2Boss;
+        stage2Boss?.PauseMovement();
+
         // 1발: 탕
         FireAtTarget(boss, target);
 
@@ -54,6 +57,8 @@ public class RhythmShotPattern : BossPattern
 
         // 3발: 탕
         FireAtTarget(boss, target);
+
+        stage2Boss?.ResumeMovement();
 
         yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();

@@ -38,7 +38,7 @@ public class ArrowRainPattern : MonoBehaviour
     public void StartRain(Transform target, GameObject owner)
     {
         this.target = target;
-        this.owner  = owner;
+        this.owner = owner;
 
         if (rainLoop != null) StopCoroutine(rainLoop);
         rainLoop = StartCoroutine(RainLoop());
@@ -83,8 +83,8 @@ public class ArrowRainPattern : MonoBehaviour
             if (warningPrefab != null)
             {
                 Vector3 warningPos = new Vector3(lockedPos.x, 0.01f, lockedPos.z);
-                warning = Instantiate(warningPrefab, warningPos, Quaternion.Euler(90f, 0f, 0f));
-                warning.transform.localScale = new Vector3(warningRadius * 2f, warningRadius * 2f, 1f);
+                warning = Instantiate(warningPrefab, warningPos, Quaternion.identity);
+                warning.transform.localScale = Vector3.one * warningRadius;
             }
 
             // 경고 표시 중 플레이어는 이동 가능 (경고는 고정)

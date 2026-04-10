@@ -318,7 +318,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 2
   weight: 1
-  guidedArrowPrefab: {fileID: 3370167828950650170, guid: 37de9c3600b164ec4a5202ed1796389b, type: 3}
+  guidedArrowPrefab: {fileID: 3370167828950650170, guid: 5ab515a6a966b4d2aa852cdc9d144229, type: 3}
   afterDelay: 0.5
 --- !u!1 &314148341
 GameObject:
@@ -516,15 +516,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1332bd655b33436881fcb31ad1db82c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  warningPrefab: {fileID: 733045781012032798, guid: 6024e5a298a504b2787c086ff19b327f, type: 3}
-  warningDuration: 1.5
-  warningRadius: 3
-  bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
-  bulletCount: 15
+  warningPrefab: {fileID: 4932088507883938021, guid: 96870678b2c644e9fb121fbad19f29b2, type: 3}
+  warningRadius: 0.7
+  warningDuration: 1
+  bulletPrefab: {fileID: 3370167828950650170, guid: 041e2e27c600f4c8cb7e0d2910e3c5a6, type: 3}
+  burstCount: 5
+  bulletsPerBurst: 8
   bulletSpeed: 15
-  spawnHeight: 15
-  spawnDuration: 0.5
-  rainDamage: 10
+  spawnHeight: 12
+  rainDamage: 20
   repeatInterval: 4
 --- !u!1 &450960401
 GameObject:
@@ -575,11 +575,12 @@ MonoBehaviour:
   clonePrefab: {fileID: 1956905876324350751, guid: 46e1a2bff5e9b4fda94d738a6a55b0b0, type: 3}
   minClones: 2
   maxClones: 5
+  maxConcurrentClones: 3
   spawnRadius: 8
   cloneLifetime: 1000
   spawnInterval: 0.5
   afterDelay: 1
-  bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
+  bulletPrefab: {fileID: 3370167828950650170, guid: b0a1419bff46241568f3b08b114352d0, type: 3}
   bulletSpeed: 30
 --- !u!4 &491393346 stripped
 Transform:
@@ -1154,7 +1155,7 @@ MonoBehaviour:
   cooldown: 1
   weight: 1
   aimDuration: 1
-  aimLineColor: {r: 1, g: 0, b: 0, a: 1}
+  aimLineColor: {r: 0.9471822, g: 0, b: 1, a: 1}
   aimLineWidth: 0.05
   aimLineLength: 50
   bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
@@ -1190,6 +1191,7 @@ GameObject:
   - component: {fileID: 931758846}
   - component: {fileID: 931758847}
   - component: {fileID: 931758848}
+  - component: {fileID: 931758849}
   m_Layer: 7
   m_Name: Stage2Boss
   m_TagString: Enemy
@@ -1282,7 +1284,7 @@ Transform:
   m_GameObject: {fileID: 931758840}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.1, y: 1, z: 0}
+  m_LocalPosition: {x: 13.1, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1318,6 +1320,8 @@ MonoBehaviour:
   maxDamagePerHitRatio: 0.15
   bossAnimator: {fileID: 931758848}
   weaponPoint: {fileID: 314148342}
+  knockbackDistance: 1.5
+  knockbackDuration: 0.15
   arrowRainPattern: {fileID: 447062199}
   phase1Patterns:
   - {fileID: 904950011}
@@ -1325,9 +1329,9 @@ MonoBehaviour:
   - {fileID: 1180897391}
   phase2Patterns:
   - {fileID: 1053918992}
-  - {fileID: 301999377}
   - {fileID: 450960403}
   - {fileID: 1180897391}
+  strafeMovement: {fileID: 931758849}
 --- !u!54 &931758847
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1367,6 +1371,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa0cb9f0a12db904ebe251130cc1f10e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &931758849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 931758840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9b36a7167e96427ab552191555af069, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
+  preferredDistance: 15
+  directionChangeInterval: 3
+  bossAnimator: {fileID: 0}
 --- !u!1 &944183186
 GameObject:
   m_ObjectHideFlags: 0
@@ -1432,9 +1452,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 1
   weight: 1
-  bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
-  bulletSpeed: 40
-  shotCount: 5
+  bulletPrefab: {fileID: 3370167828950650170, guid: e5c252c00427b43d09c4dcc9f296eacb, type: 3}
+  bulletSpeed: 60
+  shotCount: 7
   firstDelay: 0.6
   lastDelay: 0.1
   afterDelay: 0.5
@@ -1680,10 +1700,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 2
   weight: 1
+  minDistance: 12
+  maxDistance: 15
   teleportDelay: 0.3
-  afterDelay: 1
-  minDistance: 5
-  maxDistance: 12
+  afterDelay: 3
+  proximityTriggerDistance: 8
+  proximityCooldown: 5
+  disappearVFX: {fileID: 3744133877081091469, guid: 06148335cbe3f4cc08140e23a730b578, type: 3}
+  appearVFX: {fileID: 3744133877081091469, guid: 06148335cbe3f4cc08140e23a730b578, type: 3}
+  vfxLifetime: 0.7
 --- !u!4 &1180897392
 Transform:
   m_ObjectHideFlags: 0
@@ -1822,6 +1847,7 @@ GameObject:
   - component: {fileID: 1691624972}
   - component: {fileID: 1691624971}
   - component: {fileID: 1691624970}
+  - component: {fileID: 1691624983}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -2091,6 +2117,18 @@ Transform:
   - {fileID: 845364485}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1691624983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1691624968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a5281ff03eaec4c84110416fc7c3a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1774342351
 GameObject:
   m_ObjectHideFlags: 0
@@ -2157,7 +2195,7 @@ MonoBehaviour:
   weight: 1
   firstDelay: 0.7
   secondDelay: 0.2
-  bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
+  bulletPrefab: {fileID: 3370167828950650170, guid: 6543d834e8c1c469cae840167b8150d8, type: 3}
   bulletSpeed: 50
   afterDelay: 0.5
 --- !u!4 &1789487667

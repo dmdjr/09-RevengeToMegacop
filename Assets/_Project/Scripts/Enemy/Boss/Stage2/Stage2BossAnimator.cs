@@ -12,6 +12,7 @@ public class Stage2BossAnimator : MonoBehaviour
     private static readonly int AttackHash = Animator.StringToHash("Attack");
     private static readonly int HitHash = Animator.StringToHash("Hit");
     private static readonly int DieHash = Animator.StringToHash("Die");
+    private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
 
     private void Awake()
     {
@@ -47,4 +48,10 @@ public class Stage2BossAnimator : MonoBehaviour
 
     /// <summary>보스 사망 시 호출.</summary>
     public void PlayDie() => animator?.SetTrigger(DieHash);
+
+    /// <summary>스트레이핑 이동 시작/정지 시 호출.</summary>
+    public void SetMoving(bool isMoving)
+    {
+        if (animator != null) animator.SetBool(IsMovingHash, isMoving);
+    }
 }
