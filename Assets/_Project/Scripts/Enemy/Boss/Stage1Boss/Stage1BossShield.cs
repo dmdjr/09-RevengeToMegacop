@@ -8,6 +8,8 @@ public class Stage1BossShield : MonoBehaviour, IDamageable
     [SerializeField] private Shield shield;
     [SerializeField] private float reflectSpeedMultiplier = 0.7f;
     [SerializeField] private float minReflectSpeed = 5f;
+    [SerializeField] private Transform followTarget; // 보스 루트 할당
+
     private float shieldGauge;
 
     public float ShieldRatio => maxShieldGauge > 0f ? shieldGauge / maxShieldGauge : 0f;
@@ -15,6 +17,11 @@ public class Stage1BossShield : MonoBehaviour, IDamageable
     public event Action<float> OnShieldChanged; // 실드 게이지가 변할 때 비율(0~1)을 전달하는 이벤트    
 
     private Transform _target;
+
+    void LateUpdate()
+    {
+        transform.position = followTarget.position;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
