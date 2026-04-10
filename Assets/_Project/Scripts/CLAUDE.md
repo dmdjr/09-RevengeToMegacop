@@ -13,6 +13,14 @@
   - `sc` → `skillController`, `e` → `enemy`, `go` → `gameObject`
 - 한 파일에 한 클래스, 파일명 = 클래스명
 
+## 포매팅
+
+- 변수 선언 시 `변수명`과 `=` 사이는 **단일 공백**만 사용한다
+- 가독성/그룹핑을 위해 여러 공백으로 `=`를 세로 정렬하지 말 것
+  - ✗ `int previewPriority         = 10;`
+  - ✓ `int previewPriority = 10;`
+- **Why**: 가장 긴 변수명이 바뀔 때마다 주변 줄을 재정렬해야 하는 유지보수 부담 + IDE 자동 포매터와 충돌 위험. 의미 그룹핑이 목적이면 `[Header("...")]` 속성이나 빈 줄 분리로 대체한다.
+
 ## Unity 메시지 메서드
 
 - `Awake`, `Start`, `Update`, `OnDestroy` 등 Unity 예약 함수에는 `private` 접근 제한자를 **붙이지 않는다** (일반 private 메서드와 시각적 구별 목적)
