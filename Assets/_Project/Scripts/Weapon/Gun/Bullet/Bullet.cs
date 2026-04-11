@@ -9,6 +9,9 @@ public abstract class Bullet : MonoBehaviour
     public float Speed { get; set; }
     [field: SerializeField] public float Damage { get; private set; }
 
+    [SerializeField] private float flyHeight = 1f;
+    [SerializeField] private LayerMask groundLayer;
+
     private float destroyTime;
     private bool isReflected = false;
     private bool isReleased = false;
@@ -78,7 +81,24 @@ public abstract class Bullet : MonoBehaviour
     void Update()
     {
         transform.Translate(Vector3.forward * (Speed * Time.deltaTime));
+        SnapToGroundHeight();
         if (destroyTime < Time.time) Remove();
+    }
+
+    /// <summary>
+    /// 총알이 지형 높이를 추적하도록 Y 위치를 조정한다.
+    /// groundLayer가 설정된 경우에만 동작한다.
+    /// </summary>
+    protected void SnapToGroundHeight()
+    {
+        if (groundLayer == 0) return;
+        Vector3 rayOrigin = transform.position + Vector3.up * 10f;
+        if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, 20f, groundLayer))
+        {
+            Vector3 position = transform.position;
+            position.y = hit.point.y + flyHeight;
+            transform.position = position;
+        }
     }
 
     virtual protected void OnTriggerEnter(Collider other)

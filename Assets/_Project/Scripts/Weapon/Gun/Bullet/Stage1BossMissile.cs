@@ -50,5 +50,6 @@ public class Stage1BossMissile : Bullet
         }
 
         transform.Translate(Vector3.forward * Speed * Time.deltaTime);
+        SnapToGroundHeight();
     }
 }
