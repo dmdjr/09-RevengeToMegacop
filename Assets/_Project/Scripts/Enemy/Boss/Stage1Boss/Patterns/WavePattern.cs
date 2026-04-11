@@ -22,13 +22,19 @@ public class WavePattern : BossPattern
             yield break;
         }
 
-        (boss as Stage1Boss)?.NotifyPatternStart();
+        Stage1Boss stage1Boss = boss as Stage1Boss;
+        bool fireReady = false;
+        stage1Boss?.RegisterFireCallback(() => fireReady = true);
+        stage1Boss?.NotifyPatternStart();
+        stage1Boss?.BossAnimator?.SetTrigger("Wave");
+
+        yield return new WaitUntil(() => fireReady);
 
         if (wavePrefab != null)
             Instantiate(wavePrefab, boss.transform.position, Quaternion.identity);
 
         yield return new WaitForSeconds(holdDuration);
-        (boss as Stage1Boss)?.NotifyPatternEnd();
+        stage1Boss?.NotifyPatternEnd();
         onComplete?.Invoke();
     }
 }

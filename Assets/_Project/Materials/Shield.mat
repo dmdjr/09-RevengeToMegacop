@@ -1,0 +1,240 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-2163627927149972184
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 10
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Shield
+  m_Shader: {fileID: 4800000, guid: 698d80be1edae534d88a3eb185ddaa31, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - ACTIVATION_EFFECT_ON
+  - RIM_SOURCE_NORMAL
+  - USE_DISTORTION_FOR_MAIN_TEXTURE
+  - USE_MAIN_TEXTURE
+  - USE_PATTERN_TEXTURE
+  - USE_REFRACTION
+  m_InvalidKeywords:
+  - USE_MATERIAL_PROPERTY_BLOCKS
+  - _FEATURE_COLORRIM_ON
+  - _FEATURE_DEPTHOVERLAPRIM_ON
+  - _FEATURE_DIRECTIONALVISIBILITY_ON
+  - _FEATURE_PATTERNTEXTUREANIMATION_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  - DepthOnly
+  - SHADOWCASTER
+  - Postprocess
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _ActivationTex:
+        m_Texture: {fileID: 2800000, guid: f1e303fbc7d0d804ebed5b9518f42b34, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortTex:
+        m_Texture: {fileID: 2800000, guid: 9b26c86809f836b4eb681bfac4c1578c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HitRippleTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 031143a5c6580424a952717859476b74, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PatternTex:
+        m_Texture: {fileID: 2800000, guid: 22bc54e3c914ae648ae640cfbcf6c3ca, type: 3}
+        m_Scale: {x: 4, y: 2}
+        m_Offset: {x: 0, y: 0}
+    - _RimTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ActivationFadeOut: 0.58
+    - _ActivationInluenceByMainTex: 0
+    - _ActivationInluenceByPatternTex: 0.24
+    - _ActivationRim: 0.4
+    - _ActivationRimPower: 2.18
+    - _ActivationTime: 1
+    - _ActivationTime01: 1
+    - _AddPrecomputedVelocity: 0
+    - _AlphaClip: 0
+    - _AlphaToMask: 0
+    - _BackfacesIntensity: 1
+    - _Blend: 0
+    - _BlendDstMode: 10
+    - _BlendModePreserveSpecular: 1
+    - _BlendSrcMode: 5
+    - _BumpScale: 1
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
+    - _ColorRimHitInfluence: 1
+    - _ColorRimMax: 0.76
+    - _ColorRimMin: 0.18
+    - _Cull: 2
+    - _CullMode: 2
+    - _Cutoff: 0.5
+    - _DetailAlbedoMapScale: 1
+    - _DetailNormalMapScale: 1
+    - _DirVisActivationInfluence: 1
+    - _DirectionVisibility: 0.65
+    - _DistortionFactor: 0.2
+    - _DistortionSpeedX: 1
+    - _DistortionSpeedY: 1
+    - _DstBlend: 10
+    - _DstBlendAlpha: 10
+    - _EnvironmentReflections: 1
+    - _FEATURE_ActivationType: 3
+    - _FEATURE_ColorRim: 1
+    - _FEATURE_DepthOverlapRim: 1
+    - _FEATURE_DirectionalVisibility: 1
+    - _FEATURE_MainTextureAnimation: 0
+    - _FEATURE_PatternTextureAnimation: 0
+    - _FadePow: 1
+    - _FadeScale: 0
+    - _GlobalAlphaCurve: 3
+    - _GlobalIntensity: 12
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
+    - _HitColorAffect: 0
+    - _HitEffectValue: 1
+    - _HitPower: 1
+    - _HitRefractionScale: 0.1
+    - _HitRippleDistortion: 0
+    - _Metallic: 0
+    - _NormalCorrection: 0
+    - _OcclusionStrength: 1
+    - _OverlapRim: 0.1
+    - _OverlapRimPower: 1
+    - _Parallax: 0.005
+    - _PatternAnimationFactor: 10
+    - _PatternAnimationSpeed: 10
+    - _PatternDistortionInfluence: 1
+    - _PatternHitInfluence: 1
+    - _PatternPower: 0.64
+    - _PatternRimMax: 1.73
+    - _PatternRimMin: -0.8
+    - _PatternScrollX: 0
+    - _PatternScrollY: 0
+    - _PostprocessIntensity: 1
+    - _Preview: 0
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
+    - _RefractionBackgroundExposure: 0
+    - _RefractionColorRimInfluence: 0.5
+    - _RefractionPatternRimInfluence: 1
+    - _RefractionRimMax: 2
+    - _RefractionRimMin: -2
+    - _RefractionScale: 0
+    - _RefractionTextureRimInfluence: 1
+    - _RimVariationFrequency: 0.5
+    - _RimVariationScale: 0
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _SrcBlendAlpha: 1
+    - _Surface: 1
+    - _TextureAnimationFactor: 10
+    - _TextureAnimationSpeed: 10
+    - _TextureDistortionInfluence: 1
+    - _TextureHitInfluence: 1
+    - _TexturePower: 1.5
+    - _TextureRimMax: 4
+    - _TextureRimMin: -0.25
+    - _TextureScrollX: 0
+    - _TextureScrollY: 0
+    - _WorkflowMode: 1
+    - _ZWrite: 0
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 0.39215687}
+    - _Color: {r: 0.054467767, g: 0.32378918, b: 0.6792453, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _PatternColor: {r: 0.054467745, g: 0.32378915, b: 0.6792453, a: 1}
+    - _ShieldBounds: {r: 1, g: 1, b: 1, a: 0}
+    - _ShieldDirection: {r: 1, g: 0, b: 0, a: 0}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _TextureColor: {r: 0.054467745, g: 0.32378915, b: 0.6792453, a: 1}
+    - _WorldScale: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

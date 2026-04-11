@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -12,19 +14,54 @@ public class Stage1Boss : BossEnemy
     [SerializeField] private Stage1BossShield shield;
     [SerializeField] private float attackRange = 10f;
     [SerializeField] private float bossMoveSpeed = 3f;
+    [SerializeField] private float deathSinkAmount = 0.7f;
+    [SerializeField] private float deathSinkDuration = 1.5f;
+    [SerializeField] private Animator bossAnimator;
 
     private NavMeshAgent bossAgent;
     private bool isPatternExecuting;
+    private Action pendingFireCallback;
+    private Action pendingAnimationCompleteCallback;
+
+    public Animator BossAnimator => bossAnimator;
 
     public void NotifyPatternStart() => isPatternExecuting = true;
     public void NotifyPatternEnd() => isPatternExecuting = false;
+
+    public void RegisterFireCallback(Action callback) => pendingFireCallback = callback;
+    public void RegisterAnimationCompleteCallback(Action callback) => pendingAnimationCompleteCallback = callback;
+
+    // Animation Event에서 호출 — 발사 시작 신호
+    public void OnFireAnimationEvent()
+    {
+        pendingFireCallback?.Invoke();
+        pendingFireCallback = null;
+    }
+
+    // Animation Event에서 호출 — 애니메이션 완료 신호
+    public void OnAnimationCompleteEvent()
+    {
+        pendingAnimationCompleteCallback?.Invoke();
+        pendingAnimationCompleteCallback = null;
+    }
 
     protected override void Start()
     {
         base.Start();
         bossAgent = GetComponent<NavMeshAgent>();
         if (player != null) ActivateBoss(player);
-        if (shield != null) shield.Initialize(player);
+        if (shield != null)
+        {
+            shield.Initialize(player);
+            shield.OnShieldChanged += OnShieldChanged;
+        }
+        bossAnimator?.SetBool("HasShield", shield != null && shield.gameObject.activeSelf);
+    }
+
+    private void OnShieldChanged(float ratio)
+    {
+        if (ratio <= 0f)
+            bossAnimator?.SetBool("HasShield", false);
     }
 
     protected override void Update()
@@ -71,7 +108,8 @@ public class Stage1Boss : BossEnemy
             return;
 
         base.Hit(bullet);
-
+        // bossAnimator?.SetTrigger("Hit");
+        
         if (bullet is not Stage1BossBomb bomb)
             bullet.Remove();
         Debug.Log($"Boss hit! Remaining HP: {Hp}");
@@ -89,4 +127,30 @@ public class Stage1Boss : BossEnemy
     }
 
     protected override void OnPhaseChanged(int phaseIndex, BossPhaseData data) { }
+
+    protected override IEnumerator OnBossDeath()
+    {
+        SetTarget(null);
+        if (bossAgent != null) bossAgent.ResetPath();
+        bool deathAnimComplete = false;
+        RegisterAnimationCompleteCallback(() => deathAnimComplete = true);
+        bossAnimator?.SetTrigger("Die");
+        StartCoroutine(SinkDown());
+        yield return new WaitUntil(() => deathAnimComplete);
+    }
+
+    private IEnumerator SinkDown()
+    {
+        yield return new WaitForSeconds(3.5f); // 애니메이션과 싱크 맞추기 위한 딜레이
+        Vector3 startPos = transform.position;
+        Vector3 endPos = startPos - new Vector3(0f, deathSinkAmount, 0f);
+        float elapsed = 0f;
+        while (elapsed < deathSinkDuration)
+        {
+            elapsed += Time.deltaTime;
+            transform.position = Vector3.Lerp(startPos, endPos, elapsed / deathSinkDuration);
+            yield return null;
+        }
+        transform.position = endPos;
+    }
 }

@@ -4,44 +4,91 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// 순간이동 패턴. 플레이어 주변 랜덤 위치로 이동한다.
-/// 반사탄 회피 용도로, 플레이어 근처에서 위치만 바꿔 긴장감을 유지한다.
+/// 순간이동 패턴. 두 가지 방식으로 발동한다.
+///
+/// [패턴 시스템 발동] BossEnemy가 일반 패턴으로 실행할 때 플레이어에게서 먼 거리로 이동.
+/// [근접 감지 발동]  Update()에서 플레이어가 proximityTriggerDistance 이내로 접근하면
+///                  쿨타임(proximityCooldown)이 지났을 때 즉시 원거리로 이동.
+///                  처형 사거리(~10m)를 벗어난 거리(기본 11m)를 기준으로 한다.
 /// </summary>
 public class TeleportPattern : BossPattern
 {
-    [Header("Teleport Settings")]
+    [Header("Teleport Distance")]
+    [SerializeField] private float minDistance = 18f;
+    [SerializeField] private float maxDistance = 28f;
+
+    [Header("Timing")]
     [SerializeField] private float teleportDelay = 0.3f;
     [SerializeField] private float afterDelay = 1f;
-    [SerializeField] private float minDistance = 5f;
-    [SerializeField] private float maxDistance = 12f;
+
+    [Header("Proximity Trigger")]
+    [SerializeField] private float proximityTriggerDistance = 11f;
+    [SerializeField] private float proximityCooldown = 4f;
+
+    [Header("VFX")]
+    [SerializeField] private GameObject disappearVFX;
+    [SerializeField] private GameObject appearVFX;
+    [SerializeField] private float vfxLifetime = 2f;
+
+
+    private BossEnemy cachedBoss;
+    private float lastProximityTeleportTime = float.NegativeInfinity;
+
+    private void Start()
+    {
+        cachedBoss = GetComponentInParent<BossEnemy>();
+    }
+
+    private void Update()
+    {
+        if (cachedBoss == null || cachedBoss.Target == null) return;
+        if (Time.time < lastProximityTeleportTime + proximityCooldown) return;
+
+        float dist = Vector3.Distance(cachedBoss.transform.position, cachedBoss.Target.position);
+        if (dist < proximityTriggerDistance)
+        {
+            lastProximityTeleportTime = Time.time;
+            Debug.Log($"[TeleportPattern] 플레이어 범위 안 접근 ({dist:F1}m) — 순간이동 스킬 사용");
+            TeleportTo(cachedBoss, cachedBoss.Target);
+        }
+    }
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
-        StartCoroutine(Teleport(boss, onComplete));
+        // 패턴 시스템에서 발동하지 않음 — 근접 감지로만 작동
+        onComplete?.Invoke();
     }
 
-    private IEnumerator Teleport(BossEnemy boss, Action onComplete)
+
+    /// <summary>보스를 플레이어 기준 원거리 랜덤 위치로 즉시 이동시킨다.</summary>
+    private void TeleportTo(BossEnemy boss, Transform target)
     {
-        Transform target = boss.Target;
-        if (target == null)
+        StartCoroutine(TeleportCoroutine(boss, target));
+    }
+    private IEnumerator TeleportCoroutine(BossEnemy boss, Transform target)
+    {
+        // 사라지는 이펙트
+        if (disappearVFX != null)
         {
-            onComplete?.Invoke();
-            yield break;
+            GameObject vfx = Instantiate(disappearVFX, boss.transform.position, Quaternion.identity);
+            Destroy(vfx, vfxLifetime);
         }
 
         yield return new WaitForSeconds(teleportDelay);
 
-        // 플레이어 주변 랜덤 방향, minDistance~maxDistance 거리
+        // 이동
         float angle = UnityEngine.Random.Range(0f, 360f);
         float distance = UnityEngine.Random.Range(minDistance, maxDistance);
-
         Vector3 offset = Quaternion.Euler(0f, angle, 0f) * Vector3.forward * distance;
         Vector3 newPos = target.position + offset;
         newPos.y = boss.transform.position.y;
-
         boss.transform.position = newPos;
 
-        yield return new WaitForSeconds(afterDelay);
-        onComplete?.Invoke();
+        // 나타나는 이펙트
+        if (appearVFX != null)
+        {
+            GameObject vfx = Instantiate(appearVFX, boss.transform.position, Quaternion.identity);
+            Destroy(vfx, vfxLifetime);
+        }
     }
 }

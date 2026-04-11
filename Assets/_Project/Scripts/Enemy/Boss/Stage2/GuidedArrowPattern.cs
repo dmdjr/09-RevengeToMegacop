@@ -35,6 +35,9 @@ public class GuidedArrowPattern : BossPattern
             yield break;
         }
 
+        Stage2Boss stage2Boss = boss as Stage2Boss;
+        stage2Boss?.PauseMovement();
+
         // 발사 방향
         Vector3 direction = (target.position - boss.transform.position).normalized;
         direction.y = 0f;
@@ -48,12 +51,15 @@ public class GuidedArrowPattern : BossPattern
         {
             Debug.LogError("[GuidedArrowPattern] 프리팹에 GuidedArrowBullet 컴포넌트가 없습니다!");
             Destroy(arrowObj);
+            stage2Boss?.ResumeMovement();
             onComplete?.Invoke();
             yield break;
         }
 
         guidedBullet.Initialize(target, boss.transform, boss.gameObject);
         Debug.Log("[GuidedArrowPattern] 유도 화살 발사!");
+
+        stage2Boss?.ResumeMovement();
 
         yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();

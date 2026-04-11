@@ -51,7 +51,13 @@ public abstract class Bullet : MonoBehaviour
 
         transform.forward = new Vector3(targetDirection.x, 0, targetDirection.z);
         SetDestroyTime(isParry ? 3f : 0.3f);
+        OnReflected(isParry);
     }
+
+    /// <summary>
+    /// [선택 override] 반사 직후 호출된다. 자식 클래스에서 반사 시점 추가 처리를 구현할 수 있다.
+    /// </summary>
+    protected virtual void OnReflected(bool isParry) { }
 
     private Vector3 GetParryDirection()
     {

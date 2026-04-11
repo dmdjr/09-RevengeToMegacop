@@ -55,6 +55,8 @@ public class PlayerStateController : MonoBehaviour
     public float ExecutionGaugeRatio => MaxExecutionGauge > 0f ? ExecutionGauge / MaxExecutionGauge : 0f;
     public float StaminaRatio => MaxStamina > 0f ? Stamina / MaxStamina : 0f;
 
+    public bool IsDead => Hp <= 0;
+
     public event Action<float> OnHpChanged;
     public event Action<float> OnExecutionGaugeChanged;
     public event Action<float> OnStaminaChanged;

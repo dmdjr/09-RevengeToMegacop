@@ -83,6 +83,8 @@ public class GuidedArrowBullet : MonoBehaviour
             // 플레이어에게 닿음 → 패링 or 데미지
             PlayerStateController stateController = obj.GetComponent<PlayerStateController>();
             if (stateController == null) return;
+            Debug.Log($"[GuidedArrow] 플레이어 접촉! CanParry={stateController.CanParry()}, InFront={IsBulletInFront(obj.transform)}");
+
 
             // 패링 판정: 스태미나 있음 + 화살이 플레이어 정면에서 날아옴
             if (stateController.CanParry() && IsBulletInFront(obj.transform))

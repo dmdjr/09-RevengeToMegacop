@@ -21,11 +21,11 @@ TagManager:
   - 
   - Player
   - 
-  - 
+  - Bullet
   - SmokeHidden
   - Obsacle
-  - 
-  - 
+  - Ground
+  - Wall
   - 
   - 
   - 

@@ -12,6 +12,14 @@ public class Stage2Boss : BossEnemy
 {
     [Header("Stage2 Boss Settings")]
     [SerializeField] private float maxDamagePerHitRatio = 0.15f;
+    [SerializeField] private Stage2BossAnimator bossAnimator;
+    [SerializeField] private Transform weaponPoint;
+    [Header("Knockback")]
+    [SerializeField] private float knockbackDistance = 1.5f;
+    [SerializeField] private float knockbackDuration = 0.15f;
+
+    /// <summary>화살 발사 기준점. 미설정 시 보스 루트 위치를 사용한다.</summary>
+    public Transform WeaponPoint => weaponPoint != null ? weaponPoint : transform;
 
     [Header("Arrow Rain (Background Hazard)")]
     [SerializeField] private ArrowRainPattern arrowRainPattern;
@@ -21,6 +29,21 @@ public class Stage2Boss : BossEnemy
 
     [Header("Phase2 Patterns")]
     [SerializeField] private BossPattern[] phase2Patterns;
+
+    [SerializeField] private BossStrafeMovement strafeMovement;
+
+    /// <summary>공격 패턴 시작 시 호출. 스트레이핑 이동을 일시정지한다.</summary>
+    public void PauseMovement()
+    {
+        if (strafeMovement != null) strafeMovement.Pause();
+    }
+
+    /// <summary>공격 패턴 종료 시 호출. 스트레이핑 이동을 재개한다.</summary>
+    public void ResumeMovement()
+    {
+        if (strafeMovement != null) strafeMovement.Resume();
+    }
+
 
     /// <summary>
     /// 반사탄/처형만 데미지 허용. 1회 최대 데미지는 MaxHp의 15%.
@@ -42,6 +65,14 @@ public class Stage2Boss : BossEnemy
             SetHp(minHpAfterHit);
         }
 
+        bossAnimator?.PlayHit();
+        // 반사탄 방향으로 넉백
+        Vector3 knockbackDirection = bullet.transform.forward;
+        knockbackDirection.y = 0f;
+        knockbackDirection.Normalize();
+        StartCoroutine(KnockbackCoroutine(knockbackDirection));
+
+
         Debug.Log($"[Stage2Boss] HP: {Hp}/{MaxHp} ({Mathf.RoundToInt(HpRatio * 100)}%)");
     }
 
@@ -53,6 +84,8 @@ public class Stage2Boss : BossEnemy
     {
         if (context.SlashVfx != null)
             context.SlashVfx.Play(context.SlicePosition, context.SlashDirection);
+
+        bossAnimator?.PlayHit();
 
         float damage = MaxHp * maxDamagePerHitRatio;
         float newHp = Hp - damage;
@@ -107,24 +140,29 @@ public class Stage2Boss : BossEnemy
 
     protected override IEnumerator OnBossIntro()
     {
-        // TODO: 등장 연출
 
         // 보스전 시작 시 화살비 가동
         if (arrowRainPattern != null)
         {
             arrowRainPattern.StartRain(Target, gameObject);
         }
+        if (strafeMovement != null) strafeMovement.StartStrafe(Target);
 
         yield break;
     }
 
     protected override IEnumerator OnBossDeath()
     {
+        bossAnimator?.PlayDie();
+
         // 사망 시 화살비 중단
         if (arrowRainPattern != null)
         {
             arrowRainPattern.StopRain();
         }
+        if (strafeMovement != null) strafeMovement.StopStrafe();
+
+
 
         // 사망 시 모든 분신 제거
         BossClone[] clones = FindObjectsByType<BossClone>(FindObjectsSortMode.None);
@@ -138,5 +176,21 @@ public class Stage2Boss : BossEnemy
 
         // TODO: 사망 연출
         yield break;
+    }
+    private IEnumerator KnockbackCoroutine(Vector3 direction)
+    {
+        Vector3 startPosition = transform.position;
+        Vector3 endPosition = startPosition + direction * knockbackDistance;
+        float elapsed = 0f;
+
+        while (elapsed < knockbackDuration)
+        {
+            elapsed += Time.deltaTime;
+            float ratio = elapsed / knockbackDuration;
+            transform.position = Vector3.Lerp(startPosition, endPosition, ratio);
+            yield return null;
+        }
+
+        transform.position = endPosition;
     }
 }

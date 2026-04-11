@@ -145,21 +145,6 @@ public static class MeshSlicer
         };
     }
 
-    /// <summary>
-    /// SkinnedMeshRenderer의 현재 포즈를 정적 메시로 베이크한 뒤 슬라이싱한다.
-    /// 반환된 메시는 월드 좌표가 아닌 SkinnedMeshRenderer의 로컬 좌표 기준이다.
-    /// </summary>
-    public static SlicedMesh SliceSkinned(SkinnedMeshRenderer skinnedRenderer, Plane localPlane)
-    {
-        if (skinnedRenderer == null) return null;
-
-        Mesh bakedMesh = new Mesh();
-        skinnedRenderer.BakeMesh(bakedMesh);
-        SlicedMesh result = Slice(bakedMesh, localPlane);
-        Object.Destroy(bakedMesh);
-        return result;
-    }
-
     private static Vector2 GetUV(Vector2[] uvs, int index)
     {
         return (uvs != null && index < uvs.Length) ? uvs[index] : Vector2.zero;

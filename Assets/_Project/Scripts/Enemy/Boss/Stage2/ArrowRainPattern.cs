@@ -4,36 +4,37 @@ using UnityEngine;
 
 /// <summary>
 /// 보스전 동안 백그라운드로 계속 작동하는 화살비 환경 위협.
-/// 패턴 시스템(BossPattern)과 독립적으로 동작하며,
-/// 일정 간격마다 플레이어 주변에 경고 구역 표시 → 화살 낙하를 반복한다.
-/// 패링 불가능 (위에서 떨어지므로), 플레이어 이동을 방해하는 용도.
-/// Stage2Boss에서 StartRain() / StopRain()으로 제어한다.
+/// 패턴 시스템(BossPattern)과 독립적으로 동작한다.
+///
+/// [구역 방식]
+/// 경고 구역 1개가 플레이어를 trackDuration초 동안 실시간 추적한다.
+/// 시간이 끝나면 그 자리에 화살이 낙하하고, 즉시 다음 구역이 추적을 시작한다.
+/// 이를 burstCount회 반복한다.
+/// 플레이어는 계속 움직여도 구역이 따라오고, 멈추면 바로 맞으므로 움직임이 강제된다.
 /// </summary>
 public class ArrowRainPattern : MonoBehaviour
 {
     [Header("Warning Settings")]
     [SerializeField] private GameObject warningPrefab;
-    [SerializeField] private float warningDuration = 1.5f;
-    [SerializeField] private float warningRadius = 3f;
+    [SerializeField] private float warningRadius = 2.5f;
+    [SerializeField] private float warningDuration = 0.4f;   // 경고 표시 후 화살 낙하까지 대기 시간
 
-    [Header("Rain Settings")]
+    [Header("Burst Settings")]
     [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] private int bulletCount = 15;
+    [SerializeField] private int burstCount = 5;
+    [SerializeField] private int bulletsPerBurst = 8;
     [SerializeField] private float bulletSpeed = 15f;
     [SerializeField] private float spawnHeight = 15f;
-    [SerializeField] private float spawnDuration = 0.5f;
     [SerializeField] private float rainDamage = 10f;
 
     [Header("Repeat Settings")]
-    [SerializeField] private float repeatInterval = 4f;
+    [SerializeField] private float repeatInterval = 5f;
 
     private Transform target;
     private GameObject owner;
     private Coroutine rainLoop;
 
-    /// <summary>
-    /// 화살비 반복 시작. 보스전 시작 시 호출한다.
-    /// </summary>
+    /// <summary>화살비 반복 시작. 보스전 시작 시 호출한다.</summary>
     public void StartRain(Transform target, GameObject owner)
     {
         this.target = target;
@@ -43,9 +44,7 @@ public class ArrowRainPattern : MonoBehaviour
         rainLoop = StartCoroutine(RainLoop());
     }
 
-    /// <summary>
-    /// 화살비 중단. 보스 사망 시 호출한다.
-    /// </summary>
+    /// <summary>화살비 중단. 보스 사망 시 호출한다.</summary>
     public void StopRain()
     {
         if (rainLoop != null)
@@ -58,69 +57,70 @@ public class ArrowRainPattern : MonoBehaviour
     private IEnumerator RainLoop()
     {
         WaitForSeconds repeatWait = new WaitForSeconds(repeatInterval);
-
         while (true)
         {
-            yield return StartCoroutine(SingleArrowRain());
+            yield return StartCoroutine(BurstSequence());
             yield return repeatWait;
         }
     }
 
-    private IEnumerator SingleArrowRain()
+    /// <summary>
+    /// burstCount회 순차 낙하.
+    /// 각 회차: 현재 플레이어 위치에 경고 고정 → warningDuration 대기 → 화살 낙하 → 즉시 다음 회차.
+    /// </summary>
+    private IEnumerator BurstSequence()
     {
-        if (target == null || BulletPool.Instance == null) yield break;
+        WaitForSeconds warningWait = new WaitForSeconds(warningDuration);
 
-        // 경고 구역 중심 = 플레이어 현재 위치
-        Vector3 center = target.position;
-        center.y = 0.01f;
-
-        // 경고 표시
-        GameObject warning = null;
-        if (warningPrefab != null)
+        for (int i = 0; i < burstCount; i++)
         {
-            Quaternion flatRotation = Quaternion.Euler(90f, 0f, 0f);
-            warning = Instantiate(warningPrefab, center, flatRotation);
-            warning.transform.localScale = new Vector3(warningRadius * 2f, warningRadius * 2f, 1f);
-        }
+            if (target == null || BulletPool.Instance == null) yield break;
 
-        yield return new WaitForSeconds(warningDuration);
+            // 이 순간 플레이어 위치 스냅샷 → 경고 고정
+            Vector3 lockedPos = new Vector3(target.position.x, 0f, target.position.z);
 
-        // 경고 제거
-        if (warning != null)
-        {
-            Destroy(warning);
-        }
-
-        // 영역 내 플레이어에게 직접 데미지 (총알 물리 판정 대신 확실한 판정)
-        if (target != null)
-        {
-            float distanceToCenter = Vector3.Distance(
-                new Vector3(target.position.x, 0f, target.position.z),
-                new Vector3(center.x, 0f, center.z));
-
-            if (distanceToCenter <= warningRadius)
+            GameObject warning = null;
+            if (warningPrefab != null)
             {
-                PlayerStateController playerState = target.GetComponent<PlayerStateController>();
-                if (playerState != null)
-                {
-                    playerState.TakeDamage(rainDamage);
-                }
+                Vector3 warningPos = new Vector3(lockedPos.x, 0.01f, lockedPos.z);
+                warning = Instantiate(warningPrefab, warningPos, Quaternion.identity);
+                warning.transform.localScale = Vector3.one * warningRadius;
+            }
+
+            // 경고 표시 중 플레이어는 이동 가능 (경고는 고정)
+            yield return warningWait;
+
+            if (warning != null) Destroy(warning);
+
+            // 화살 낙하
+            yield return StartCoroutine(DropArrows(lockedPos));
+
+            // 데미지 판정
+            if (target != null)
+            {
+                Vector3 playerFlat = new Vector3(target.position.x, 0f, target.position.z);
+                if (Vector3.Distance(playerFlat, lockedPos) <= warningRadius)
+                    target.GetComponent<PlayerStateController>()?.TakeDamage(rainDamage);
             }
         }
+    }
 
-        // 시각 효과용 화살 낙하 (데미지 없음)
-        float interval = spawnDuration / bulletCount;
-        for (int i = 0; i < bulletCount; i++)
+    private IEnumerator DropArrows(Vector3 center)
+    {
+        if (BulletPool.Instance == null) yield break;
+
+        float interval = 0.05f;
+        for (int i = 0; i < bulletsPerBurst; i++)
         {
-            if (BulletPool.Instance == null) yield break;
+            Vector2 offset = UnityEngine.Random.insideUnitCircle * warningRadius;
+            Vector3 spawnPos = new Vector3(center.x + offset.x, spawnHeight, center.z + offset.y);
 
-            Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * warningRadius;
-            Vector3 spawnPos = new Vector3(center.x + randomOffset.x, spawnHeight, center.z + randomOffset.y);
-
-            Quaternion downRotation = Quaternion.LookRotation(Vector3.down);
-            Bullet bullet = BulletPool.Instance.Get(bulletPrefab, spawnPos, downRotation);
-            bullet.Speed = bulletSpeed;
-            bullet.SetOwner(owner);
+            Bullet bullet = BulletPool.Instance.Get(bulletPrefab, spawnPos, Quaternion.LookRotation(Vector3.down));
+            if (bullet != null)
+            {
+                bullet.Speed = bulletSpeed;
+                bullet.SetOwner(owner);
+            }
 
             yield return new WaitForSeconds(interval);
         }

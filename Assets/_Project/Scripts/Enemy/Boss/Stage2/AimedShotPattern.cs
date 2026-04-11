@@ -44,6 +44,7 @@ public class AimedShotPattern : BossPattern
         StartCoroutine(AimAndShoot(boss, onComplete));
     }
 
+
     private IEnumerator AimAndShoot(BossEnemy boss, Action onComplete)
     {
         Transform target = boss.Target;
@@ -53,8 +54,13 @@ public class AimedShotPattern : BossPattern
             yield break;
         }
 
+        // 조준 중 이동 정지
+        Stage2Boss stage2Boss = boss as Stage2Boss;
+        stage2Boss?.PauseMovement();
+
         // 조준 방향 고정
-        Vector3 aimDirection = (target.position - boss.transform.position).normalized;
+        Transform firePoint = (boss as Stage2Boss)?.WeaponPoint ?? boss.transform;
+        Vector3 aimDirection = (target.position - firePoint.position).normalized;
         aimDirection.y = 0f;
 
         // 조준선 표시
@@ -63,7 +69,7 @@ public class AimedShotPattern : BossPattern
 
         while (elapsed < aimDuration)
         {
-            Vector3 startPos = boss.transform.position;
+            Vector3 startPos = firePoint.position;
             Vector3 endPos = startPos + aimDirection * aimLineLength;
             lineRenderer.SetPosition(0, startPos);
             lineRenderer.SetPosition(1, endPos);
@@ -74,19 +80,25 @@ public class AimedShotPattern : BossPattern
 
         lineRenderer.enabled = false;
 
+        boss.GetComponent<Stage2BossAnimator>()?.PlayAttack();
+
         // 발사
         if (BulletPool.Instance == null)
         {
             Debug.LogError("BulletPool.Instance is null. AimedShotPattern cannot fire.");
+            stage2Boss?.ResumeMovement();
             onComplete?.Invoke();
             yield break;
         }
 
-        Vector3 firePos = boss.transform.position;
+        Vector3 firePos = firePoint.position;
         Quaternion fireRotation = Quaternion.LookRotation(aimDirection);
         Bullet bullet = BulletPool.Instance.Get(bulletPrefab, firePos, fireRotation);
         bullet.Speed = bulletSpeed;
         bullet.SetOwner(boss.gameObject);
+
+        // 이동 재개
+        stage2Boss?.ResumeMovement();
 
         yield return new WaitForSeconds(afterDelay);
         onComplete?.Invoke();

@@ -6,18 +6,34 @@ public class Stage1BossWave : MonoBehaviour
     [SerializeField] private float waveSpeed = 8f;
     [SerializeField] private float waveWidth = 2f;
     [SerializeField] private float damage = 20f;
-    [SerializeField] private Transform visual; // 실린더 자식 오브젝트
-    [SerializeField] private float visualHeight = 0.2f;
+    [SerializeField] private ParticleSystem ringParticles; // 링 둘레에 방출할 파티클
+    [SerializeField] private Transform magicCircleVFX;
+    [SerializeField] private float magicCircleScalePerRadius = 0.02367f; // scale / maxRadius 비율
+    [SerializeField] private GameObject muzzlePrefab;
+    [SerializeField] private GameObject hitPrefab;
 
     private float currentRadius;
     private bool playerHit;
+
+    void Start()
+    {
+        if (magicCircleVFX != null)
+            magicCircleVFX.localScale = Vector3.one * (maxRadius * magicCircleScalePerRadius);
+
+        SpawnVFX(muzzlePrefab, transform.position);
+    }
 
     void Update()
     {
         currentRadius += waveSpeed * Time.deltaTime;
 
-        if (visual != null)
-            visual.localScale = new Vector3(currentRadius * 2f, visualHeight, currentRadius * 2f);
+        if (ringParticles != null)
+        {
+            var shape = ringParticles.shape;
+            shape.shapeType = ParticleSystemShapeType.Circle;
+            shape.radius = currentRadius;
+            shape.radiusThickness = 0f; // 둘레에서만 방출
+        }
 
         if (!playerHit)
             DetectPlayer();
@@ -46,11 +62,22 @@ public class Stage1BossWave : MonoBehaviour
             {
                 playerState.TakeDamage(damage);
                 playerHit = true;
+                SpawnVFX(hitPrefab, obj.transform.position);
                 break;
             }
         }
     }
 
+    private void SpawnVFX(GameObject prefab, Vector3 position)
+    {
+        if (prefab == null) return;
+        GameObject vfx = Instantiate(prefab, position, Quaternion.identity);
+        ParticleSystem ps = vfx.GetComponent<ParticleSystem>();
+        if (ps != null)
+            Destroy(vfx, ps.main.duration);
+    }
+
+    #if UNITY_EDITOR
     void OnDrawGizmos()
     {
         Gizmos.color = new Color(0f, 0.8f, 1f, 0.3f);
@@ -63,4 +90,5 @@ public class Stage1BossWave : MonoBehaviour
             Gizmos.DrawWireSphere(transform.position, currentRadius - waveWidth);
         }
     }
+    #endif
 }

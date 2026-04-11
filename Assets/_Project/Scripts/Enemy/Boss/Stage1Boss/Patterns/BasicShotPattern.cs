@@ -10,7 +10,6 @@ public class BasicShotPattern : BossPattern
     [SerializeField] private float shotInterval = 0.3f;
     [SerializeField] private float minShotDuration = 1f;
     [SerializeField] private float maxShotDuration = 3f;
-    [SerializeField] private float holdDuration = 1f;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
@@ -19,7 +18,18 @@ public class BasicShotPattern : BossPattern
 
     private IEnumerator FireSequence(BossEnemy boss, Action onComplete)
     {
-        (boss as Stage1Boss)?.NotifyPatternStart();
+        Stage1Boss stage1Boss = boss as Stage1Boss;
+
+        bool fireReady = false;
+        bool animComplete = false;
+        stage1Boss?.RegisterFireCallback(() => fireReady = true);
+        stage1Boss?.RegisterAnimationCompleteCallback(() => animComplete = true);
+
+        stage1Boss?.NotifyPatternStart();
+        stage1Boss?.BossAnimator?.SetTrigger("StartFire");
+
+        yield return new WaitUntil(() => fireReady);
+
         float shotDuration = UnityEngine.Random.Range(minShotDuration, maxShotDuration);
         float elapsed = 0f;
         while (elapsed < shotDuration)
@@ -28,8 +38,12 @@ public class BasicShotPattern : BossPattern
             yield return new WaitForSeconds(shotInterval);
             elapsed += shotInterval;
         }
-        yield return new WaitForSeconds(holdDuration);
-        (boss as Stage1Boss)?.NotifyPatternEnd();
+
+        stage1Boss?.BossAnimator?.SetTrigger("EndFire");
+
+        yield return new WaitUntil(() => animComplete);
+
+        stage1Boss?.NotifyPatternEnd();
         onComplete?.Invoke();
     }
 
@@ -49,5 +63,6 @@ public class BasicShotPattern : BossPattern
 
         bullet.SetOwner(boss.gameObject);
         bullet.Speed = bulletSpeed;
+        bullet.GetComponentInChildren<BulletVFX>()?.PlayMuzzle();
     }
 }

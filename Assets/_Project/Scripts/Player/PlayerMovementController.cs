@@ -19,14 +19,19 @@ public class PlayerMovementController : MonoBehaviour
     private bool isMoving;
     private bool isExecutionDashing;
     private bool isDashing;
+    private Vector3 localMoveDirection;
 
     public bool IsExecutionDashing => isExecutionDashing;
     public bool IsDashing => isDashing;
+    public bool IsMoving => isMoving;
+    public float NormalizedSpeed => realSpeed / speed;
+    public float LocalMoveX => localMoveDirection.x;
+    public float LocalMoveZ => localMoveDirection.z;
 
     private InputAction moveAction;
     private InputAction sprintAction;
 
-    private float gravity = -9.81f;
+    private const float gravity = -9.81f;
     private Vector3 velocity;
 
     void Awake()
@@ -80,6 +85,7 @@ public class PlayerMovementController : MonoBehaviour
         Vector2 input = moveAction.ReadValue<Vector2>();
         isMoving = input.sqrMagnitude > 0f;
         Vector3 dir = (Vector3.right * input.x + Vector3.forward * input.y).normalized;
+        localMoveDirection = isMoving ? transform.InverseTransformDirection(dir) : Vector3.zero;
         controller.Move(dir * (realSpeed * Time.deltaTime));
     }
 

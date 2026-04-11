@@ -5,6 +5,7 @@ using UnityEngine;
 public class BombPattern : BossPattern
 {
     [SerializeField] private GameObject bombPrefab;
+    [SerializeField] private Transform firePoint;
     [SerializeField] private float holdDuration = 1f;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
@@ -21,7 +22,10 @@ public class BombPattern : BossPattern
             yield break;
         }
 
-        Bullet bullet = BulletPool.Instance.Get(bombPrefab, boss.transform.position, Quaternion.identity);
+        Transform origin = firePoint != null ? firePoint : boss.transform;
+        Vector3 toPlayer = new Vector3(boss.Target.position.x - origin.position.x, 0f, boss.Target.position.z - origin.position.z);
+        Quaternion spawnRotation = toPlayer.sqrMagnitude > 0.01f ? Quaternion.LookRotation(toPlayer.normalized) : Quaternion.identity;
+        Bullet bullet = BulletPool.Instance.Get(bombPrefab, origin.position, spawnRotation);
         Stage1BossBomb bomb = bullet as Stage1BossBomb;
 
         if (bomb == null)
@@ -31,9 +35,19 @@ public class BombPattern : BossPattern
             yield break;
         }
 
-        (boss as Stage1Boss)?.NotifyPatternStart();
+        Stage1Boss stage1Boss = boss as Stage1Boss;
+        bool fireReady = false;
+        stage1Boss?.RegisterFireCallback(() => fireReady = true);
+        stage1Boss?.NotifyPatternStart();
+        stage1Boss?.BossAnimator?.SetTrigger("Bomb");
+
+        yield return new WaitUntil(() => fireReady);
+
+        float bossToPlayerDist = Vector3.Distance(
+            new Vector3(boss.transform.position.x, 0f, boss.transform.position.z),
+            new Vector3(boss.Target.position.x, 0f, boss.Target.position.z));
         bomb.SetOwner(boss.gameObject);
-        bomb.Launch(boss.transform.position, boss.Target.position);
+        bomb.Launch(origin.position, boss.Target.position, bossToPlayerDist);
 
         yield return new WaitForSeconds(holdDuration);
         (boss as Stage1Boss)?.NotifyPatternEnd();

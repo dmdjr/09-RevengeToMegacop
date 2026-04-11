@@ -26,10 +26,16 @@ public class MovePattern : BossPattern
     [Header("Result")]
     [SerializeField] private Vector3 _nextMovePosition;
 
+    [Header("RotateDuration")]
+    [SerializeField] private float rotateDuration = 1;
+
     public Vector3 NextMovePosition => _nextMovePosition;
+
+    private Animator _anim;
 
     void Awake() {
         _player = FindAnyObjectByType<PlayerController>().transform;
+        _anim = GetComponentInParent<Animator>();
     }
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
@@ -50,6 +56,8 @@ public class MovePattern : BossPattern
 
         if (found)
         {
+            _anim.SetBool("Run" , true);
+
             Vector3 moveTarget = _nextMovePosition;
 
 
@@ -57,6 +65,7 @@ public class MovePattern : BossPattern
         {
             Vector3 direction = (_nextMovePosition - boss.transform.position).normalized;
             direction.y = 0;
+            boss.transform.rotation = Quaternion.LookRotation(direction);
             boss.transform.position += direction * _moveSpeed * Time.deltaTime;
 
             yield return null;
@@ -66,11 +75,43 @@ public class MovePattern : BossPattern
         Debug.Log(_nextMovePosition);
 
         
+        _anim.SetBool("Run" , false);
 
 
-        yield return new WaitForSeconds(1);
+        yield return StartCoroutine(LoockTarget(boss));
 
         onComplete?.Invoke();
+    }
+
+    IEnumerator LoockTarget(BossEnemy boss)
+    {
+        if (_player == null) yield break;
+
+        Quaternion startRotation = boss.transform.rotation;
+
+        Vector3 direction = (_player.position - boss.transform.position).normalized;
+
+        // Y축만 회전하게 하고 싶으면 direction.y = 0;
+        direction.y = 0f;
+
+        if (direction == Vector3.zero) yield break;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        float time = 0f;
+
+        while (time < rotateDuration)
+        {
+
+            Debug.Log("Rotaion");
+            time += Time.deltaTime;
+            float t = time / rotateDuration;
+
+            boss.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+
+            yield return null;
+
+        }
     }
 
     private bool PickRandomPositionAroundPlayer()

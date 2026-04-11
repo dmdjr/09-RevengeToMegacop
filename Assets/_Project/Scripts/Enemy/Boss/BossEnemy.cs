@@ -161,7 +161,7 @@ public abstract class BossEnemy : Enemy
         bossState = BossState.Active;
     }
 
-    private void CheckPhaseTransition()
+    protected void CheckPhaseTransition()
     {
         if (phases == null) return;
 
