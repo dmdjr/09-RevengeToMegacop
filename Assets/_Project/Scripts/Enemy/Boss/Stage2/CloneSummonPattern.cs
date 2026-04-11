@@ -42,6 +42,9 @@ public class CloneSummonPattern : BossPattern
         int cloneCount = UnityEngine.Random.Range(minClones, maxClones + 1);
         WaitForSeconds spawnWait = new WaitForSeconds(spawnInterval);
 
+        Stage2Boss stage2Boss = boss as Stage2Boss;
+        stage2Boss?.PauseMovement();
+
         for (int i = 0; i < cloneCount; i++)
         {
             // 현재 살아있는 분신 수가 최대치면 소환 중단
@@ -51,7 +54,6 @@ public class CloneSummonPattern : BossPattern
             // 보스 주변 랜덤 위치에 소환
             Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * spawnRadius;
             Vector3 spawnPos = boss.transform.position + new Vector3(randomOffset.x, 0f, randomOffset.y);
-
             GameObject cloneObj = Instantiate(clonePrefab, spawnPos, Quaternion.identity);
 
             // BossClone 초기화
@@ -60,7 +62,12 @@ public class CloneSummonPattern : BossPattern
             {
                 clone.Initialize(target, boss.gameObject, bulletPrefab, bulletSpeed);
             }
-
+            // 클론 색상 변경 (보스와 구분)
+            Renderer[] cloneRenderers = cloneObj.GetComponentsInChildren<Renderer>();
+            for (int j = 0; j < cloneRenderers.Length; j++)
+            {
+                cloneRenderers[j].material.SetColor("_BaseColor", new Color(0.1f, 0.1f, 0.1f));
+            }
             // 자동 소멸
             Destroy(cloneObj, cloneLifetime);
 
@@ -71,8 +78,9 @@ public class CloneSummonPattern : BossPattern
             }
         }
 
-        // 분신이 활동할 시간 확보 후 패턴 완료
+        // 분신이 활동할 시간 확보(보스 정지 유지), 그 후 이동 재개
         yield return new WaitForSeconds(afterDelay);
+        stage2Boss?.ResumeMovement();
         onComplete?.Invoke();
     }
 }

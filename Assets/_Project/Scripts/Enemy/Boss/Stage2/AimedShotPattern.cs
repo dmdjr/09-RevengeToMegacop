@@ -18,7 +18,9 @@ public class AimedShotPattern : BossPattern
     [Header("Shot Settings")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float bulletSpeed = 25f;
+    [SerializeField] private float bowReleaseDelay = 0.5f;
     [SerializeField] private float afterDelay = 1.5f;
+    [SerializeField] private GameObject muzzleEffectPrefab;
 
     private LineRenderer lineRenderer;
 
@@ -44,6 +46,7 @@ public class AimedShotPattern : BossPattern
         StartCoroutine(AimAndShoot(boss, onComplete));
     }
 
+
     private IEnumerator AimAndShoot(BossEnemy boss, Action onComplete)
     {
         Transform target = boss.Target;
@@ -52,6 +55,10 @@ public class AimedShotPattern : BossPattern
             onComplete?.Invoke();
             yield break;
         }
+
+        // 조준 중 이동 정지
+        Stage2Boss stage2Boss = boss as Stage2Boss;
+        stage2Boss?.PauseMovement();
 
         // 조준 방향 고정
         Transform firePoint = (boss as Stage2Boss)?.WeaponPoint ?? boss.transform;
@@ -76,22 +83,33 @@ public class AimedShotPattern : BossPattern
         lineRenderer.enabled = false;
 
         boss.GetComponent<Stage2BossAnimator>()?.PlayAttack();
+        yield return new WaitForSeconds(bowReleaseDelay);
 
         // 발사
         if (BulletPool.Instance == null)
         {
             Debug.LogError("BulletPool.Instance is null. AimedShotPattern cannot fire.");
+            stage2Boss?.ResumeMovement();
             onComplete?.Invoke();
             yield break;
         }
 
         Vector3 firePos = firePoint.position;
         Quaternion fireRotation = Quaternion.LookRotation(aimDirection);
+
+        if (muzzleEffectPrefab != null)
+        {
+            GameObject effect = Instantiate(muzzleEffectPrefab, firePos, fireRotation);
+            Destroy(effect, 2f);
+        }
+
         Bullet bullet = BulletPool.Instance.Get(bulletPrefab, firePos, fireRotation);
         bullet.Speed = bulletSpeed;
         bullet.SetOwner(boss.gameObject);
 
+        // 공격 후 여유 시간(후딜) 동안 정지 유지, 그 후 이동 재개
         yield return new WaitForSeconds(afterDelay);
+        stage2Boss?.ResumeMovement();
         onComplete?.Invoke();
     }
 }
