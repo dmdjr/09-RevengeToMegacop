@@ -12,7 +12,9 @@ public class GuidedArrowPattern : BossPattern
 {
     [Header("Guided Arrow Settings")]
     [SerializeField] private GameObject guidedArrowPrefab;
+    [SerializeField] private float bowReleaseDelay = 0.5f;
     [SerializeField] private float afterDelay = 1.5f;
+    [SerializeField] private GameObject muzzleEffectPrefab;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
@@ -38,10 +40,19 @@ public class GuidedArrowPattern : BossPattern
         Stage2Boss stage2Boss = boss as Stage2Boss;
         stage2Boss?.PauseMovement();
 
+        boss.GetComponent<Stage2BossAnimator>()?.PlayAttack();
+        yield return new WaitForSeconds(bowReleaseDelay);
+
         // 발사 방향
         Vector3 direction = (target.position - boss.transform.position).normalized;
         direction.y = 0f;
         Quaternion rotation = Quaternion.LookRotation(direction);
+
+        if (muzzleEffectPrefab != null)
+        {
+            GameObject effect = Instantiate(muzzleEffectPrefab, boss.transform.position, rotation);
+            Destroy(effect, 2f);
+        }
 
         // 유도 화살 생성
         GameObject arrowObj = Instantiate(guidedArrowPrefab, boss.transform.position, rotation);
@@ -59,9 +70,9 @@ public class GuidedArrowPattern : BossPattern
         guidedBullet.Initialize(target, boss.transform, boss.gameObject);
         Debug.Log("[GuidedArrowPattern] 유도 화살 발사!");
 
-        stage2Boss?.ResumeMovement();
-
+        // 공격 후 여유 시간(후딜) 동안 정지 유지, 그 후 이동 재개
         yield return new WaitForSeconds(afterDelay);
+        stage2Boss?.ResumeMovement();
         onComplete?.Invoke();
     }
 }

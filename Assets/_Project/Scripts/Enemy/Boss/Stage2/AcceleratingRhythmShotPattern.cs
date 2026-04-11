@@ -16,7 +16,9 @@ public class AcceleratingRhythmShotPattern : BossPattern
     [SerializeField] private int shotCount = 5;
     [SerializeField] private float firstDelay = 0.6f;
     [SerializeField] private float lastDelay = 0.1f;
+    [SerializeField] private float bowReleaseDelay = 0.5f;
     [SerializeField] private float afterDelay = 1.5f;
+    [SerializeField] private GameObject muzzleEffectPrefab;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
@@ -45,13 +47,22 @@ public class AcceleratingRhythmShotPattern : BossPattern
         Transform firePoint = stage2Boss != null ? stage2Boss.WeaponPoint : boss.transform;
         for (int i = 0; i < shotCount; i++)
         {
+            // 매 발마다 활 시위 당기고 발사
+            boss.GetComponent<Stage2BossAnimator>()?.PlayAttack();
+            yield return new WaitForSeconds(bowReleaseDelay);
+
             // 매 발마다 플레이어 방향 재조준
             Vector3 direction = (target.position - firePoint.position).normalized;
             direction.y = 0f;
 
-            boss.GetComponent<Stage2BossAnimator>()?.PlayAttack();
-
             Quaternion rotation = Quaternion.LookRotation(direction);
+
+            if (muzzleEffectPrefab != null)
+            {
+                GameObject effect = Instantiate(muzzleEffectPrefab, firePoint.position, rotation);
+                Destroy(effect, 2f);
+            }
+
             Bullet bullet = BulletPool.Instance.Get(bulletPrefab, firePoint.position, rotation);
             bullet.Speed = bulletSpeed;
             bullet.SetOwner(boss.gameObject);
@@ -65,9 +76,9 @@ public class AcceleratingRhythmShotPattern : BossPattern
             }
         }
 
-        stage2Boss?.ResumeMovement();
-
+        // 공격 후 여유 시간(후딜) 동안 정지 유지, 그 후 이동 재개
         yield return new WaitForSeconds(afterDelay);
+        stage2Boss?.ResumeMovement();
         onComplete?.Invoke();
     }
 }

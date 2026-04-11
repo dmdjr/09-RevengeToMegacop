@@ -319,7 +319,9 @@ MonoBehaviour:
   cooldown: 2
   weight: 1
   guidedArrowPrefab: {fileID: 3370167828950650170, guid: 5ab515a6a966b4d2aa852cdc9d144229, type: 3}
+  bowReleaseDelay: 0.5
   afterDelay: 0.5
+  muzzleEffectPrefab: {fileID: 0}
 --- !u!1 &314148341
 GameObject:
   m_ObjectHideFlags: 0
@@ -1160,7 +1162,9 @@ MonoBehaviour:
   aimLineLength: 50
   bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
   bulletSpeed: 60
+  bowReleaseDelay: 0.5
   afterDelay: 0.5
+  muzzleEffectPrefab: {fileID: 0}
 --- !u!4 &904950012
 Transform:
   m_ObjectHideFlags: 0
@@ -1386,7 +1390,7 @@ MonoBehaviour:
   moveSpeed: 5
   preferredDistance: 15
   directionChangeInterval: 3
-  bossAnimator: {fileID: 0}
+  bossAnimator: {fileID: 931758848}
 --- !u!1 &944183186
 GameObject:
   m_ObjectHideFlags: 0
@@ -1457,7 +1461,9 @@ MonoBehaviour:
   shotCount: 7
   firstDelay: 0.6
   lastDelay: 0.1
+  bowReleaseDelay: 0.1
   afterDelay: 0.5
+  muzzleEffectPrefab: {fileID: 0}
 --- !u!4 &1053918993
 Transform:
   m_ObjectHideFlags: 0
@@ -2197,7 +2203,9 @@ MonoBehaviour:
   secondDelay: 0.2
   bulletPrefab: {fileID: 3370167828950650170, guid: 6543d834e8c1c469cae840167b8150d8, type: 3}
   bulletSpeed: 50
+  bowReleaseDelay: 0.5
   afterDelay: 0.5
+  muzzleEffectPrefab: {fileID: 0}
 --- !u!4 &1789487667
 Transform:
   m_ObjectHideFlags: 0

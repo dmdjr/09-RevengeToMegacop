@@ -18,7 +18,9 @@ public class AimedShotPattern : BossPattern
     [Header("Shot Settings")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float bulletSpeed = 25f;
+    [SerializeField] private float bowReleaseDelay = 0.5f;
     [SerializeField] private float afterDelay = 1.5f;
+    [SerializeField] private GameObject muzzleEffectPrefab;
 
     private LineRenderer lineRenderer;
 
@@ -81,6 +83,7 @@ public class AimedShotPattern : BossPattern
         lineRenderer.enabled = false;
 
         boss.GetComponent<Stage2BossAnimator>()?.PlayAttack();
+        yield return new WaitForSeconds(bowReleaseDelay);
 
         // 발사
         if (BulletPool.Instance == null)
@@ -93,14 +96,20 @@ public class AimedShotPattern : BossPattern
 
         Vector3 firePos = firePoint.position;
         Quaternion fireRotation = Quaternion.LookRotation(aimDirection);
+
+        if (muzzleEffectPrefab != null)
+        {
+            GameObject effect = Instantiate(muzzleEffectPrefab, firePos, fireRotation);
+            Destroy(effect, 2f);
+        }
+
         Bullet bullet = BulletPool.Instance.Get(bulletPrefab, firePos, fireRotation);
         bullet.Speed = bulletSpeed;
         bullet.SetOwner(boss.gameObject);
 
-        // 이동 재개
-        stage2Boss?.ResumeMovement();
-
+        // 공격 후 여유 시간(후딜) 동안 정지 유지, 그 후 이동 재개
         yield return new WaitForSeconds(afterDelay);
+        stage2Boss?.ResumeMovement();
         onComplete?.Invoke();
     }
 }

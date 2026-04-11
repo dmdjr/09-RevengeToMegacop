@@ -13,6 +13,7 @@ public class Stage2BossAnimator : MonoBehaviour
     private static readonly int HitHash = Animator.StringToHash("Hit");
     private static readonly int DieHash = Animator.StringToHash("Die");
     private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
+    private static readonly int MoveDirectionHash = Animator.StringToHash("MoveDirection");
 
     private void Awake()
     {
@@ -53,5 +54,11 @@ public class Stage2BossAnimator : MonoBehaviour
     public void SetMoving(bool isMoving)
     {
         if (animator != null) animator.SetBool(IsMovingHash, isMoving);
+    }
+
+    /// <summary>스트레이핑 방향 설정. -1 = 왼쪽 스트레이핑, +1 = 오른쪽 스트레이핑.</summary>
+    public void SetMoveDirection(float direction)
+    {
+        if (animator != null) animator.SetFloat(MoveDirectionHash, direction);
     }
 }

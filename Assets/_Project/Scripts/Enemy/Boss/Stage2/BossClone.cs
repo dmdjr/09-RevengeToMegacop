@@ -11,12 +11,29 @@ public class BossClone : MonoBehaviour, IDamageable
 {
     [SerializeField] private float attackInterval = 1.5f;
     [SerializeField] private float firstAttackDelay = 0.8f;
+    [SerializeField] private float bowReleaseDelay = 0.5f;
+    [SerializeField] private GameObject muzzleEffectPrefab;
 
+    private static readonly int AttackHash = Animator.StringToHash("Attack");
+
+    private Animator animator;
     private Transform target;
     private GameObject owner;
     private GameObject bulletPrefab;
     private float bulletSpeed;
     private bool isDead = false;
+
+    void Awake()
+    {
+        foreach (Animator anim in GetComponentsInChildren<Animator>())
+        {
+            if (anim.gameObject != gameObject)
+            {
+                animator = anim;
+                break;
+            }
+        }
+    }
 
     /// <summary>
     /// 분신 초기화. CloneSummonPattern에서 생성 직후 호출한다.
@@ -47,6 +64,8 @@ public class BossClone : MonoBehaviour, IDamageable
 
         while (!isDead && target != null)
         {
+            if (animator != null) animator.SetTrigger(AttackHash);
+            yield return new WaitForSeconds(bowReleaseDelay);
             Fire();
             yield return new WaitForSeconds(attackInterval);
         }
@@ -65,6 +84,13 @@ public class BossClone : MonoBehaviour, IDamageable
         firePosition.y = target.position.y;
 
         Quaternion rotation = Quaternion.LookRotation(direction);
+
+        if (muzzleEffectPrefab != null)
+        {
+            GameObject effect = Instantiate(muzzleEffectPrefab, firePosition, rotation);
+            Destroy(effect, 2f);
+        }
+
         Bullet bullet = BulletPool.Instance.Get(bulletPrefab, firePosition, rotation);
         bullet.Speed = bulletSpeed;
         bullet.SetOwner(owner);

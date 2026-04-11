@@ -78,10 +78,9 @@ public class CloneSummonPattern : BossPattern
             }
         }
 
-        stage2Boss?.ResumeMovement();
-
-        // 분신이 활동할 시간 확보 후 패턴 완료
+        // 분신이 활동할 시간 확보(보스 정지 유지), 그 후 이동 재개
         yield return new WaitForSeconds(afterDelay);
+        stage2Boss?.ResumeMovement();
         onComplete?.Invoke();
     }
 }
