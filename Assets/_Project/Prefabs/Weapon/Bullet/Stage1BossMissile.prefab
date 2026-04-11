@@ -123,6 +123,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Damage>k__BackingField: 15
+  flyHeight: 1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 65536
   turnSpeed: 500
   lifetime: 5
 --- !u!1 &3817142988896254060

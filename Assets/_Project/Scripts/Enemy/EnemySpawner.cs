@@ -66,6 +66,9 @@ public class EnemySpawner : MonoBehaviour
             cameraShakeListener.RegisterEnemy(enemy);
         if (enemyDeathEffectListener != null)
             enemyDeathEffectListener.RegisterEnemy(enemy);
+
+        EnemyHitFeedback hitFeedback = enemyObj.AddComponent<EnemyHitFeedback>();
+        hitFeedback.Initialize(enemy);
         if (target != null)
         {
             enemy.SetTarget(target);

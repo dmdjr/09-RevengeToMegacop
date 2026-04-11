@@ -6,12 +6,20 @@
 
 ## 네이밍
 
-- `private` 필드: `camelCase`
+- `private` 필드: `camelCase` — `_` prefix 붙이지 않음 (`_health` ✗ → `health` ✓)
 - public 메서드/타입: `PascalCase`
 - Inspector 노출 필드: `[SerializeField] private` — `public` 필드 금지
 - **변수명 축약 금지** — 모든 변수(루프, 임시, 로컬 포함)에 단어 전체 표기
   - `sc` → `skillController`, `e` → `enemy`, `go` → `gameObject`
 - 한 파일에 한 클래스, 파일명 = 클래스명
+
+## 포매팅
+
+- 변수 선언 시 `변수명`과 `=` 사이는 **단일 공백**만 사용한다
+- 가독성/그룹핑을 위해 여러 공백으로 `=`를 세로 정렬하지 말 것
+  - ✗ `int previewPriority         = 10;`
+  - ✓ `int previewPriority = 10;`
+- **Why**: 가장 긴 변수명이 바뀔 때마다 주변 줄을 재정렬해야 하는 유지보수 부담 + IDE 자동 포매터와 충돌 위험. 의미 그룹핑이 목적이면 `[Header("...")]` 속성이나 빈 줄 분리로 대체한다.
 
 ## Unity 메시지 메서드
 

@@ -125,6 +125,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <Damage>k__BackingField: 10
+  flyHeight: 1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 65536
 --- !u!1 &2132680639453715491
 GameObject:
   m_ObjectHideFlags: 0

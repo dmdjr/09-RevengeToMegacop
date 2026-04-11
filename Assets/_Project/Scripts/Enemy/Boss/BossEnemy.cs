@@ -57,6 +57,10 @@ public abstract class BossEnemy : Enemy
         {
             TriggerDeathSequence();
         }
+        else
+        {
+            InvokeOnHit();
+        }
     }
 
     /// <summary>

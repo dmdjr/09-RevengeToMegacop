@@ -22,6 +22,7 @@ public class Enemy : MonoBehaviour, IDamageable
     private State currentState = State.MoveToTarget;
 
     public event Action<Enemy> OnDeath;
+    public event Action<Enemy> OnHit;
     public event Action<float> OnHpChanged;
 
     private bool isDead = false;
@@ -50,6 +51,14 @@ public class Enemy : MonoBehaviour, IDamageable
     }
 
     /// <summary>
+    /// 자식 클래스에서 OnHit 이벤트를 발행할 때 사용한다.
+    /// </summary>
+    protected void InvokeOnHit()
+    {
+        OnHit?.Invoke(this);
+    }
+
+    /// <summary>
     /// 피격 처리. 자식 클래스에서 override하여 피격 로직을 변경할 수 있다.
     /// </summary>
     public virtual void Hit(Bullet bullet)
@@ -61,6 +70,10 @@ public class Enemy : MonoBehaviour, IDamageable
         if (hp <= 0)
         {
             Die();
+        }
+        else
+        {
+            OnHit?.Invoke(this);
         }
     }
 
