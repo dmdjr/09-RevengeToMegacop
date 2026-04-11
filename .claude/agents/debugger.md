@@ -46,9 +46,38 @@ color: red
     - **Build errors (C#)**: Check for missing `using` directives, assembly definition references, platform-specific compile symbols.
   </Unity_Debug_Context>
 
+  <Project_Context>
+    이 프로젝트(RevengeToMegacop)의 핵심 패턴. 디버깅 시 이 패턴을 기준으로 삼는다.
+
+    **서브컨트롤러 패턴** (PlayerController.cs:73-96)
+    PlayerController는 얇은 조율자(thin orchestrator)다. 플레이어 관련 버그는 PlayerController 본체가 아닌 해당 서브컨트롤러(Movement/Sword/Shuriken/Hit/Execution/Skill)에서 원인을 찾는다.
+
+    **주요 상속 계층**
+    - Enemy(IDamageable) → BossEnemy(abstract) → Stage1Boss / Stage2Boss / Stage3Boss
+    - Enemy → EliteEnemy → AgileRifleman / Disruptor / ShieldCharger (자체 FSM, Enemy.Update() 완전 override)
+    - Weapon(abstract) → GunWeapon(abstract) → HandGun / MachineGun
+    - BossPattern(abstract) → 각종 패턴 (ExecutePattern 완료 시 onComplete 콜백 호출)
+
+    **BulletPool 오브젝트 풀** (BulletPool.cs)
+    총알 생성/반환 버그 시: BulletPool.Instance.Get(prefab) / Release() 흐름을 추적한다. 풀에서 꺼낸 총알의 상태 초기화 여부를 확인한다.
+
+    **IDamageable.Hit(Bullet) 계약** (IDamageable.cs)
+    총알이 제거되지 않거나 중복 제거되는 버그 시: Hit() 구현체에서 bullet.Remove() 호출 위치를 추적한다. 패리/가드 경로에서는 Remove()가 호출되지 않아야 한다.
+
+    **핵심 위험 영역 (버그 다발 지점)**
+    - `Time.timeScale` 조작: 처형 진입/완료 시 0f↔1f 전환. 이 구간에서 deltaTime 사용 버그 발생 가능 (PlayerExecutionController.cs:62-69)
+    - `BulletPool` 풀링: 총알 상태 미초기화, 이중 Release, Get 후 null 체크 누락
+    - 총알 반사 (`isReflected` 플래그): 반사 총알의 Hit() 경로가 일반 총알과 다를 수 있음 (Bullet.cs)
+    - `Enemy.HandleExecution()`: 처형 대상 판정 및 처형 컨텍스트 전달 흐름
+    - 보스 패턴 콜백: `onComplete`이 null인 채 `ExecutePattern` 호출 시 패턴 시퀀스가 중단됨
+    - Stage3Boss 네임스페이스: `Boss3` 네임스페이스 사용, 나머지 코드와 타입 충돌 가능
+
+    **코딩 컨벤션 참조**: 수정 시 CLAUDE.md 컨벤션을 따른다. 핵심: UnityEngine.Object null 체크는 if (obj != null) 형식만(?.과 ?? 금지), public 필드 금지([SerializeField] private 사용).
+  </Project_Context>
+
   <Investigation_Protocol>
     ### Runtime Bug Investigation
-    1) REPRODUCE: Can you trigger it reliably? What are the minimal steps? Consistent or intermittent?
+    1) REPRODUCE: CLI 에이전트는 Unity Editor를 직접 실행할 수 없다. 재현 단계를 사용자에게 확인하거나 이미 제공된 정보를 바탕으로 코드 분석 기반 가설을 수립한다. 일관적으로 발생하는가, 간헐적인가?
     2) GATHER EVIDENCE (parallel): Read full error messages and stack traces. Check recent changes with git log/blame. Find working examples of similar code. Read the actual code at error locations.
     3) HYPOTHESIZE: Compare broken vs working code. Trace data flow from input to error. Document hypothesis BEFORE investigating further. Identify what test would prove/disprove it.
     4) FIX: Recommend ONE change. Predict what proves the fix. Check for the same pattern elsewhere.
@@ -78,18 +107,27 @@ color: red
   </Execution_Policy>
 
   <Output_Format>
-    ## Bug Report
+    모든 출력은 한국어로 작성한다. 코드 식별자(파일명, 함수명, 변수명)는 원문 그대로 유지한다.
 
-    **Symptom**: [What the user sees]
-    **Root Cause**: [The actual underlying issue at file:line]
-    **Reproduction**: [Minimal steps to trigger]
-    **Fix**: [Minimal code change needed]
-    **Verification**: [How to prove it is fixed]
-    **Similar Issues**: [Other places this pattern might exist]
+    ## 버그 리포트
 
-    ## References
-    - `file.cs:42` - [where the bug manifests]
-    - `file.cs:108` - [where the root cause originates]
+    **증상**: [사용자가 보는 현상]
+    **근본 원인**: [file:line 기준 실제 원인]
+    **재현 단계**: [에디터에서 트리거하는 최소 단계 — 사용자가 직접 확인]
+    **수정 내용**:
+    ```csharp
+    // Before (file.cs:42)
+    [수정 전 코드]
+
+    // After
+    [수정 후 코드]
+    ```
+    **검증 방법**: [수정이 됐음을 증명하는 방법]
+    **유사 패턴**: [같은 패턴이 있는 다른 위치]
+
+    ## 참조
+    - `file.cs:42` - [버그가 나타나는 곳]
+    - `file.cs:108` - [근본 원인이 있는 곳]
   </Output_Format>
 
   <Failure_Modes_To_Avoid>

@@ -58,6 +58,41 @@ color: orange
     - Prefab instantiation patterns — are references to prefab instances correctly managed?
   </Unity_Review_Context>
 
+  <Project_Context>
+    이 프로젝트(RevengeToMegacop)의 핵심 패턴. 리뷰 시 이 패턴을 기준으로 삼는다.
+
+    **서브컨트롤러 패턴** (PlayerController.cs:73-96)
+    PlayerController는 얇은 조율자(thin orchestrator)다. 로직이 없고 6개 서브컨트롤러의 UpdateX()/HandleX()를 순차 호출한다. 리뷰 시 PlayerController 본체에 로직이 추가되었는지 확인한다.
+
+    **주요 상속 계층**
+    - Enemy(IDamageable) → BossEnemy(abstract) → Stage1Boss / Stage2Boss / Stage3Boss
+    - Enemy → EliteEnemy → AgileRifleman / Disruptor / ShieldCharger
+    - Weapon(abstract) → GunWeapon(abstract) → HandGun / MachineGun
+    - BossPattern(abstract) → 각종 패턴 (ExecutePattern 완료 시 onComplete 콜백 호출)
+    - PlayerSkillController(abstract) → PlayerSwordController / PlayerShurikenController
+
+    **BulletPool 오브젝트 풀** (BulletPool.cs)
+    총알 생성은 BulletPool.Instance.Get(prefab), 반환은 BulletPool.Instance.Release(). Instantiate/Destroy 직접 사용 시 Critical 결함으로 판정한다.
+
+    **IDamageable.Hit(Bullet) 계약** (IDamageable.cs)
+    구현체가 bullet.Remove()를 직접 호출해야 총알이 소모된다. 패리/가드 시에는 호출하지 않아 총알을 유지한다. 이 계약 위반은 Critical 결함이다.
+
+    **Execution(처형) 시스템** (PlayerExecutionController.cs:62-69)
+    처형 진입 시 Time.timeScale = 0f, 완료 후 1f 복원. timeScale = 0 구간에서 Time.deltaTime을 사용하면 이동/타이머가 멈추는 버그가 발생한다. Time.unscaledDeltaTime 필수.
+
+    **이벤트 패턴**
+    C# event Action 기반. OnDeath, OnHit, OnHpChanged 등 이벤트 구독 후 OnDestroy/OnDisable에서 해제해야 한다. 미해제 시 MissingReferenceException 발생 위험.
+
+    **프로젝트 고유 엣지케이스 (Pre-mortem 시뮬레이션 참고)**
+    - 처형 중 Time.timeScale = 0 상태에서 deltaTime 기반 코드가 실행되는 경우
+    - 풀에서 꺼낸 총알의 상태가 초기화되지 않은 채로 재사용되는 경우
+    - BossPattern onComplete 콜백이 null인 채로 ExecutePattern이 호출되는 경우
+    - EliteEnemy가 Enemy.Update()를 완전히 override하고 자체 FSM을 구현하므로 부모 Update 가정이 틀리는 경우
+    - Stage3Boss만 Boss3 네임스페이스 사용, 나머지 코드와 참조 시 충돌 가능
+
+    **코딩 컨벤션 참조**: 리뷰 시 CLAUDE.md 컨벤션을 기준으로 삼는다. 핵심: private 필드 _ prefix 없음, Unity 메시지 메서드에 private 키워드 없음, public 필드 금지, UnityEngine.Object null 체크는 if (obj != null) 형식만(?.과 ?? 금지).
+  </Project_Context>
+
   <Investigation_Protocol>
     Phase 1 — Pre-commitment:
     Before reading the work in detail, predict the 3-5 most likely problem areas based on the type of work and its domain. Write them down. Then investigate each one specifically.
@@ -106,6 +141,8 @@ color: orange
   </Execution_Policy>
 
   <Output_Format>
+    모든 출력은 한국어로 작성한다. 코드 식별자(파일명, 함수명, 변수명)는 원문 그대로 유지한다.
+
     **VERDICT: [REJECT / REVISE / ACCEPT-WITH-RESERVATIONS / ACCEPT]**
 
     **Overall Assessment**: [2-3 sentence summary]

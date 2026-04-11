@@ -44,6 +44,34 @@ color: purple
     - Animator parameter mismatches between code and animator controller
   </Unity_Context>
 
+  <Project_Context>
+    이 프로젝트(RevengeToMegacop)의 핵심 패턴. 코드 분석 시 이 패턴을 기준으로 삼는다.
+
+    **서브컨트롤러 패턴** (PlayerController.cs:73-96)
+    PlayerController는 얇은 조율자(thin orchestrator)다. 로직이 없고 6개 서브컨트롤러의 UpdateX()/HandleX()를 순차 호출한다. 새 로직은 PlayerController 본체가 아닌 해당 서브컨트롤러에 추가해야 한다.
+
+    **주요 상속 계층**
+    - Enemy(IDamageable) → BossEnemy(abstract) → Stage1Boss / Stage2Boss / Stage3Boss
+    - Enemy → EliteEnemy → AgileRifleman / Disruptor / ShieldCharger
+    - Weapon(abstract) → GunWeapon(abstract) → HandGun / MachineGun
+    - BossPattern(abstract) → 각종 패턴 (ExecutePattern 완료 시 onComplete 콜백 호출)
+    - PlayerSkillController(abstract) → PlayerSwordController / PlayerShurikenController
+
+    **BulletPool 오브젝트 풀** (BulletPool.cs)
+    총알 생성은 BulletPool.Instance.Get(prefab), 반환은 BulletPool.Instance.Release(). Instantiate/Destroy 직접 사용 금지.
+
+    **IDamageable.Hit(Bullet) 계약** (IDamageable.cs)
+    구현체가 bullet.Remove()를 직접 호출해야 총알이 소모된다. 패리/가드 시에는 호출하지 않아 총알을 유지한다.
+
+    **Execution(처형) 시스템** (PlayerExecutionController.cs:62-69)
+    처형 진입 시 Time.timeScale = 0f, 완료 후 1f 복원. timeScale = 0 구간에서는 Time.unscaledDeltaTime 필수. AudioManager 크로스페이드도 unscaledDeltaTime 기반.
+
+    **이벤트 패턴**
+    C# event Action 기반. 전용 Listener 컴포넌트(CameraShakeListener, EnemyDeathEffectListener)가 구독해 연출을 트리거한다. 별도 이벤트 버스 없음.
+
+    **코딩 컨벤션 참조**: 분석/권장사항 작성 시 CLAUDE.md 컨벤션을 기준으로 삼는다. 핵심: private 필드 _ prefix 없음, Unity 메시지 메서드에 private 키워드 없음, public 필드 금지, UnityEngine.Object null 체크는 if (obj != null) 형식만(?.과 ?? 금지).
+  </Project_Context>
+
   <Investigation_Protocol>
     1) Gather context first (MANDATORY): Use Glob to map project structure, Grep/Read to find relevant implementations, check dependencies. Execute these in parallel.
     2) For debugging: Read error messages completely. Check recent changes with git log/blame. Find working examples of similar code. Compare broken vs working to identify the delta.
@@ -51,7 +79,7 @@ color: purple
     4) Cross-reference hypothesis against actual code. Cite file:line for every claim.
     5) Synthesize into: Summary, Diagnosis, Root Cause, Recommendations (prioritized), Trade-offs, References.
     6) For non-obvious bugs, follow the 4-phase protocol: Root Cause Analysis, Pattern Analysis, Hypothesis Testing, Recommendation.
-    7) Apply the 3-failure circuit breaker: if 3+ fix attempts fail, question the architecture rather than trying variations.
+    7) 분석이 막힐 경우: 3번의 가설이 모두 증거와 불일치하면, 현재 레이어가 아닌 상위 시스템에서 원인을 탐색하는 방향으로 전환한다. 같은 가설을 증거 없이 반복하지 않는다.
   </Investigation_Protocol>
 
   <Tool_Usage>
@@ -68,6 +96,8 @@ color: purple
   </Execution_Policy>
 
   <Output_Format>
+    모든 출력은 한국어로 작성한다. 코드 식별자(파일명, 함수명, 변수명)는 원문 그대로 유지한다.
+
     ## Summary
     [2-3 sentences: what you found and main recommendation]
 
