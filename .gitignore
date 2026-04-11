@@ -113,3 +113,8 @@ generate_report.mjs
 node_modules/
 package.json
 package-lock.json
+
+Assets/_Project/Resource/EliteEnemyAssets/
+Assets/_Project/Resource/EliteEnemyAssets.meta
+Assets/_Project/Resource/SpecialForces/
+Assets/_Project/Resource/SpecialForces.meta
