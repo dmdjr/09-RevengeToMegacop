@@ -11,10 +11,12 @@ public class ScopeScript : MonoBehaviour
     private bool _lockOn = false;
     Camera _mainCamera;
 
+    [Header("scope 셋팅")]
     [SerializeField] private Image _scopeImage;
     [SerializeField] private float _waitTime = 2f;
     [SerializeField] private float _scopeMoveSpeed = 5f;
     [SerializeField] private float _rayDistance = 20f;
+    [SerializeField] private float _scopeDamage = 50f;
 
 
     void Awake()
@@ -81,6 +83,9 @@ public class ScopeScript : MonoBehaviour
             if (hit.collider.CompareTag("Player"))
             {
                 Debug.Log("플레이어 명중!");
+                GameObject currentplayer = hit.collider.gameObject;
+                PlayerStateController playerStateController = GetComponent<PlayerStateController>();
+                playerStateController.TakeDamage(_scopeDamage);
             }
         }
 

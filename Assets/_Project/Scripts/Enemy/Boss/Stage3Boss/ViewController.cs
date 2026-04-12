@@ -20,10 +20,14 @@ namespace Boss3
 
         private Camera _mainCamera;
 
+
         private Dictionary<GameObject, int> _enemyDic = new Dictionary<GameObject, int>();
+
+        private SmokePanel _smokePanel;
 
         private void Awake()
         {
+            _smokePanel = gameObject.GetComponent<SmokePanel>();
             _mainCamera = Camera.main;
             if(_mainCamera != null)
             _mainCamera.cullingMask &= ~(1<<_hideLayer);
@@ -39,6 +43,7 @@ namespace Boss3
                 if (_smokeCount > 0)
                 {
                     MainCameraLayerSet(_beHideLayers, false);
+                    _smokePanel.Show();
                 }
             }
             else
@@ -48,6 +53,7 @@ namespace Boss3
                 if (_smokeCount == 0)
                 {
                     MainCameraLayerSet(_beHideLayers, true);
+                    _smokePanel.Hide();
                 }
             }
         }
