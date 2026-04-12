@@ -139,6 +139,8 @@ MonoBehaviour:
   bodyMoveSpeed: 5
   bodyTurnSpeed: 10
   fireAngleTolerance: 12
+  canBeExecuted: 0
+  executionDamageRatio: 0.2
   preferredMinRange: 9
   preferredMaxRange: 16
   disruptDuration: 2

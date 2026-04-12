@@ -781,18 +781,19 @@ MonoBehaviour:
   useNavMesh: 0
   defaultGunWeaponPrefab: {fileID: 4931215860244204902, guid: 0043177ba40a2ce4b916713d553617a3, type: 3}
   aimPivot: {fileID: 7417326629739119362}
-  aimTurnSpeed: 10
+  bodyMoveSpeed: 5
+  bodyTurnSpeed: 10
+  fireAngleTolerance: 8
+  canBeExecuted: 0
+  executionDamageRatio: 0.2
   preferredMinRange: 7
   preferredMaxRange: 14
-  approachSpeed: 10
-  moveTurnSpeed: 10
   rollSpeed: 15
   rollDuration: 1
   rollDistanceMin: 8.5
   rollDistanceMax: 11.5
   shootDuration: 1.8
   idleDuration: 0.4
-  fireAngleTolerance: 8
   shootStartDelay: 0.15
   shootRollChance: 0.65
   minShootBeforeRoll: 0.35

@@ -562,6 +562,8 @@ MonoBehaviour:
   bodyMoveSpeed: 5
   bodyTurnSpeed: 10
   fireAngleTolerance: 12
+  canBeExecuted: 0
+  executionDamageRatio: 0.2
   dashTriggerRange: 8
   prepareDuration: 0.45
   dashSpeed: 15
@@ -575,10 +577,6 @@ MonoBehaviour:
   dashKnockbackDistance: 10
   dashKnockbackHeight: 3
   playerTag: Player
-  dashHitShakeIntensity: 0.7
-  dashHitShakeDuration: 0.3
-  dashHitFlashIntensity: 1
-  dashHitFlashDuration: 0.3
 --- !u!136 &4909570027166505212
 CapsuleCollider:
   m_ObjectHideFlags: 0

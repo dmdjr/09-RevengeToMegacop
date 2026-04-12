@@ -20,6 +20,10 @@ public class EliteEnemy : Enemy
     [Header("Elite Shoot")]
     [SerializeField] protected float fireAngleTolerance = 12f;
 
+    [Header("Elite Execution")]
+    [SerializeField] private bool canBeExecuted = false;
+    [SerializeField, Range(0f, 1f)] private float executionDamageRatio = 0.2f;
+
     protected GunWeapon gunWeapon;
 
     private Vector3 targetPreviousPosition;
@@ -71,6 +75,46 @@ public class EliteEnemy : Enemy
 
     protected virtual void HandleBehavior()
     {
+    }
+
+    public override ExecutionResult HandleExecution(ExecutionContext context)
+    {
+        if (CanAcceptExecution())
+        {
+            return base.HandleExecution(context);
+        }
+
+        if (context.SlashVfx != null)
+        {
+            context.SlashVfx.Play(context.SlicePosition, context.SlashDirection);
+        }
+
+        float damageAmount = MaxHp * executionDamageRatio;
+        float newHp = Mathf.Max(0f, Hp - damageAmount);
+        SetHp(newHp);
+
+        if (Hp <= 0f)
+        {
+            Die();
+        }
+        else
+        {
+            InvokeOnHit();
+        }
+
+        return new ExecutionResult
+        {
+            Target = this,
+            Position = context.SlicePosition
+        };
+    }
+
+    protected virtual bool CanAcceptExecution()
+    {
+        if (canBeExecuted)
+            return true;
+
+        return HpRatio <= executionDamageRatio;
     }
 
     #region Target / Weapon Setup

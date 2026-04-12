@@ -32,12 +32,6 @@ public class ShieldCharger : EliteEnemy
     [SerializeField] private float dashKnockbackHeight = 3f;
     [SerializeField] private string playerTag = "Player";
 
-    [Header("Dash Hit Effects")]
-    [SerializeField] private float dashHitShakeIntensity = 0.7f;
-    [SerializeField] private float dashHitShakeDuration = 0.3f;
-    [SerializeField] private float dashHitFlashIntensity = 1.0f;
-    [SerializeField] private float dashHitFlashDuration = 0.3f;
-
     private static readonly int BaseStateHash = Animator.StringToHash("BaseState");
     private static readonly int LeftArmStateHash = Animator.StringToHash("LeftArmState");
 
@@ -276,7 +270,7 @@ public class ShieldCharger : EliteEnemy
             return false;
 
         playerStateController.TakeDamage(dashCollisionDamage);
-        TriggerPlayerDamageEffects();
+        TriggerPlayerHitFeedback(other);
 
         CharacterController characterController = other.GetComponent<CharacterController>();
         if (characterController == null)
@@ -312,18 +306,20 @@ public class ShieldCharger : EliteEnemy
         return true;
     }
 
-    private void TriggerPlayerDamageEffects()
+    private void TriggerPlayerHitFeedback(Collider other)
     {
-        CameraShake cameraShake = FindFirstObjectByType<CameraShake>();
-        if (cameraShake != null)
+        if (other == null)
+            return;
+
+        PlayerHitFeedback feedback = other.GetComponent<PlayerHitFeedback>();
+        if (feedback == null)
         {
-            cameraShake.Shake(dashHitShakeIntensity, dashHitShakeDuration);
+            feedback = other.GetComponentInParent<PlayerHitFeedback>();
         }
 
-        DamageFlash damageFlash = FindFirstObjectByType<DamageFlash>();
-        if (damageFlash != null)
+        if (feedback != null)
         {
-            damageFlash.Flash(dashHitFlashIntensity, dashHitFlashDuration);
+            feedback.SendMessage("OnDamaged", SendMessageOptions.DontRequireReceiver);
         }
     }
 
@@ -390,6 +386,33 @@ public class ShieldCharger : EliteEnemy
             {
                 playerController.enabled = true;
             }
+        }
+    }
+
+    public override void Hit(Bullet bullet)
+    {
+        if (IsBlockingState())
+        {
+            return;
+        }
+
+        base.Hit(bullet);
+    }
+
+    private bool IsBlockingState()
+    {
+        switch (shieldChargerState)
+        {
+            case ShieldChargerState.Chase:
+            case ShieldChargerState.Prepare:
+            case ShieldChargerState.Dash:
+                return true;
+
+            case ShieldChargerState.Recover:
+            case ShieldChargerState.Shoot:
+            case ShieldChargerState.Cooldown:
+            default:
+                return false;
         }
     }
 }
