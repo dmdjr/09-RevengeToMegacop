@@ -15,6 +15,7 @@ public class BossClone : MonoBehaviour, IDamageable
     [SerializeField] private GameObject muzzleEffectPrefab;
 
     private static readonly int AttackHash = Animator.StringToHash("Attack");
+    private static readonly int DieHash = Animator.StringToHash("Die");
 
     private Animator animator;
     private Transform target;
@@ -49,12 +50,30 @@ public class BossClone : MonoBehaviour, IDamageable
     }
 
     /// <summary>
-    /// 반사탄에 맞으면 즉시 소멸.
+    /// 반사탄에 맞으면 사망 애니메이션 재생 후 소멸.
     /// </summary>
     public void Hit(Bullet bullet)
     {
         if (bullet == null || isDead) return;
         isDead = true;
+        StartCoroutine(DeathSequence());
+    }
+
+    private IEnumerator DeathSequence()
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger(DieHash);
+
+            // Die 상태 진입 대기
+            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Die"))
+                yield return null;
+
+            // Die 애니메이션 재생 완료 대기
+            while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+                yield return null;
+        }
+
         Destroy(gameObject);
     }
 

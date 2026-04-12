@@ -91,6 +91,7 @@ public class Stage2Boss : BossEnemy
         float newHp = Hp - damage;
         if (newHp < 0f) newHp = 0f;
         SetHp(newHp);
+        CheckPhaseTransition();
 
         if (newHp <= 0f)
             TriggerDeathSequence();
@@ -128,6 +129,9 @@ public class Stage2Boss : BossEnemy
         // Phase2 진입 시 색상 변경 (임시 시각 피드백)
         if (phaseIndex == 1)
         {
+            // 패턴 실행 중 강제 전환된 경우 이동 정지 상태를 복구
+            ResumeMovement();
+
             Renderer renderer = GetComponentInChildren<Renderer>();
             if (renderer != null)
             {
@@ -153,29 +157,23 @@ public class Stage2Boss : BossEnemy
 
     protected override IEnumerator OnBossDeath()
     {
-        bossAnimator?.PlayDie();
-
-        // 사망 시 화살비 중단
-        if (arrowRainPattern != null)
-        {
-            arrowRainPattern.StopRain();
-        }
+        // 이동 및 화살비 즉시 정지
         if (strafeMovement != null) strafeMovement.StopStrafe();
+        if (arrowRainPattern != null) arrowRainPattern.StopRain();
 
-
+        // 사망 애니메이션 재생 및 완료 대기
+        if (bossAnimator != null)
+        {
+            bossAnimator.PlayDie();
+            yield return StartCoroutine(bossAnimator.WaitForDieAnimation());
+        }
 
         // 사망 시 모든 분신 제거
         BossClone[] clones = FindObjectsByType<BossClone>(FindObjectsSortMode.None);
         for (int i = 0; i < clones.Length; i++)
         {
-            if (clones[i] != null)
-            {
-                Destroy(clones[i].gameObject);
-            }
+            if (clones[i] != null) Destroy(clones[i].gameObject);
         }
-
-        // TODO: 사망 연출
-        yield break;
     }
     private IEnumerator KnockbackCoroutine(Vector3 direction)
     {

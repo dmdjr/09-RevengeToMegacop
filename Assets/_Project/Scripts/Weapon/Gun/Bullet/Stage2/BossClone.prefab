@@ -146,7 +146,7 @@ MonoBehaviour:
   attackInterval: 1.5
   firstAttackDelay: 0.8
   bowReleaseDelay: 0.5
-  muzzleEffectPrefab: {fileID: 3026759044100053232, guid: 91b30a6d70c729747b3dfeda27205f4f, type: 3}
+  muzzleEffectPrefab: {fileID: 0}
 --- !u!1001 &5275599416996240757
 PrefabInstance:
   m_ObjectHideFlags: 0
