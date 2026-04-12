@@ -186,6 +186,11 @@ public abstract class BossEnemy : Enemy
         if (phaseIndex < 0 || phases == null || phaseIndex >= phases.Length) return;
         currentPhaseIndex = phaseIndex;
         currentPatterns = GetPatternsForPhase(phaseIndex);
+
+        // 패턴 실행 중에 페이즈 전환이 발생하면 즉시 Active로 전환하여 다음 패턴부터 새 페이즈 적용
+        if (bossState == BossState.PatternExecuting)
+            bossState = BossState.Active;
+
         OnPhaseChanged(phaseIndex, phases[phaseIndex]);
     }
 

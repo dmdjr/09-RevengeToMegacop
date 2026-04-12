@@ -583,7 +583,7 @@ MonoBehaviour:
   spawnInterval: 0.5
   afterDelay: 1
   bulletPrefab: {fileID: 3370167828950650170, guid: b0a1419bff46241568f3b08b114352d0, type: 3}
-  bulletSpeed: 30
+  bulletSpeed: 80
 --- !u!4 &491393346 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4871878313369370, guid: e300a2185ff1624448f3df56cbfd3618, type: 3}
@@ -1155,13 +1155,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 1
-  weight: 1
+  weight: 2
   aimDuration: 1
   aimLineColor: {r: 0.9471822, g: 0, b: 1, a: 1}
   aimLineWidth: 0.05
   aimLineLength: 50
   bulletPrefab: {fileID: 3370167828950650170, guid: 1a5bca38494e74aee9fdf6d7afeab1a4, type: 3}
-  bulletSpeed: 60
+  bulletSpeed: 120
   bowReleaseDelay: 0.5
   afterDelay: 0.5
   muzzleEffectPrefab: {fileID: 0}
@@ -1315,8 +1315,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponPoint: {fileID: 314148342}
   turnSpeed: 10
-  maxHp: 200
-  moveSpeed: 3
+  maxHp: 500
+  moveSpeed: 5
   useNavMesh: 1
   phases:
   - {fileID: 11400000, guid: c1b84ad2d80c84c64b7156222a0d56b0, type: 2}
@@ -1456,11 +1456,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 1
   weight: 1
+  burstCount: 4
+  firstBurstDelay: 0.8
+  lastBurstDelay: 0.1
+  shotsPerBurst: 5
+  spreadAngle: 10
   bulletPrefab: {fileID: 3370167828950650170, guid: e5c252c00427b43d09c4dcc9f296eacb, type: 3}
   bulletSpeed: 60
-  shotCount: 7
-  firstDelay: 0.6
-  lastDelay: 0.1
   bowReleaseDelay: 0.1
   afterDelay: 0.5
   muzzleEffectPrefab: {fileID: 0}
@@ -1706,12 +1708,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cooldown: 2
   weight: 1
-  minDistance: 12
+  minDistance: 8
   maxDistance: 15
   teleportDelay: 0.3
   afterDelay: 3
-  proximityTriggerDistance: 8
-  proximityCooldown: 5
+  proximityTriggerDistance: 15
+  proximityCooldown: 2
   disappearVFX: {fileID: 3744133877081091469, guid: 06148335cbe3f4cc08140e23a730b578, type: 3}
   appearVFX: {fileID: 3744133877081091469, guid: 06148335cbe3f4cc08140e23a730b578, type: 3}
   vfxLifetime: 0.7
@@ -2198,13 +2200,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cooldown: 1
-  weight: 1
-  firstDelay: 0.7
-  secondDelay: 0.2
+  weight: 3
+  shotCount: 15
+  shotDelay: 0
   bulletPrefab: {fileID: 3370167828950650170, guid: 6543d834e8c1c469cae840167b8150d8, type: 3}
   bulletSpeed: 50
-  bowReleaseDelay: 0.5
-  afterDelay: 0.5
+  bowReleaseDelay: 0.2
+  afterDelay: 0.3
   muzzleEffectPrefab: {fileID: 0}
 --- !u!4 &1789487667
 Transform:
@@ -2271,8 +2273,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df5a22247e32f7c4a9e91d8542840602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flashImage: {fileID: 1850221439}
-  maximumIntensity: 1
 --- !u!114 &1850221439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2360,10 +2360,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 580745402c776854bb8a51184d92f32c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageFlash: {fileID: 1850221438}
-  playerHitController: {fileID: 1691624976}
-  flashIntensity: 0.8
-  flashDuration: 0.3
 --- !u!114 &1875845977
 MonoBehaviour:
   m_ObjectHideFlags: 0

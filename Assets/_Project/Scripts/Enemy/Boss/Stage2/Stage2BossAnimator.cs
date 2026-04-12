@@ -1,3 +1,5 @@
+using System.Collections;
+
 using UnityEngine;
 
 /// <summary>
@@ -49,6 +51,20 @@ public class Stage2BossAnimator : MonoBehaviour
 
     /// <summary>보스 사망 시 호출.</summary>
     public void PlayDie() => animator?.SetTrigger(DieHash);
+
+    /// <summary>Die 애니메이션 재생이 완료될 때까지 대기한다.</summary>
+    public IEnumerator WaitForDieAnimation()
+    {
+        if (animator == null) yield break;
+
+        // Die 상태로 전환될 때까지 대기 (AnyState→Die crossfade 시간 고려)
+        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Die"))
+            yield return null;
+
+        // Die 애니메이션 재생 완료 대기
+        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+            yield return null;
+    }
 
     /// <summary>스트레이핑 이동 시작/정지 시 호출.</summary>
     public void SetMoving(bool isMoving)

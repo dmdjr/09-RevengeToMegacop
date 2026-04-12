@@ -4,29 +4,28 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// 탕..탕탕 리듬으로 3연발을 발사하는 패턴.
-/// 첫 발 후 긴 딜레이, 이후 짧은 간격으로 2발 연속 발사.
-/// 매 발마다 플레이어 현재 위치를 조준한다.
+/// 지정한 발 수만큼 쉬지 않고 몰아치는 집중 사격 패턴.
+/// 매 발마다 공격 애니메이션을 재생하고 bowReleaseDelay 후 발사한다.
 /// </summary>
 public class RhythmShotPattern : BossPattern
 {
-    [Header("Rhythm Settings")]
-    [SerializeField] private float firstDelay = 0.7f;
-    [SerializeField] private float secondDelay = 0.2f;
+    [Header("Barrage Settings")]
+    [SerializeField] private int shotCount = 15;
+    [SerializeField] private float shotDelay = 0f;
 
     [Header("Shot Settings")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float bulletSpeed = 20f;
-    [SerializeField] private float bowReleaseDelay = 0.5f;
+    [SerializeField] private float bowReleaseDelay = 0.3f;
     [SerializeField] private float afterDelay = 1.5f;
     [SerializeField] private GameObject muzzleEffectPrefab;
 
     protected override void ExecutePattern(BossEnemy boss, Action onComplete)
     {
-        StartCoroutine(RhythmShot(boss, onComplete));
+        StartCoroutine(BarrageShot(boss, onComplete));
     }
 
-    private IEnumerator RhythmShot(BossEnemy boss, Action onComplete)
+    private IEnumerator BarrageShot(BossEnemy boss, Action onComplete)
     {
         Transform target = boss.Target;
         if (target == null)
@@ -45,28 +44,19 @@ public class RhythmShotPattern : BossPattern
         Stage2Boss stage2Boss = boss as Stage2Boss;
         stage2Boss?.PauseMovement();
 
-        // 1발: 탕
-        boss.GetComponent<Stage2BossAnimator>()?.PlayAttack();
-        yield return new WaitForSeconds(bowReleaseDelay);
-        FireAtTarget(boss, target);
+        Stage2BossAnimator bossAnimator = boss.GetComponent<Stage2BossAnimator>();
 
-        // 긴 딜레이
-        yield return new WaitForSeconds(firstDelay);
+        for (int i = 0; i < shotCount; i++)
+        {
+            if (bossAnimator != null) bossAnimator.PlayAttack();
+            yield return new WaitForSeconds(bowReleaseDelay);
 
-        // 2발: 탕
-        boss.GetComponent<Stage2BossAnimator>()?.PlayAttack();
-        yield return new WaitForSeconds(bowReleaseDelay);
-        FireAtTarget(boss, target);
+            FireAtTarget(boss, target);
 
-        // 짧은 딜레이
-        yield return new WaitForSeconds(secondDelay);
+            if (i < shotCount - 1)
+                yield return new WaitForSeconds(shotDelay);
+        }
 
-        // 3발: 탕
-        boss.GetComponent<Stage2BossAnimator>()?.PlayAttack();
-        yield return new WaitForSeconds(bowReleaseDelay);
-        FireAtTarget(boss, target);
-
-        // 공격 후 여유 시간(후딜) 동안 정지 유지, 그 후 이동 재개
         yield return new WaitForSeconds(afterDelay);
         stage2Boss?.ResumeMovement();
         onComplete?.Invoke();
