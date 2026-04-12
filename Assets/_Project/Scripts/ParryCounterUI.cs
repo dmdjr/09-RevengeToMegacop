@@ -165,13 +165,33 @@ public class ParryCounterUI : MonoBehaviour
     {
         if (parryCount <= 0) return;
 
+        parryCount = Mathf.Max(0, parryCount - 5);
+
         if (resetCoroutine != null)
         {
             StopCoroutine(resetCoroutine);
             resetCoroutine = null;
         }
 
-        StartFadeOutAndReset();
+        if (parryCount <= 0)
+        {
+            StartFadeOutAndReset();
+            return;
+        }
+
+        int rankIndex = Mathf.Min(parryCount / rankStep, rankLabels.Length - 1);
+        counterText.text = parryCount.ToString();
+        rankText.text = rankLabels[rankIndex];
+
+        if (rankIndex != lastRankIndex)
+        {
+            Color rankColor = GetRankColor(rankIndex);
+            counterText.color = rankColor;
+            rankText.color = rankColor;
+            lastRankIndex = rankIndex;
+        }
+
+        resetCoroutine = StartCoroutine(ResetAfterDelay());
     }
 
     private IEnumerator ResetAfterDelay()
