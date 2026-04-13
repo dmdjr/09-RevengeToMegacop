@@ -1006,17 +1006,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 392d369026e97464591560ea926fbdf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 3624129501394738970, guid: 5d033c0c68a3ba54598ca0770ce6df3d, type: 3}
-  weaponPrefabs:
-  - {fileID: 2574361922486423382, guid: e7857d2a2bda8dd45a44d6bb851e0491, type: 3}
-  - {fileID: 2574361922486423382, guid: a53bdf555a696b84fa109601ee6b3501, type: 3}
   target: {fileID: 1700423670}
   cameraShakeListener: {fileID: 330585549}
   enemyDeathEffectListener: {fileID: 330585552}
-  spawnInterval: 3
   spawnArea: 70
-  maxEnemies: 3
   minSpawnDistance: 10
+  interWaveDelay: 3
+  basicEnemyPrefab: {fileID: 3624129501394738970, guid: 5d033c0c68a3ba54598ca0770ce6df3d, type: 3}
+  weaponPrefabs:
+  - {fileID: 2574361922486423382, guid: e7857d2a2bda8dd45a44d6bb851e0491, type: 3}
+  - {fileID: 2574361922486423382, guid: a53bdf555a696b84fa109601ee6b3501, type: 3}
+  wave1EnemyCount: 8
+  wave1MaxConcurrent: 2
+  wave1SpawnInterval: 3
+  wave2EnemyCount: 10
+  wave2MaxConcurrent: 2
+  wave2SpawnInterval: 2.5
+  elitePrefabs:
+  - {fileID: 3757983747226148921, guid: 5bf2f89287645f74b93b3bfe33ad33c2, type: 3}
+  bossPrefab: {fileID: 6137043511918517177, guid: 5b01e53a0e7f6475083b2936e7f6b218, type: 3}
 --- !u!4 &1473619429
 Transform:
   m_ObjectHideFlags: 0

@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -5,47 +7,160 @@ using UnityEngine.AI;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private List<GameObject> weaponPrefabs = new List<GameObject>();
+    [Header("Common (비워두면 런타임에 자동 해결)")]
+    [Tooltip("비워두면 'Player' 태그 오브젝트를 자동 검색한다. 프리팹화 시 권장.")]
     [SerializeField] private Transform target;
+    [Tooltip("비워두면 씬에서 CameraShakeListener를 자동 검색한다.")]
     [SerializeField] private CameraShakeListener cameraShakeListener;
+    [Tooltip("비워두면 씬에서 EnemyDeathEffectListener를 자동 검색한다.")]
     [SerializeField] private EnemyDeathEffectListener enemyDeathEffectListener;
-
-    [SerializeField] private float spawnInterval = 10f;
     [SerializeField] private float spawnArea = 100f;
-    [SerializeField] private int maxEnemies = 10;
     [SerializeField] private float minSpawnDistance = 10f;
+    [SerializeField] private float interWaveDelay = 3f;
 
-    private float timer = 0f;
-    private HashSet<Enemy> spawnedEnemies = new HashSet<Enemy>();
+    [Header("Wave 1 - Basic")]
+    [SerializeField] private GameObject basicEnemyPrefab;
+    [SerializeField] private List<GameObject> weaponPrefabs = new List<GameObject>();
+    [SerializeField] private int wave1EnemyCount = 8;
+    [SerializeField] private int wave1MaxConcurrent = 4;
+    [SerializeField] private float wave1SpawnInterval = 3f;
 
-    void Update()
+    [Header("Wave 2 - Basic + Elite")]
+    [SerializeField] private int wave2EnemyCount = 10;
+    [SerializeField] private int wave2MaxConcurrent = 5;
+    [SerializeField] private float wave2SpawnInterval = 2.5f;
+    [SerializeField] private List<GameObject> elitePrefabs = new List<GameObject>();
+
+    [Header("Wave 3 - Boss")]
+    [SerializeField] private GameObject bossPrefab;
+
+    public event Action<int> OnWaveStarted;
+    public event Action<int> OnWaveCleared;
+    public event Action OnAllWavesCleared;
+
+    private HashSet<Enemy> aliveEnemies = new HashSet<Enemy>();
+    private WaitForSeconds wave1SpawnWait;
+    private WaitForSeconds wave2SpawnWait;
+    private WaitForSeconds interWaveWait;
+
+    void Start()
     {
-        timer += Time.deltaTime;
-        if (timer < spawnInterval) return;
-        timer = 0f;
-
-        if (spawnedEnemies.Count >= maxEnemies) return;
-
-        SpawnEnemyWithWeapon();
+        ResolveSceneReferences();
+        wave1SpawnWait = new WaitForSeconds(wave1SpawnInterval);
+        wave2SpawnWait = new WaitForSeconds(wave2SpawnInterval);
+        interWaveWait = new WaitForSeconds(interWaveDelay);
+        StartCoroutine(RunWaves());
     }
 
-    private void SpawnEnemyWithWeapon()
+    private void ResolveSceneReferences()
     {
-        if (enemyPrefab == null) return;
-        Vector3 pos = GenerateSpawnPosition();
-        Quaternion rot = Quaternion.identity;
-        GameObject enemyObj = Instantiate(enemyPrefab, pos, rot, transform);
-        if (!enemyObj.TryGetComponent<Enemy>(out Enemy enemy))
+        if (target == null)
         {
-            Debug.LogWarning("EnemySpawner: Spawned prefab is missing Enemy component. Destroying.");
-            Destroy(enemyObj);
+            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+            if (playerObject != null)
+            {
+                target = playerObject.transform;
+            }
+            else
+            {
+                Debug.LogError("EnemySpawner: 'Player' 태그를 가진 오브젝트를 찾을 수 없습니다.");
+            }
+        }
+
+        if (cameraShakeListener == null)
+        {
+            cameraShakeListener = FindFirstObjectByType<CameraShakeListener>();
+        }
+
+        if (enemyDeathEffectListener == null)
+        {
+            enemyDeathEffectListener = FindFirstObjectByType<EnemyDeathEffectListener>();
+        }
+    }
+
+    void OnDestroy()
+    {
+        foreach (Enemy enemy in aliveEnemies)
+        {
+            if (enemy != null) enemy.OnDeath -= OnEnemyDied;
+        }
+    }
+
+    private IEnumerator RunWaves()
+    {
+        yield return StartCoroutine(RunBasicWave());
+        yield return interWaveWait;
+        yield return StartCoroutine(RunMixedWave());
+        yield return interWaveWait;
+        yield return StartCoroutine(RunBossWave());
+
+        if (OnAllWavesCleared != null) OnAllWavesCleared.Invoke();
+    }
+
+    private IEnumerator RunBasicWave()
+    {
+        if (OnWaveStarted != null) OnWaveStarted.Invoke(1);
+
+        int spawned = 0;
+        while (spawned < wave1EnemyCount)
+        {
+            yield return new WaitUntil(() => aliveEnemies.Count < wave1MaxConcurrent);
+            SpawnBasicEnemy();
+            spawned++;
+            yield return wave1SpawnWait;
+        }
+
+        yield return new WaitUntil(() => aliveEnemies.Count == 0);
+        if (OnWaveCleared != null) OnWaveCleared.Invoke(1);
+    }
+
+    private IEnumerator RunMixedWave()
+    {
+        if (OnWaveStarted != null) OnWaveStarted.Invoke(2);
+
+        int eliteSpawnIndex = wave2EnemyCount / 2;
+        int spawned = 0;
+        while (spawned < wave2EnemyCount)
+        {
+            yield return new WaitUntil(() => aliveEnemies.Count < wave2MaxConcurrent);
+            SpawnBasicEnemy();
+            if (spawned == eliteSpawnIndex)
+            {
+                SpawnRandomElite();
+            }
+            spawned++;
+            yield return wave2SpawnWait;
+        }
+
+        yield return new WaitUntil(() => aliveEnemies.Count == 0);
+        if (OnWaveCleared != null) OnWaveCleared.Invoke(2);
+    }
+
+    private IEnumerator RunBossWave()
+    {
+        if (OnWaveStarted != null) OnWaveStarted.Invoke(3);
+        SpawnBoss();
+        yield return new WaitUntil(() => aliveEnemies.Count == 0);
+        if (OnWaveCleared != null) OnWaveCleared.Invoke(3);
+    }
+
+    private void SpawnBasicEnemy()
+    {
+        if (basicEnemyPrefab == null) return;
+
+        Vector3 position = GenerateSpawnPosition();
+        GameObject enemyObject = Instantiate(basicEnemyPrefab, position, Quaternion.identity, transform);
+
+        if (!enemyObject.TryGetComponent<Enemy>(out Enemy enemy))
+        {
+            Debug.LogWarning("EnemySpawner: basicEnemyPrefab에 Enemy 컴포넌트가 없음. 파괴합니다.");
+            Destroy(enemyObject);
             return;
         }
 
         if (weaponPrefabs != null && weaponPrefabs.Count > 0)
         {
-            int index = Random.Range(0, weaponPrefabs.Count);
+            int index = UnityEngine.Random.Range(0, weaponPrefabs.Count);
             GameObject weaponPrefab = weaponPrefabs[index];
             if (weaponPrefab != null)
             {
@@ -61,56 +176,92 @@ public class EnemySpawner : MonoBehaviour
             }
         }
 
-        enemy.OnDeath += OnDeath;
-        if (cameraShakeListener != null)
-            cameraShakeListener.RegisterEnemy(enemy);
-        if (enemyDeathEffectListener != null)
-            enemyDeathEffectListener.RegisterEnemy(enemy);
-
-        EnemyHitFeedback hitFeedback = enemyObj.AddComponent<EnemyHitFeedback>();
+        EnemyHitFeedback hitFeedback = enemyObject.AddComponent<EnemyHitFeedback>();
         hitFeedback.Initialize(enemy);
-        if (target != null)
+
+        if (target != null) enemy.SetTarget(target);
+        RegisterSpawnedEnemy(enemy);
+    }
+
+    private void SpawnRandomElite()
+    {
+        if (elitePrefabs == null || elitePrefabs.Count == 0) return;
+
+        int index = UnityEngine.Random.Range(0, elitePrefabs.Count);
+        GameObject selectedElitePrefab = elitePrefabs[index];
+        if (selectedElitePrefab == null) return;
+
+        Vector3 position = GenerateSpawnPosition();
+        GameObject eliteObject = Instantiate(selectedElitePrefab, position, Quaternion.identity, transform);
+
+        if (!eliteObject.TryGetComponent<Enemy>(out Enemy enemy))
         {
-            enemy.SetTarget(target);
+            Debug.LogWarning("EnemySpawner: elitePrefab에 Enemy 컴포넌트가 없음. 파괴합니다.");
+            Destroy(eliteObject);
+            return;
         }
 
-        spawnedEnemies.Add(enemy);
+        // 엘리트는 Start()에서 SetupTargetIfNeeded/SetupWeaponIfNeeded를 자체 처리한다.
+        // 명시적으로 target을 주입해 플레이어 탐색 실패를 방지한다.
+        if (target != null) enemy.SetTarget(target);
+        RegisterSpawnedEnemy(enemy);
+    }
+
+    private void SpawnBoss()
+    {
+        if (bossPrefab == null)
+        {
+            Debug.LogWarning("EnemySpawner: bossPrefab이 설정되지 않음. 웨이브3를 건너뜁니다.");
+            return;
+        }
+
+        GameObject bossObject = Instantiate(bossPrefab, transform.position, Quaternion.identity, transform);
+
+        if (!bossObject.TryGetComponent<BossEnemy>(out BossEnemy bossEnemy))
+        {
+            Debug.LogWarning("EnemySpawner: bossPrefab에 BossEnemy 컴포넌트가 없음. 파괴합니다.");
+            Destroy(bossObject);
+            return;
+        }
+
+        if (target != null) bossEnemy.ActivateBoss(target);
+        RegisterSpawnedEnemy(bossEnemy);
+    }
+
+    private void RegisterSpawnedEnemy(Enemy enemy)
+    {
+        enemy.OnDeath += OnEnemyDied;
+        if (cameraShakeListener != null) cameraShakeListener.RegisterEnemy(enemy);
+        if (enemyDeathEffectListener != null) enemyDeathEffectListener.RegisterEnemy(enemy);
+        aliveEnemies.Add(enemy);
+    }
+
+    private void OnEnemyDied(Enemy enemy)
+    {
+        aliveEnemies.Remove(enemy);
     }
 
     private Vector3 GenerateSpawnPosition()
     {
-        Vector3 pos;
-        float x = Random.Range(-spawnArea, spawnArea);
-        float z = Random.Range(-spawnArea, spawnArea);
-        pos = new Vector3(transform.position.x + x, 0f, transform.position.z + z);
-        if (target == null) return pos;
+        float x = UnityEngine.Random.Range(-spawnArea, spawnArea);
+        float z = UnityEngine.Random.Range(-spawnArea, spawnArea);
+        Vector3 position = new Vector3(transform.position.x + x, 0f, transform.position.z + z);
 
-        float dist = Vector3.Distance(pos, target.position);
-        if (dist < minSpawnDistance)
+        if (target == null) return position;
+
+        float distance = Vector3.Distance(position, target.position);
+        if (distance < minSpawnDistance)
         {
-            Vector3 dir = (pos - target.position).normalized;
-            pos = target.position + dir * (minSpawnDistance + 0.1f);
-            pos.y = 0f;
+            Vector3 direction = (position - target.position).normalized;
+            position = target.position + direction * (minSpawnDistance + 0.1f);
+            position.y = 0f;
         }
 
-        if (NavMesh.SamplePosition(pos, out NavMeshHit hit, 10f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(position, out NavMeshHit hit, 10f, NavMesh.AllAreas))
         {
-            pos = hit.position;
+            position = hit.position;
         }
 
-        return pos;
-    }
-
-    void OnDestroy()
-    {
-        foreach (Enemy enemy in spawnedEnemies)
-        {
-            if (enemy != null) enemy.OnDeath -= OnDeath;
-        }
-    }
-
-    private void OnDeath(Enemy enemy)
-    {
-        spawnedEnemies.Remove(enemy);
+        return position;
     }
 }
