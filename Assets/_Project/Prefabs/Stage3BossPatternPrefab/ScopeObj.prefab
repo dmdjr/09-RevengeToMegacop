@@ -52,7 +52,7 @@ MonoBehaviour:
   _scopeMoveSpeed: 5
   _rayDistance: 20
   _scopeDamage: 50
-  _scopClip: {fileID: 8300000, guid: cb1351b69866d47b6bdd382d752086b6, type: 3}
+  _scopClip: {fileID: 8300000, guid: af66162561d2eed40ad49268cab318bb, type: 3}
 --- !u!1 &7438969764752613311
 GameObject:
   m_ObjectHideFlags: 0
