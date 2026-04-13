@@ -159,9 +159,13 @@ public class StageSelectController : MonoBehaviour
         playerController.enabled = true;
         isSwitching = false;
 
-        // TODO: 플레이스홀더 단계 — 실제 게임 시작 훅
-        // (EnemySpawner 활성화, 목표 UI 표시, 나머지 Stage 씬 UnloadSceneAsync 등)
-        // 컨텐츠가 채워질 때 이곳에 추가
+        GameObject currentRoot = stages[currentIndex].stageRoot;
+        if (currentRoot != null)
+        {
+            EnemySpawner spawner = currentRoot.GetComponentInChildren<EnemySpawner>(true);
+            if (spawner != null)
+                spawner.gameObject.SetActive(true);
+        }
     }
 
     private void OnPrevClicked()

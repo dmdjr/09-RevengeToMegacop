@@ -215,7 +215,8 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
 
-        GameObject bossObject = Instantiate(bossPrefab, transform.position, Quaternion.identity, transform);
+        Vector3 bossSpawnPosition = transform.position + new Vector3(0f, bossPrefab.transform.position.y, 0f);
+        GameObject bossObject = Instantiate(bossPrefab, bossSpawnPosition, Quaternion.identity, transform);
 
         if (!bossObject.TryGetComponent<BossEnemy>(out BossEnemy bossEnemy))
         {
