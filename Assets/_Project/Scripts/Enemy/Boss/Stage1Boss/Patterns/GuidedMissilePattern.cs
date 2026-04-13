@@ -28,6 +28,7 @@ public class GuidedMissilePattern : BossPattern
         Stage1Boss stage1Boss = boss as Stage1Boss;
         bool fireReady = false;
         bool animComplete = false;
+        stage1Boss?.RegisterPatternCompleteCallback(onComplete);
         stage1Boss?.RegisterFireCallback(() => fireReady = true);
         stage1Boss?.RegisterAnimationCompleteCallback(() => animComplete = true);
         stage1Boss?.NotifyPatternStart();

@@ -24,8 +24,10 @@ public class WavePattern : BossPattern
 
         Stage1Boss stage1Boss = boss as Stage1Boss;
         bool fireReady = false;
+        stage1Boss?.RegisterPatternCompleteCallback(onComplete);
         stage1Boss?.RegisterFireCallback(() => fireReady = true);
         stage1Boss?.NotifyPatternStart();
+        stage1Boss?.LockLooking();
         stage1Boss?.BossAnimator?.SetTrigger("Wave");
 
         yield return new WaitUntil(() => fireReady);
@@ -34,6 +36,7 @@ public class WavePattern : BossPattern
             Instantiate(wavePrefab, boss.transform.position, Quaternion.identity);
 
         yield return new WaitForSeconds(holdDuration);
+        stage1Boss?.UnlockLooking();
         stage1Boss?.NotifyPatternEnd();
         onComplete?.Invoke();
     }

@@ -22,6 +22,7 @@ public class BasicShotPattern : BossPattern
 
         bool fireReady = false;
         bool animComplete = false;
+        stage1Boss?.RegisterPatternCompleteCallback(onComplete);
         stage1Boss?.RegisterFireCallback(() => fireReady = true);
         stage1Boss?.RegisterAnimationCompleteCallback(() => animComplete = true);
 
@@ -29,6 +30,8 @@ public class BasicShotPattern : BossPattern
         stage1Boss?.BossAnimator?.SetTrigger("StartFire");
 
         yield return new WaitUntil(() => fireReady);
+
+        stage1Boss?.StartKiting();
 
         float shotDuration = UnityEngine.Random.Range(minShotDuration, maxShotDuration);
         float elapsed = 0f;
@@ -39,6 +42,7 @@ public class BasicShotPattern : BossPattern
             elapsed += shotInterval;
         }
 
+        stage1Boss?.StopKiting();
         stage1Boss?.BossAnimator?.SetTrigger("EndFire");
 
         yield return new WaitUntil(() => animComplete);
