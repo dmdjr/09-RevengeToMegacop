@@ -18,6 +18,10 @@ public class ScopeScript : MonoBehaviour
     [SerializeField] private float _rayDistance = 20f;
     [SerializeField] private float _scopeDamage = 50f;
 
+    [Header("스코프 패턴 사격 효과음")]
+    [SerializeField]AudioClip _scopClip;
+
+    
 
     void Awake()
     {
@@ -88,7 +92,7 @@ public class ScopeScript : MonoBehaviour
                 playerStateController.TakeDamage(_scopeDamage);
             }
         }
-
+        AudioManager.Instance.PlaySFXAtPoint(_scopClip,transform.position);
 
         ResetScope();
         yield return null;

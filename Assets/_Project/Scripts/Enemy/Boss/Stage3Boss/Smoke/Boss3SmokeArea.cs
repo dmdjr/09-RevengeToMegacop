@@ -14,6 +14,10 @@ public class Boss3SmokeArea : MonoBehaviour
     [Tooltip("플레이어의 카메라와 적의 메터리얼을 관리하는 오브젝트")]
     [SerializeField] ViewController _viewController;
     
+    [Header ("연막 효과음")]
+    [Tooltip("연막 에리어가 펼쳐질때 나는 효과음")]
+    [SerializeField] AudioClip _SmokeClip;
+
     
     
 
@@ -24,6 +28,7 @@ public class Boss3SmokeArea : MonoBehaviour
     void Awake()
     {
         _viewController = FindFirstObjectByType<ViewController>();
+        
         
     }
     
@@ -88,7 +93,7 @@ public class Boss3SmokeArea : MonoBehaviour
     IEnumerator PlaySmokeArea()
     {
         _smokeAreaParticle.Play();
-
+        AudioManager.Instance.PlaySFXAtPoint(_SmokeClip,transform.position);
         yield return new WaitForSeconds(_smokeLifeTime);
 
         _smokeAreaParticle.Stop();

@@ -23,6 +23,8 @@ namespace Boss3
 
         private Dictionary<GameObject, int> _enemyDic = new Dictionary<GameObject, int>();
 
+        [Header("스모크 페널")]
+        [SerializeField]
         private SmokePanel _smokePanel;
 
         private void Awake()

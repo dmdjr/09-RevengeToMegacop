@@ -36,6 +36,10 @@ public class OscillatingBulletPattern : BossPattern
     [SerializeField]
     private Transform firePoint; // 총알이 발사될 위치와 방향을 나타내는 Transform
 
+    [Header("총 사운드")]
+    [SerializeField] AudioClip _audioiclip;
+
+
     private Transform playerTransform; // 플레이어의 Transform 참조
     private bool movingForward = true; // 현재 진동 방향 (minAngle -> maxAngle이 true, maxAngle -> minAngle이 false)
     private float oscillationTimer = 0f; // 진동 주기 내 타이머
@@ -48,6 +52,8 @@ public class OscillatingBulletPattern : BossPattern
     /// </summary>
     protected void Awake()
     {
+        
+
         // 총알 발사 지점을 이 게임 오브젝트의 Transform으로 설정합니다.
         // 이를 통해 보스 자체의 위치에서 총알이 발사됩니다.
         if(firePoint ==null)
@@ -151,7 +157,7 @@ public class OscillatingBulletPattern : BossPattern
                     Bullet bullet1 = BulletPool.Instance.Get(bulletPrefab,firePoint.position,fireRotation);
                     bullet1.Speed = bulletSpeed;
                     bullet1.SetOwner(boss.gameObject);
-                    
+                    AudioManager.Instance.PlaySFXAtPoint(_audioiclip,boss.transform.position);
                 }
 
                 

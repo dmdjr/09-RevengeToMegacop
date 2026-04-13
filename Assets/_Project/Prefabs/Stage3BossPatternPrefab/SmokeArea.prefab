@@ -4958,6 +4958,7 @@ MonoBehaviour:
   _smokeAreaParticle: {fileID: 265766274217486953, guid: 06aa57bd9e499774799de04bfded4baa, type: 3}
   _smokeLifeTime: 5.12
   _viewController: {fileID: 0}
+  _SmokeClip: {fileID: 8300000, guid: 78971bef772d69943ae504d4a008babe, type: 3}
 --- !u!135 &6971723552230195109
 SphereCollider:
   m_ObjectHideFlags: 0
